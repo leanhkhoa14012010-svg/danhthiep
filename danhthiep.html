@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lê Anh Khoa - Personal Portfolio | 11 Lý THPT Chuyên Bến Tre</title>
+   
+    <!-- Meta tags cho SEO & Social -->
+    <meta name="description" content="Trang web cá nhân của Lê Anh Khoa - Học sinh Lớp 11 Lý Trường THPT Chuyên Bến Tre. Đam mê thể thao và khám phá tri thức mới.">
+    <meta name="keywords" content="Lê Anh Khoa, Chuyên Bến Tre, 11 Lý, Portfolio, Bến Tre">
+    <meta name="author" content="Lê Anh Khoa">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Google Font Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        /* Custom Glassmorphism background */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+       
+        /* Grid background pattern */
+        .bg-grid {
+            background-size: 30px 30px;
+            background-image: radial-gradient(circle, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+        }
+        .dark .bg-grid {
+            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+
+    <!-- ==================== HEADER / NAVBAR ==================== -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-200/50 dark:border-slate-800/50 transition-all duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="flex items-center space-x-2 group">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
+                    K
+                </div>
+                <span class="font-bold text-lg tracking-tight group-hover:text-sky-500 transition-colors">
+                    Lê Anh Khoa<span class="text-sky-500">.</span>
+                </span>
+            </a>
+
+            <!-- Desktop Nav Items -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <a href="#about" class="hover:text-sky-500 transition-colors">Về Tôi</a>
+                <a href="#interests" class="hover:text-sky-500 transition-colors">Sở Thích</a>
+                <a href="#contact" class="hover:text-sky-500 transition-colors">Liên Hệ</a>
+                <a href="#donate" class="hover:text-sky-500 transition-colors">plsss donet</a>
+            </nav>
+
+            <!-- Actions (Dark mode toggle & Mobile menu button) -->
+            <div class="flex items-center space-x-3">
+                <!-- Dark Mode Toggle Button -->
+                <button id="theme-toggle" type="button" aria-label="Toggle Theme" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors">
+                    <i id="theme-toggle-dark-icon" class="fas font-solid fa-moon text-base hidden"></i>
+                    <i id="theme-toggle-light-icon" class="fas font-solid fa-sun text-base text-amber-400"></i>
+                </button>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" type="button" aria-label="Toggle Navigation Menu" class="md:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Nav Menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-4 pt-2 pb-4 space-y-2">
+            <a href="#about" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Về Tôi</a>
+            <a href="#interests" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Sở Thích</a>
+            <a href="#contact" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Liên Hệ</a>
+            <a href="#donate" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">plsss donet</a>
+        </div>
+    </header>
+
+    <main class="flex-grow pt-24">
+        <!-- ==================== HERO SECTION ==================== -->
+        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+                <!-- Left Text Content -->
+                <div class="md:col-span-7 space-y-6 text-center md:text-left">
+                    <!-- School Badge -->
+                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-sky-200 dark:border-sky-900/50 bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 text-xs sm:text-sm font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
+                        <span>11 Lý &bull; THPT Chuyên Bến Tre</span>
+                    </div>
+
+                    <!-- Main Headline -->
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
+                        Xin chào, tôi là <br class="hidden sm:inline">
+                        <span class="bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-600 bg-clip-text text-transparent">Lê Anh Khoa</span>
+                    </h1>
+
+                    <!-- Short Bio -->
+                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl font-normal leading-relaxed">
+                        Học sinh lớp 11 Vật lý sinh sống tại <span class="font-semibold text-slate-800 dark:text-slate-200">Bến Tre</span>. Luôn tràn đầy nhiệt huyết với tinh thần học hỏi, đam mê thể thao và tò mò khám phá những điều mới lạ xung quanh.
+                    </p>
+
+                    <!-- CTA Buttons -->
+                    <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-4">
+                        <a href="https://zalo.me/0848979877" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all">
+                            <i class="fas fa-comment-dots"></i>
+                            <span>Chat qua Zalo</span>
+                        </a>
+                        <a href="https://facebook.com/le.akhoa.2024" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold shadow-sm hover:-translate-y-0.5 transition-all">
+                            <i class="fab fa-facebook text-blue-600"></i>
+                            <span>Facebook</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Card / Avatar Graphic -->
+                <div class="md:col-span-5 flex justify-center">
+                    <div class="relative w-full max-w-sm">
+                        <!-- Decorative glow -->
+                        <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-3xl blur-xl opacity-30 dark:opacity-40 animate-pulse"></div>
+                       
+                        <!-- Main Card -->
+                        <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-3xl font-extrabold text-sky-500 shadow-inner">
+                                    AK
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-bold">Lê Anh Khoa</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-location-dot text-red-500 mr-1"></i> Bến Tre, Việt Nam</p>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3 pt-2 text-sm border-t border-slate-100 dark:border-slate-800">
+                                <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                    <span class="text-slate-500 dark:text-slate-400">Trường:</span>
+                                    <span class="font-medium">THPT Chuyên Bến Tre</span>
+                                </div>
+                                <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                    <span class="text-slate-500 dark:text-slate-400">Chuyên ngành:</span>
+                                    <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
+                                </div>
+                                <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                    <span class="text-slate-500 dark:text-slate-400">Số Zalo:</span>
+                                    <span class="font-mono font-medium">0848979877</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== ABOUT SECTION ==================== -->
+        <section id="about" class="py-16 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center space-y-4">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-sky-500">Về Bản Thân</h2>
+                    <p class="text-2xl sm:text-3xl font-bold tracking-tight">"Sự tò mò là ngọn đuốc dẫn đường cho tri thức."</p>
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed pt-2">
+                        Là một học sinh chuyên Vật lý tại trường Chuyên Bến Tre, tôi luôn nhìn thế giới xung quanh qua góc nhìn chủ động và giàu năng lượng. Dù trên sân tập thể thao hay trong học tập, tinh thần kiên trì và mong muốn vượt qua giới hạn của bản thân luôn là mục tiêu hàng đầu.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== INTERESTS SECTION ==================== -->
+        <section id="interests" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="text-center space-y-3 mb-12">
+                <h2 class="text-xs font-bold uppercase tracking-widest text-sky-500">Sở Thích & Đam Mê</h2>
+                <h3 class="text-3xl font-bold tracking-tight">Những Điều Tạo Nên Tôi</h3>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Card 1: Thể Thao -->
+                <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow group">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-volleyball"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Rèn Luyện Thể Thao</h4>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Yêu thích vận động và tham gia các môn thể thao tập thể cũng như cá nhân. Thể thao giúp tôi giải tỏa căng thẳng sau giờ học, rèn luyện thể lực và nâng cao tinh thần đồng đội.
+                    </p>
+                </div>
+
+                <!-- Card 2: Khám Phá Tri Thức -->
+                <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow group">
+                    <div class="w-14 h-14 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fas fa-compass"></i>
+                    </div>
+                    <h4 class="text-xl font-bold mb-3">Tìm Hiểu Những Điều Chưa Biết</h4>
+                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                        Luôn bị thu hút bởi những hiện tượng, công nghệ và kiến thức mới. Tinh thần chủ động tìm tòi giúp tôi liên tục mở rộng góc nhìn và không ngừng phát triển bản thân mỗi ngày.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== CONTACT & QR DONATE SECTION ==================== -->
+        <section id="contact" class="py-20 bg-slate-100/60 dark:bg-slate-900/40 border-t border-slate-200/60 dark:border-slate-800/60">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center space-y-3 mb-12">
+                    <h2 class="text-xs font-bold uppercase tracking-widest text-sky-500">Liên Hệ & Ủng Hộ</h2>
+                    <h3 class="text-3xl font-bold tracking-tight">Kết Nối Với Tôi</h3>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <!-- Left: Contact Details -->
+                    <div class="lg:col-span-6 space-y-6">
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-xl shrink-0">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Số điện thoại / Zalo</p>
+                                <a href="https://zalo.me/0848979877" target="_blank" class="font-bold text-lg hover:text-sky-500 transition-colors">0848 979 877</a>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl shrink-0">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Trang Facebook cá nhân</p>
+                                <a href="https://facebook.com/le.akhoa.2024" target="_blank" rel="noopener noreferrer" class="font-bold text-base hover:text-sky-500 transition-colors break-all">facebook.com/le.akhoa.2024</a>
+                            </div>
+                        </div>
+
+                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl shrink-0">
+                                <i class="fas fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-slate-500 dark:text-slate-400">Địa chỉ sinh sống</p>
+                                <p class="font-bold text-base">Thành phố Bến Tre, Tỉnh Bến Tre</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: QR Placeholder (Chờ chèn mã QR) -->
+                    <div id="donate" class="lg:col-span-6">
+                        <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-6">
+                            <div>
+                                <h4 class="text-lg font-bold">plsss donet</h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Gửi tặng cà phê hoặc tài trợ cho các dự án tương lai</p>
+                            </div>
+
+                            <!-- Frame QR Placeholder -->
+                            <div class="relative mx-auto w-56 h-56 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex flex-col items-center justify-center p-4 group">
+                                <!-- Chỗ để chèn hình ảnh QR thực tế -->
+                                <img id="qr-image" src="" alt="Mã QR Chuyển Tiền Lê Anh Khoa" class="hidden w-full h-full object-contain rounded-xl">
+                               
+                                <!-- Nội dung giữ chỗ (Placeholder UI) -->
+                                <div id="qr-placeholder" class="flex flex-col items-center justify-center text-center space-y-2">
+                                    <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400">
+                                        <i class="fas fa-qrcode text-xl"></i>
+                                    </div>
+                                    <p class="text-xs font-semibold text-slate-600 dark:text-slate-300">Vị trí mã QR của Khoa</p>
+                                    <p class="text-[11px] text-slate-400 dark:text-slate-500">Mã QR ngân hàng sẽ được cập nhật tại đây</p>
+                                </div>
+                            </div>
+
+                            <!-- Hướng dẫn cho Khoa -->
+                            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 text-xs text-slate-500 dark:text-slate-400 text-left border border-slate-100 dark:border-slate-800">
+                                <i class="fas fa-info-circle text-sky-500 mr-1"></i>
+                                <span><b>Ghi chú:</b> Khi có ảnh QR, Khoa chỉ cần thay đường dẫn ảnh vào thẻ <code>&lt;img id="qr-image" src="..."&gt;</code> trong file mã nguồn này.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-8 text-center text-xs text-slate-500 dark:text-slate-400">
+        <div class="max-w-6xl mx-auto px-4 space-y-2">
+            <p>&copy; <span id="year"></span> Lê Anh Khoa. All rights reserved.</p>
+            <p class="text-[11px] text-slate-400">Thiết kế tối giản &bull; Hiện đại &bull; Tối ưu hiệu năng</p>
+        </div>
+    </footer>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // Cập nhật năm tự động ở footer
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Xử lý Dark / Light Mode
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const darkIcon = document.getElementById('theme-toggle-dark-icon');
+        const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+        // Check theme ban đầu
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+            lightIcon.classList.remove('hidden');
+            darkIcon.classList.add('hidden');
+        } else {
+            document.documentElement.classList.remove('dark');
+            darkIcon.classList.remove('hidden');
+            lightIcon.classList.add('hidden');
+        }
+
+        // Sự kiện click chuyển màu
+        themeToggleBtn.addEventListener('click', function() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('color-theme', 'light');
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('color-theme', 'dark');
+                lightIcon.classList.remove('hidden');
+                darkIcon.classList.add('hidden');
+            }
+        });
+
+        // Xử lý Toggle Mobile Menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuBtn.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Đóng mobile menu khi click vào link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
