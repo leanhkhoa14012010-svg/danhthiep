@@ -3,12 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lê Anh Khoa - Personal Portfolio | 11 Lý THPT Chuyên Bến Tre</title>
-    
-    <!-- Meta tags cho SEO & Social -->
-    <meta name="description" content="Trang web cá nhân của Lê Anh Khoa - Học sinh Lớp 11 Lý Trường THPT Chuyên Bến Tre. Đam mê thể thao và khám phá tri thức mới.">
-    <meta name="keywords" content="Lê Anh Khoa, Chuyên Bến Tre, 11 Lý, Portfolio, Bến Tre">
+    <meta name="theme-color" content="#0284c7">
+    <title>Lê Anh Khoa — Portfolio | 11 Lý THPT Chuyên Bến Tre</title>
+
+    <!-- SEO & Social -->
+    <meta name="description" content="Trang web cá nhân của Lê Anh Khoa — Học sinh lớp 11 Lý, Trường THPT Chuyên Bến Tre. Đam mê thể thao, khám phá tri thức mới và chia sẻ tài liệu học tập.">
+    <meta name="keywords" content="Lê Anh Khoa, Chuyên Bến Tre, 11 Lý, Portfolio, Bến Tre, THPT Chuyên Bến Tre">
     <meta name="author" content="Lê Anh Khoa">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Lê Anh Khoa — Portfolio">
+    <meta property="og:description" content="Học sinh 11 Lý THPT Chuyên Bến Tre — Đam mê thể thao & khám phá tri thức.">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- FOUC prevention (theme) + JS detection -->
+    <script>
+        (function () {
+            try {
+                var t = localStorage.getItem('color-theme');
+                if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                }
+            } catch (e) {}
+            document.documentElement.classList.add('js');
+        })();
+    </script>
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,201 +39,536 @@
                         brand: {
                             50: '#f0f9ff',
                             100: '#e0f2fe',
-                            500: '#0284c7',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
                             600: '#0284c7',
                             700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
+                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'float-slow': 'float 9s ease-in-out infinite',
+                        'blob': 'blob 14s ease-in-out infinite',
+                        'blob-slow': 'blob 20s ease-in-out infinite',
+                        'gradient': 'gradient 8s ease infinite',
+                        'pulse-ring': 'pulse-ring 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-18px)' },
+                        },
+                        blob: {
+                            '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(40px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-30px, 30px) scale(0.9)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        'pulse-ring': {
+                            '0%': { transform: 'scale(0.95)', opacity: '1' },
+                            '70%': { transform: 'scale(1.6)', opacity: '0' },
+                            '100%': { transform: 'scale(0.95)', opacity: '0' },
+                        },
+                    },
                 }
             }
-        }
+        };
     </script>
 
     <!-- Google Font Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome icons -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* ============================================================
+           BASE / RESET
+           ============================================================ */
+        html { scroll-padding-top: 84px; }
+        * { -webkit-tap-highlight-color: transparent; }
         body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            /* Ẩn con trỏ chuột mặc định trên máy tính để dùng custom cursor */
-            cursor: auto; 
+            font-family: 'Inter', system-ui, sans-serif;
+            transition: background-color .3s ease, color .3s ease;
+            overflow-x: hidden;
+        }
+        img { -webkit-user-drag: none; user-select: none; }
+        a, button { -webkit-user-select: none; user-select: none; }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #38bdf8, #0284c7);
+            border-radius: 8px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, #0ea5e9, #0369a1); background-clip: content-box; }
+
+        /* Focus styles */
+        :focus-visible {
+            outline: 2px solid #0ea5e9;
+            outline-offset: 3px;
+            border-radius: 8px;
         }
 
-        /* --- HIỆU ỨNG CON CHUỘT (CUSTOM CURSOR) --- */
+        /* ============================================================
+           BACKGROUND PATTERN
+           ============================================================ */
+        .bg-grid {
+            background-size: 32px 32px;
+            background-image: radial-gradient(circle, rgba(2, 132, 199, 0.08) 1px, transparent 1px);
+        }
+        .dark .bg-grid {
+            background-image: radial-gradient(circle, rgba(56, 189, 248, 0.07) 1px, transparent 1px);
+        }
+
+        /* ============================================================
+           GLASSMORPHISM
+           ============================================================ */
+        .glass {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+        }
+        .dark .glass {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+        }
+
+        /* ============================================================
+           CUSTOM CURSOR
+           ============================================================ */
         .cursor-dot,
         .cursor-outline {
             pointer-events: none;
             position: fixed;
             top: 0;
             left: 0;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
             z-index: 9999;
-            transition: opacity 0.3s ease-in-out;
+            border-radius: 50%;
+            transform: translate3d(-100px, -100px, 0) translate(-50%, -50%);
+            will-change: transform;
+            opacity: 0;
         }
-
         .cursor-dot {
-            width: 8px;
-            height: 8px;
-            background-color: #0284c7;
+            width: 7px;
+            height: 7px;
+            background: #0ea5e9;
+            transition: width .2s ease, height .2s ease, background .2s ease;
         }
-
         .cursor-outline {
-            width: 36px;
-            height: 36px;
-            border: 2px solid rgba(2, 132, 199, 0.5);
-            transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+            width: 38px;
+            height: 38px;
+            border: 1.5px solid rgba(14, 165, 233, 0.55);
+            transition: width .25s ease, height .25s ease, background .25s ease,
+                        border-color .25s ease, opacity .3s ease;
         }
-
-        /* Hiệu ứng khi rê chuột vào các phần tử tương tác (link, button) */
         body.cursor-hover .cursor-outline {
-            width: 55px;
-            height: 55px;
-            background-color: rgba(2, 132, 199, 0.1);
-            border-color: rgba(2, 132, 199, 0.8);
+            width: 60px;
+            height: 60px;
+            background: rgba(14, 165, 233, 0.08);
+            border-color: rgba(14, 165, 233, 0.9);
+        }
+        body.cursor-hover .cursor-dot {
+            width: 4px;
+            height: 4px;
+        }
+        body.cursor-down .cursor-outline {
+            width: 30px;
+            height: 30px;
+            border-color: rgba(14, 165, 233, 1);
+        }
+        .cursor-visible .cursor-dot,
+        .cursor-visible .cursor-outline { opacity: 1; }
+
+        /* Hide custom cursor on touch / small screens */
+        @media (hover: none), (max-width: 768px) {
+            .cursor-dot, .cursor-outline { display: none !important; }
+            body { cursor: auto !important; }
+        }
+        @media (hover: hover) and (pointer: fine) {
+            body { cursor: none; }
+            a, button, input, textarea, select, iframe { cursor: none; }
         }
 
-        /* Ẩn custom cursor trên thiết bị di động/cảm ứng để không bị vướng màn hình */
-        @media (max-width: 768px) {
-            .cursor-dot, .cursor-outline {
-                display: none;
+        /* ============================================================
+           SCROLL REVEAL
+           ============================================================ */
+        .js .reveal {
+            opacity: 0;
+            transform: translateY(34px);
+            transition:
+                opacity .9s cubic-bezier(0.16, 1, 0.3, 1),
+                transform .9s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+        .js .reveal.in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .js .reveal[data-delay="1"] { transition-delay: .08s; }
+        .js .reveal[data-delay="2"] { transition-delay: .16s; }
+        .js .reveal[data-delay="3"] { transition-delay: .24s; }
+        .js .reveal[data-delay="4"] { transition-delay: .32s; }
+
+        /* ============================================================
+           HERO — SPOTLIGHT, BLOBS, GRADIENT TEXT
+           ============================================================ */
+        .hero-spotlight {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background: radial-gradient(
+                520px circle at var(--mx, 50%) var(--my, 30%),
+                rgba(14, 165, 233, 0.10),
+                transparent 55%
+            );
+            transition: background .15s linear;
+            z-index: 0;
+        }
+        .dark .hero-spotlight {
+            background: radial-gradient(
+                520px circle at var(--mx, 50%) var(--my, 30%),
+                rgba(56, 189, 248, 0.14),
+                transparent 55%
+            );
+        }
+
+        .gradient-text {
+            background: linear-gradient(120deg, #0ea5e9, #6366f1, #a855f7, #0ea5e9);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation: gradientShift 9s ease infinite;
+        }
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Avatar ring */
+        .avatar-ring {
+            position: relative;
+            isolation: isolate;
+        }
+        .avatar-ring::before,
+        .avatar-ring::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            border: 2px dashed rgba(14, 165, 233, 0.35);
+            animation: spinSlow 16s linear infinite;
+        }
+        .avatar-ring::after {
+            inset: -12px;
+            border-style: solid;
+            border-color: rgba(99, 102, 241, 0.18);
+            animation-direction: reverse;
+            animation-duration: 22s;
+        }
+        @keyframes spinSlow { to { transform: rotate(360deg); } }
+
+        /* ============================================================
+           TILT CARD
+           ============================================================ */
+        .tilt-card {
+            transform-style: preserve-3d;
+            transition: transform .25s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow .25s ease,
+                        border-color .25s ease;
+            will-change: transform;
+        }
+        .tilt-card:hover {
+            box-shadow: 0 25px 60px -20px rgba(2, 132, 199, 0.35);
+        }
+
+        /* ============================================================
+           MAGNETIC BUTTON
+           ============================================================ */
+        .magnetic {
+            transition: transform .25s cubic-bezier(0.16, 1, 0.3, 1),
+                        box-shadow .25s ease,
+                        background-color .25s ease;
+            will-change: transform;
+        }
+
+        /* ============================================================
+           NAV ACTIVE
+           ============================================================ */
+        .nav-link {
+            position: relative;
+            transition: color .2s ease;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            left: 0; right: 0; bottom: -6px;
+            height: 2px;
+            background: linear-gradient(90deg, #0ea5e9, #6366f1);
+            border-radius: 2px;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform .35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
+        .nav-link.active { color: #0ea5e9; }
+
+        /* ============================================================
+           MISC UTILITIES
+           ============================================================ */
+        .bg-animated-gradient {
+            background: linear-gradient(120deg, #0ea5e9, #6366f1, #a855f7);
+            background-size: 200% 200%;
+            animation: gradientShift 6s ease infinite;
+        }
+        .shine {
+            position: relative;
+            overflow: hidden;
+        }
+        .shine::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                110deg,
+                transparent 25%,
+                rgba(255, 255, 255, 0.35) 50%,
+                transparent 75%
+            );
+            transform: translateX(-100%);
+            transition: transform .8s ease;
+            pointer-events: none;
+        }
+        .shine:hover::before { transform: translateX(100%); }
+
+        /* Scroll progress bar */
+        #scroll-progress {
+            position: fixed;
+            top: 0; left: 0;
+            height: 3px;
+            width: 0%;
+            background: linear-gradient(90deg, #0ea5e9, #6366f1, #a855f7);
+            z-index: 100;
+            transition: width .08s linear;
+            box-shadow: 0 0 12px rgba(14, 165, 233, 0.6);
+        }
+
+        /* Back-to-top */
+        #back-to-top {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px) scale(0.9);
+            transition: opacity .35s ease, transform .35s cubic-bezier(0.16, 1, 0.3, 1), visibility .35s;
+        }
+        #back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* ============================================================
+           REDUCED MOTION
+           ============================================================ */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .001ms !important;
+                scroll-behavior: auto !important;
             }
-        }
-
-        .glass {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        .dark .glass {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-        }
-        .bg-grid {
-            background-size: 30px 30px;
-            background-image: radial-gradient(circle, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-        }
-        .dark .bg-grid {
-            background-image: radial-gradient(circle, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            .js .reveal { opacity: 1 !important; transform: none !important; }
+            .cursor-dot, .cursor-outline { display: none !important; }
+            body { cursor: auto !important; }
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
 
-    <!-- Elements hiệu ứng con chuột -->
-    <div class="cursor-dot" data-cursor-dot></div>
-    <div class="cursor-outline" data-cursor-outline></div>
+    <!-- Scroll progress -->
+    <div id="scroll-progress" aria-hidden="true"></div>
 
-    <!-- ==================== HEADER / NAVBAR ==================== -->
-    <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-200/50 dark:border-slate-800/50 transition-all duration-300">
+    <!-- Custom cursor -->
+    <div class="cursor-outline" data-cursor-outline aria-hidden="true"></div>
+    <div class="cursor-dot" data-cursor-dot aria-hidden="true"></div>
+
+    <!-- ==================== HEADER ==================== -->
+    <header id="site-header" class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-200/60 dark:border-slate-800/60 transition-all duration-300">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <!-- Logo -->
-            <a href="#" class="flex items-center space-x-2 group">
-                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:scale-105 transition-transform">
-                    K
+            <a href="#top" class="flex items-center space-x-2.5 group">
+                <div class="relative">
+                    <div class="absolute inset-0 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 blur-md opacity-40 group-hover:opacity-70 transition-opacity"></div>
+                    <div class="relative w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white font-extrabold text-lg shadow-md group-hover:scale-105 transition-transform">
+                        K
+                    </div>
                 </div>
                 <span class="font-bold text-lg tracking-tight group-hover:text-sky-500 transition-colors">
                     Lê Anh Khoa<span class="text-sky-500">.</span>
                 </span>
             </a>
 
-            <!-- Desktop Nav Items -->
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
-                <a href="#about" class="hover:text-sky-500 transition-colors">Về Tôi</a>
-                <a href="#interests" class="hover:text-sky-500 transition-colors">Sở Thích</a>
-                <a href="#documents" class="hover:text-sky-500 transition-colors">Tài Liệu PDF</a>
-                <a href="#contact" class="hover:text-sky-500 transition-colors">Liên Hệ</a>
-                <a href="#donate" class="hover:text-sky-500 transition-colors">plsss donet</a>
+            <!-- Desktop nav -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium" aria-label="Primary">
+                <a href="#about" class="nav-link hover:text-sky-500">Về Tôi</a>
+                <a href="#interests" class="nav-link hover:text-sky-500">Sở Thích</a>
+                <a href="#documents" class="nav-link hover:text-sky-500">Tài Liệu PDF</a>
+                <a href="#contact" class="nav-link hover:text-sky-500">Liên Hệ</a>
+                <a href="#donate" class="nav-link hover:text-sky-500">plsss donet</a>
             </nav>
 
-            <!-- Actions (Dark Mode Toggle & Mobile Button) -->
-            <div class="flex items-center space-x-3">
-                <button id="theme-toggle" type="button" aria-label="Toggle Theme" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors">
+            <!-- Actions -->
+            <div class="flex items-center space-x-2.5">
+                <button id="theme-toggle" type="button" aria-label="Chuyển đổi giao diện sáng/tối"
+                    class="relative p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all hover:scale-105 active:scale-95">
                     <i id="theme-toggle-dark-icon" class="fas fa-moon text-base hidden"></i>
                     <i id="theme-toggle-light-icon" class="fas fa-sun text-base text-amber-400"></i>
                 </button>
-                <button id="mobile-menu-btn" type="button" aria-label="Toggle Navigation Menu" class="md:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300">
-                    <i class="fas fa-bars text-lg"></i>
+                <button id="mobile-menu-btn" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="mobile-menu"
+                    class="md:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all active:scale-95">
+                    <i class="fas fa-bars text-lg" id="mobile-menu-icon"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Nav Menu -->
-        <div id="mobile-menu" class="hidden md:hidden border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-4 pt-2 pb-4 space-y-2">
-            <a href="#about" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Về Tôi</a>
-            <a href="#interests" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Sở Thích</a>
-            <a href="#documents" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Tài Liệu PDF</a>
-            <a href="#contact" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">Liên Hệ</a>
-            <a href="#donate" class="block px-3 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium">plsss donet</a>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-4 pt-2 pb-4 space-y-1.5">
+            <a href="#about" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Về Tôi</a>
+            <a href="#interests" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Sở Thích</a>
+            <a href="#documents" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Tài Liệu PDF</a>
+            <a href="#contact" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Liên Hệ</a>
+            <a href="#donate" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">plsss donet</a>
         </div>
     </header>
 
-    <main class="flex-grow pt-24">
-        <!-- ==================== HERO SECTION ==================== -->
-        <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
-                <!-- Left Text Content -->
-                <div class="md:col-span-7 space-y-6 text-center md:text-left">
-                    <div class="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-sky-200 dark:border-sky-900/50 bg-sky-50 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 text-xs sm:text-sm font-semibold">
-                        <span class="w-2 h-2 rounded-full bg-sky-500 animate-pulse"></span>
-                        <span>11 Lý &bull; THPT Chuyên Bến Tre</span>
+    <!-- ==================== MAIN ==================== -->
+    <main id="top" class="flex-grow pt-24 relative">
+
+        <!-- ============ HERO ============ -->
+        <section id="hero" class="relative overflow-hidden">
+            <!-- Animated blobs -->
+            <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+                <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-sky-400/30 to-indigo-500/20 dark:from-sky-500/20 dark:to-indigo-600/15 blur-3xl animate-blob"></div>
+                <div class="absolute top-20 -right-32 w-[460px] h-[460px] rounded-full bg-gradient-to-br from-indigo-400/25 to-purple-500/20 dark:from-indigo-500/20 dark:to-purple-600/15 blur-3xl animate-blob-slow"></div>
+                <div class="absolute bottom-0 left-1/3 w-[340px] h-[340px] rounded-full bg-gradient-to-tr from-sky-300/20 to-cyan-400/20 dark:from-sky-500/15 dark:to-cyan-500/10 blur-3xl animate-blob"></div>
+            </div>
+
+            <!-- Spotlight (mouse) -->
+            <div id="hero-spotlight" class="hero-spotlight" aria-hidden="true"></div>
+
+            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+
+                    <!-- Text -->
+                    <div class="md:col-span-7 space-y-6 text-center md:text-left">
+                        <div class="reveal inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full border border-sky-200 dark:border-sky-900/50 bg-sky-50/80 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 text-xs sm:text-sm font-semibold backdrop-blur">
+                            <span class="relative flex w-2 h-2">
+                                <span class="absolute inline-flex h-full w-full rounded-full bg-sky-500 opacity-75 animate-pulse-ring"></span>
+                                <span class="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                            </span>
+                            <span>11 Lý &bull; THPT Chuyên Bến Tre</span>
+                        </div>
+
+                        <h1 class="reveal text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1]" data-delay="1">
+                            Xin chào, tôi là <br class="hidden sm:inline">
+                            <span class="gradient-text">Lê Anh Khoa</span>
+                        </h1>
+
+                        <p class="reveal text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl font-normal leading-relaxed mx-auto md:mx-0" data-delay="2">
+                            Học sinh lớp 11 Vật lý sinh sống tại
+                            <span class="font-semibold text-slate-800 dark:text-slate-200">Bến Tre</span>.
+                            Luôn tràn đầy nhiệt huyết với tinh thần học hỏi, đam mê thể thao
+                            và tò mò khám phá những điều mới lạ xung quanh.
+                        </p>
+
+                        <div class="reveal pt-2 flex flex-wrap items-center justify-center md:justify-start gap-4" data-delay="3">
+                            <a href="https://zalo.me/0848979877" target="_blank" rel="noopener noreferrer"
+                                data-magnetic
+                                class="magnetic shine inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/50 transition-all">
+                                <i class="fas fa-comment-dots"></i>
+                                <span>Chat qua Zalo</span>
+                            </a>
+                            <a href="https://facebook.com/le.akhoa.2024" target="_blank" rel="noopener noreferrer"
+                                data-magnetic
+                                class="magnetic inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold shadow-sm transition-all">
+                                <i class="fab fa-facebook text-blue-600"></i>
+                                <span>Facebook</span>
+                            </a>
+                        </div>
+
+                        <!-- Quick stats -->
+                        <div class="reveal pt-6 grid grid-cols-3 gap-4 max-w-md mx-auto md:mx-0" data-delay="4">
+                            <div class="text-center md:text-left">
+                                <div class="text-2xl font-extrabold text-sky-500">11</div>
+                                <div class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Lớp</div>
+                            </div>
+                            <div class="text-center md:text-left">
+                                <div class="text-2xl font-extrabold text-indigo-500">Lý</div>
+                                <div class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Chuyên ngành</div>
+                            </div>
+                            <div class="text-center md:text-left">
+                                <div class="text-2xl font-extrabold text-purple-500">Bến Tre</div>
+                                <div class="text-[11px] uppercase tracking-wider text-slate-500 dark:text-slate-400">Quê hương</div>
+                            </div>
+                        </div>
                     </div>
 
-                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight">
-                        Xin chào, tôi là <br class="hidden sm:inline">
-                        <span class="bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-600 bg-clip-text text-transparent">Lê Anh Khoa</span>
-                    </h1>
+                    <!-- Card -->
+                    <div class="md:col-span-5 flex justify-center reveal" data-delay="2">
+                        <div class="relative w-full max-w-sm">
+                            <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 rounded-3xl blur-xl opacity-30 dark:opacity-40 animate-pulse"></div>
 
-                    <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl font-normal leading-relaxed">
-                        Học sinh lớp 11 Vật lý sinh sống tại <span class="font-semibold text-slate-800 dark:text-slate-200">Bến Tre</span>. Luôn tràn đầy nhiệt huyết với tinh thần học hỏi, đam mê thể thao và tò mò khám phá những điều mới lạ xung quanh.
-                    </p>
-
-                    <div class="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-4">
-                        <a href="https://zalo.me/0848979877" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold shadow-lg shadow-sky-500/25 hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all">
-                            <i class="fas fa-comment-dots"></i>
-                            <span>Chat qua Zalo</span>
-                        </a>
-                        <a href="https://facebook.com/le.akhoa.2024" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-2.5 px-6 py-3.5 rounded-xl border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 font-semibold shadow-sm hover:-translate-y-0.5 transition-all">
-                            <i class="fab fa-facebook text-blue-600"></i>
-                            <span>Facebook</span>
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Right Card / Avatar Graphic -->
-                <div class="md:col-span-5 flex justify-center">
-                    <div class="relative w-full max-w-sm">
-                        <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 to-indigo-500 rounded-3xl blur-xl opacity-30 dark:opacity-40 animate-pulse"></div>
-                        
-                        <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6 text-center">
-                            <!-- KHU VỰC ẢNH ĐẠI DIỆN -->
-                            <div class="relative mx-auto w-36 h-36 rounded-full overflow-hidden border-2 border-sky-500/30 shadow-inner bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                                <img src="avt.jfif" alt="Lê Anh Khoa Avatar" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://i.ibb.co/6P0kH7f/gumball-avatar.jpg';">
-                            </div>
-
-                            <div>
-                                <h3 class="text-lg font-bold">Lê Anh Khoa</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-location-dot text-red-500 mr-1"></i> Bến Tre, Việt Nam</p>
-                            </div>
-
-                            <div class="space-y-3 pt-2 text-sm border-t border-slate-100 dark:border-slate-800 text-left">
-                                <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                                    <span class="text-slate-500 dark:text-slate-400">Trường:</span>
-                                    <span class="font-medium">THPT Chuyên Bến Tre</span>
+                            <div class="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6 text-center">
+                                <!-- Avatar -->
+                                <div class="avatar-ring relative mx-auto w-36 h-36 rounded-full overflow-hidden border-2 border-sky-500/40 shadow-inner bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                                    <img src="avt.jfif" alt="Ảnh đại diện Lê Anh Khoa" class="w-full h-full object-cover"
+                                        onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230ea5e9%22/><stop offset=%221%22 stop-color=%22%236366f1%22/></linearGradient></defs><rect width=%22100%22 height=%22100%22 fill=%22url(%23g)%22/><text x=%2250%22 y=%2263%22 font-size=%2244%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial,sans-serif%22 font-weight=%22bold%22>K</text></svg>';">
                                 </div>
-                                <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                                    <span class="text-slate-500 dark:text-slate-400">Chuyên ngành:</span>
-                                    <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
+
+                                <div>
+                                    <h3 class="text-lg font-bold">Lê Anh Khoa</h3>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                        <i class="fas fa-location-dot text-red-500 mr-1"></i> Bến Tre, Việt Nam
+                                    </p>
+                                </div>
+
+                                <div class="space-y-2.5 pt-2 text-sm border-t border-slate-100 dark:border-slate-800 text-left">
+                                    <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                        <span class="text-slate-500 dark:text-slate-400">Trường:</span>
+                                        <span class="font-medium text-right">THPT Chuyên Bến Tre</span>
+                                    </div>
+                                    <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                        <span class="text-slate-500 dark:text-slate-400">Chuyên ngành:</span>
+                                        <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
+                                    </div>
+                                    <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                        <span class="text-slate-500 dark:text-slate-400">Trạng thái:</span>
+                                        <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-500">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                            Đang học tập
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -224,98 +577,136 @@
             </div>
         </section>
 
-        <!-- ==================== ABOUT SECTION ==================== -->
+        <!-- ============ ABOUT ============ -->
         <section id="about" class="py-16 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-3xl mx-auto text-center space-y-4">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-sky-500">Về Bản Thân</h2>
-                    <p class="text-2xl sm:text-3xl font-bold tracking-tight">"Sự tò mò là ngọn đuốc dẫn đường cho tri thức."</p>
-                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed pt-2">
-                        Là một học sinh chuyên Vật lý tại trường Chuyên Bến Tre, tôi luôn nhìn thế giới xung quanh qua góc nhìn chủ động và giàu năng lượng. Dù trên sân tập thể thao hay trong học tập, tinh thần kiên trì và mong muốn vượt qua giới hạn của bản thân luôn là mục tiêu hàng đầu.
+                    <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Về Bản Thân</h2>
+                    <p class="reveal text-2xl sm:text-3xl font-bold tracking-tight leading-snug" data-delay="1">
+                        "Sự tò mò là ngọn đuốc dẫn đường cho tri thức."
+                    </p>
+                    <p class="reveal text-slate-600 dark:text-slate-400 leading-relaxed pt-2" data-delay="2">
+                        Là một học sinh chuyên Vật lý tại trường Chuyên Bến Tre, tôi luôn nhìn thế giới xung quanh
+                        qua góc nhìn chủ động và giàu năng lượng. Dù trên sân tập thể thao hay trong học tập,
+                        tinh thần kiên trì và mong muốn vượt qua giới hạn của bản thân luôn là mục tiêu hàng đầu.
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== INTERESTS SECTION ==================== -->
+        <!-- ============ INTERESTS ============ -->
         <section id="interests" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-            <div class="text-center space-y-3 mb-12">
-                <h2 class="text-xs font-bold uppercase tracking-widest text-sky-500">Sở Thích & Đam Mê</h2>
-                <h3 class="text-3xl font-bold tracking-tight">Những Điều Tạo Nên Tôi</h3>
+            <div class="text-center space-y-3 mb-14">
+                <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Sở Thích & Đam Mê</h2>
+                <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Những Điều Tạo Nên Tôi</h3>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow group">
-                    <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-volleyball"></i>
+                <!-- Card 1 -->
+                <div data-tilt class="tilt-card group relative p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm reveal" data-delay="1">
+                    <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-amber-400/0 via-amber-400/0 to-amber-400/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
+                            <i class="fas fa-volleyball"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Rèn Luyện Thể Thao</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            Yêu thích vận động và tham gia các môn thể thao tập thể cũng như cá nhân.
+                            Thể thao giúp tôi giải tỏa căng thẳng sau giờ học, rèn luyện thể lực
+                            và nâng cao tinh thần đồng đội.
+                        </p>
                     </div>
-                    <h4 class="text-xl font-bold mb-3">Rèn Luyện Thể Thao</h4>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Yêu thích vận động và tham gia các môn thể thao tập thể cũng như cá nhân. Thể thao giúp tôi giải tỏa căng thẳng sau giờ học, rèn luyện thể lực và nâng cao tinh thần đồng đội.
-                    </p>
                 </div>
 
-                <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow group">
-                    <div class="w-14 h-14 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
-                        <i class="fas fa-compass"></i>
+                <!-- Card 2 -->
+                <div data-tilt class="tilt-card group relative p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm reveal" data-delay="2">
+                    <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-sky-400/0 via-sky-400/0 to-sky-400/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                    <div class="relative">
+                        <div class="w-14 h-14 rounded-2xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300">
+                            <i class="fas fa-compass"></i>
+                        </div>
+                        <h4 class="text-xl font-bold mb-3">Tìm Hiểu Những Điều Chưa Biết</h4>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
+                            Luôn bị thu hút bởi những hiện tượng, công nghệ và kiến thức mới.
+                            Tinh thần chủ động tìm tòi giúp tôi liên tục mở rộng góc nhìn
+                            và không ngừng phát triển bản thân mỗi ngày.
+                        </p>
                     </div>
-                    <h4 class="text-xl font-bold mb-3">Tìm Hiểu Những Điều Chưa Biết</h4>
-                    <p class="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-                        Luôn bị thu hút bởi những hiện tượng, công nghệ và kiến thức mới. Tinh thần chủ động tìm tòi giúp tôi liên tục mở rộng góc nhìn và không ngừng phát triển bản thân mỗi ngày.
-                    </p>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== PDF VIEWER SECTION ==================== -->
+        <!-- ============ DOCUMENTS ============ -->
         <section id="documents" class="py-20 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center space-y-3 mb-12">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-sky-500">Tài Liệu Trực Tuyến</h2>
-                    <h3 class="text-3xl font-bold tracking-tight">Góc Tài Liệu & Chia Sẻ PDF</h3>
-                    <p class="text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto">Đọc trực tiếp nội dung file PDF trực tuyến ngay trên trang web.</p>
+                    <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Tài Liệu Trực Tuyến</h2>
+                    <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Góc Tài Liệu & Chia Sẻ PDF</h3>
+                    <p class="reveal text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto" data-delay="2">
+                        Đọc trực tiếp nội dung file PDF trực tuyến ngay trên trang web.
+                    </p>
                 </div>
 
-                <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-6 shadow-sm">
+                <div class="reveal bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-6 shadow-sm" data-delay="2">
+                    <div class="flex items-center justify-between mb-4 px-2">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-red-400"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+                            <span class="ml-2 text-xs text-slate-500 dark:text-slate-400 font-mono">document.pdf</span>
+                        </div>
+                        <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"
+                            target="_blank" rel="noopener noreferrer"
+                            class="text-xs font-medium text-sky-500 hover:text-sky-600 inline-flex items-center gap-1.5">
+                            <i class="fas fa-arrow-up-right-from-square"></i>
+                            <span>Mở tab mới</span>
+                        </a>
+                    </div>
                     <div class="w-full h-[600px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
-                        <iframe src="https://docs.google.com/viewer?url=https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf&embedded=true" class="w-full h-full border-0"></iframe>
+                        <iframe
+                            src="https://docs.google.com/viewer?url=https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf&embedded=true"
+                            title="Trình xem tài liệu PDF"
+                            class="w-full h-full border-0">
+                        </iframe>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- ==================== CONTACT & QR DONATE SECTION ==================== -->
+        <!-- ============ CONTACT + DONATE ============ -->
         <section id="contact" class="py-20">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center space-y-3 mb-12">
-                    <h2 class="text-xs font-bold uppercase tracking-widest text-sky-500">Liên Hệ & Ủng Hộ</h2>
-                    <h3 class="text-3xl font-bold tracking-tight">Kết Nối Với Tôi</h3>
+                    <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Liên Hệ & Ủng Hộ</h2>
+                    <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Kết Nối Với Tôi</h3>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                    <!-- Left: Contact Details -->
-                    <div class="lg:col-span-6 space-y-6">
-                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center space-x-4">
-                            <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-xl shrink-0">
+                    <!-- Contact details -->
+                    <div class="lg:col-span-6 space-y-5">
+                        <a href="https://zalo.me/0848979877" target="_blank" rel="noopener noreferrer"
+                            class="reveal group flex items-center space-x-4 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-sky-400/50 hover:shadow-md hover:-translate-y-0.5 transition-all" data-delay="1">
+                            <div class="w-12 h-12 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
                                 <i class="fas fa-phone"></i>
                             </div>
-                            <div>
+                            <div class="min-w-0">
                                 <p class="text-xs text-slate-500 dark:text-slate-400">Số điện thoại / Zalo</p>
-                                <a href="https://zalo.me/0848979877" target="_blank" class="font-bold text-lg hover:text-sky-500 transition-colors">0848 979 877</a>
+                                <p class="font-bold text-lg group-hover:text-sky-500 transition-colors">0848 979 877</p>
                             </div>
-                        </div>
+                        </a>
 
-                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center space-x-4">
-                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl shrink-0">
+                        <a href="https://facebook.com/le.akhoa.2024" target="_blank" rel="noopener noreferrer"
+                            class="reveal group flex items-center space-x-4 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-blue-400/50 hover:shadow-md hover:-translate-y-0.5 transition-all" data-delay="2">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl shrink-0 group-hover:scale-110 transition-transform">
                                 <i class="fab fa-facebook-f"></i>
                             </div>
-                            <div>
+                            <div class="min-w-0">
                                 <p class="text-xs text-slate-500 dark:text-slate-400">Trang Facebook cá nhân</p>
-                                <a href="https://facebook.com/le.akhoa.2024" target="_blank" rel="noopener noreferrer" class="font-bold text-base hover:text-sky-500 transition-colors break-all">facebook.com/le.akhoa.2024</a>
+                                <p class="font-bold text-base group-hover:text-sky-500 transition-colors break-all">facebook.com/le.akhoa.2024</p>
                             </div>
-                        </div>
+                        </a>
 
-                        <div class="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center space-x-4">
+                        <div class="reveal flex items-center space-x-4 p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800" data-delay="3">
                             <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-xl shrink-0">
                                 <i class="fas fa-location-dot"></i>
                             </div>
@@ -326,17 +717,35 @@
                         </div>
                     </div>
 
-                    <!-- Right: QR Donate -->
-                    <div id="donate" class="lg:col-span-6">
-                        <div class="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-6">
-                            <div>
-                                <h4 class="text-lg font-bold">plsss donet</h4>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Ủng hộ cho Lê Anh Khoa (Vietcombank: 1065359553)</p>
+                    <!-- Donate -->
+                    <div id="donate" class="lg:col-span-6 scroll-mt-24">
+                        <div class="reveal relative p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-6 overflow-hidden" data-delay="2">
+                            <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-gradient-to-br from-sky-400/20 to-indigo-500/20 blur-3xl pointer-events-none"></div>
+
+                            <div class="relative">
+                                <h4 class="text-lg font-bold inline-flex items-center gap-2">
+                                    plsss donet
+                                    <span class="text-lg">💸</span>
+                                </h4>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
+                                    Ủng hộ cho Lê Anh Khoa<br>
+                                    <span class="font-mono font-semibold text-slate-700 dark:text-slate-300">Vietcombank: 1065359553</span>
+                                </p>
                             </div>
 
-                            <div class="relative mx-auto w-64 h-[340px] rounded-2xl border border-slate-200 dark:border-slate-700 bg-white p-2 shadow-sm overflow-hidden">
-                                <img src="https://img.vietqr.io/image/VCB-1065359553-compact2.png?accountName=LE%20ANH%20KHOA" alt="Mã QR Vietcombank Lê Anh Khoa" class="w-full h-full object-contain rounded-xl">
+                            <div class="relative mx-auto w-full max-w-[280px] rounded-2xl border border-slate-200 dark:border-slate-700 bg-white p-2.5 shadow-sm overflow-hidden group">
+                                <div class="absolute inset-0 bg-gradient-to-tr from-sky-400/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                <img
+                                    src="https://img.vietqr.io/image/VCB-1065359553-compact2.png?accountName=LE%20ANH%20KHOA"
+                                    alt="Mã QR Vietcombank — Lê Anh Khoa"
+                                    class="relative w-full h-auto rounded-xl"
+                                    loading="lazy">
                             </div>
+
+                            <p class="text-[11px] text-slate-400 dark:text-slate-500">
+                                <i class="fas fa-shield-halved mr-1"></i>
+                                Quét mã bằng ứng dụng ngân hàng để ủng hộ
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -345,86 +754,341 @@
     </main>
 
     <!-- ==================== FOOTER ==================== -->
-    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-8 text-center text-xs text-slate-500 dark:text-slate-400">
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/60 backdrop-blur py-8 text-center text-xs text-slate-500 dark:text-slate-400">
         <div class="max-w-6xl mx-auto px-4 space-y-2">
             <p>&copy; <span id="year"></span> Lê Anh Khoa. All rights reserved.</p>
+            <p class="text-[11px] text-slate-400 dark:text-slate-500">
+                Made with <i class="fas fa-heart text-red-400 mx-0.5"></i> in Bến Tre
+            </p>
         </div>
     </footer>
 
+    <!-- ==================== BACK TO TOP ==================== -->
+    <button id="back-to-top" type="button" aria-label="Về đầu trang"
+        class="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/30 hover:shadow-sky-500/60 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- ==================== JAVASCRIPT ==================== -->
     <script>
-        document.getElementById('year').textContent = new Date().getFullYear();
+        (function () {
+            'use strict';
 
-        // --- XỬ LÝ HIỆU ỨNG CON CHUỘT ---
-        const cursorDot = document.querySelector('[data-cursor-dot]');
-        const cursorOutline = document.querySelector('[data-cursor-outline]');
+            /* ------------------------------------------------------------
+               0. YEAR
+               ------------------------------------------------------------ */
+            var yearEl = document.getElementById('year');
+            if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-        window.addEventListener('mousemove', function(e) {
-            const posX = e.clientX;
-            const posY = e.clientY;
+            /* ------------------------------------------------------------
+               1. CUSTOM CURSOR (dot = instant, outline = smooth lerp)
+               ------------------------------------------------------------ */
+            var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-            // Chấm nhỏ bám sát vị trí chuột ngay lập tức
-            cursorDot.style.transform = `translate(${posX}px, ${posY}px)`;
+            if (finePointer && !prefersReduced) {
+                var dot = document.querySelector('[data-cursor-dot]');
+                var outline = document.querySelector('[data-cursor-outline]');
+                var mouseX = window.innerWidth / 2;
+                var mouseY = window.innerHeight / 2;
+                var outX = mouseX;
+                var outY = mouseY;
+                var rafId = null;
+                var cursorShown = false;
 
-            // Vòng tròn lớn chuyển động có độ trễ mượt mà
-            cursorOutline.animate({
-                left: `${posX}px`,
-                top: `${posY}px`
-            }, { duration: 500, fill: "forwards" });
-        });
+                function showCursor() {
+                    if (cursorShown) return;
+                    cursorShown = true;
+                    document.body.classList.add('cursor-visible');
+                }
 
-        // Hiệu ứng phình to vòng tròn khi di chuột qua các liên kết/nút bấm
-        const interactiveElements = document.querySelectorAll('a, button, input, iframe');
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
-            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
-        });
+                document.addEventListener('mousemove', function (e) {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    showCursor();
 
-        // --- Xử lý chuyển đổi theme Sáng / Tối ---
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const darkIcon = document.getElementById('theme-toggle-dark-icon');
-        const lightIcon = document.getElementById('theme-toggle-light-icon');
+                    // Dot follows instantly
+                    if (dot) {
+                        dot.style.transform =
+                            'translate3d(' + mouseX + 'px,' + mouseY + 'px,0) translate(-50%,-50%)';
+                    }
 
-        function initTheme() {
-            if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                lightIcon.classList.remove('hidden');
-                darkIcon.classList.add('hidden');
-            } else {
-                document.documentElement.classList.remove('dark');
-                darkIcon.classList.remove('hidden');
-                lightIcon.classList.add('hidden');
+                    if (!rafId) {
+                        rafId = requestAnimationFrame(loop);
+                    }
+                }, { passive: true });
+
+                function loop() {
+                    outX += (mouseX - outX) * 0.18;
+                    outY += (mouseY - outY) * 0.18;
+                    if (outline) {
+                        outline.style.transform =
+                            'translate3d(' + outX + 'px,' + outY + 'px,0) translate(-50%,-50%)';
+                    }
+                    if (Math.abs(mouseX - outX) > 0.1 || Math.abs(mouseY - outY) > 0.1) {
+                        rafId = requestAnimationFrame(loop);
+                    } else {
+                        rafId = null;
+                    }
+                }
+
+                document.addEventListener('mouseleave', function () {
+                    document.body.classList.remove('cursor-visible');
+                });
+                document.addEventListener('mouseenter', function () {
+                    document.body.classList.add('cursor-visible');
+                });
+                document.addEventListener('mousedown', function () {
+                    document.body.classList.add('cursor-down');
+                });
+                document.addEventListener('mouseup', function () {
+                    document.body.classList.remove('cursor-down');
+                });
+
+                // Hover state for interactive elements
+                var hoverTargets = 'a, button, input, textarea, select, iframe, [data-tilt], [data-magnetic]';
+                document.addEventListener('mouseover', function (e) {
+                    if (e.target.closest(hoverTargets)) {
+                        document.body.classList.add('cursor-hover');
+                    }
+                });
+                document.addEventListener('mouseout', function (e) {
+                    if (e.target.closest(hoverTargets)) {
+                        document.body.classList.remove('cursor-hover');
+                    }
+                });
             }
-        }
-        initTheme();
 
-        themeToggleBtn.addEventListener('click', function() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('color-theme', 'light');
-                darkIcon.classList.remove('hidden');
-                lightIcon.classList.add('hidden');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('color-theme', 'dark');
-                lightIcon.classList.remove('hidden');
-                darkIcon.classList.add('hidden');
+            /* ------------------------------------------------------------
+               2. THEME TOGGLE
+               ------------------------------------------------------------ */
+            var themeToggleBtn = document.getElementById('theme-toggle');
+            var darkIcon = document.getElementById('theme-toggle-dark-icon');   // moon
+            var lightIcon = document.getElementById('theme-toggle-light-icon'); // sun
+
+            function updateThemeIcons() {
+                var isDark = document.documentElement.classList.contains('dark');
+                if (darkIcon) darkIcon.classList.toggle('hidden', isDark);
+                if (lightIcon) lightIcon.classList.toggle('hidden', !isDark);
             }
-        });
+            updateThemeIcons();
 
-        // --- Xử lý Menu trên điện thoại ---
-        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener('click', function () {
+                    var isDark = document.documentElement.classList.toggle('dark');
+                    try {
+                        localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
+                    } catch (e) {}
+                    updateThemeIcons();
+                });
+            }
 
-        mobileMenuBtn.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-        });
+            /* ------------------------------------------------------------
+               3. MOBILE MENU
+               ------------------------------------------------------------ */
+            var mobileMenuBtn = document.getElementById('mobile-menu-btn');
+            var mobileMenu = document.getElementById('mobile-menu');
+            var mobileMenuIcon = document.getElementById('mobile-menu-icon');
 
-        document.querySelectorAll('#mobile-menu a').forEach(link => {
-            link.addEventListener('click', () => {
+            function closeMobileMenu() {
+                if (!mobileMenu) return;
                 mobileMenu.classList.add('hidden');
+                if (mobileMenuBtn) mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                if (mobileMenuIcon) {
+                    mobileMenuIcon.classList.remove('fa-xmark');
+                    mobileMenuIcon.classList.add('fa-bars');
+                }
+            }
+
+            if (mobileMenuBtn && mobileMenu) {
+                mobileMenuBtn.addEventListener('click', function () {
+                    var isHidden = mobileMenu.classList.toggle('hidden');
+                    mobileMenuBtn.setAttribute('aria-expanded', String(!isHidden));
+                    if (mobileMenuIcon) {
+                        mobileMenuIcon.classList.toggle('fa-bars', isHidden);
+                        mobileMenuIcon.classList.toggle('fa-xmark', !isHidden);
+                    }
+                });
+
+                mobileMenu.querySelectorAll('a').forEach(function (link) {
+                    link.addEventListener('click', closeMobileMenu);
+                });
+            }
+
+            /* ------------------------------------------------------------
+               4. SCROLL PROGRESS + HEADER SHADOW + BACK TO TOP
+               ------------------------------------------------------------ */
+            var progressBar = document.getElementById('scroll-progress');
+            var header = document.getElementById('site-header');
+            var backToTop = document.getElementById('back-to-top');
+            var ticking = false;
+
+            function onScroll() {
+                var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                var scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+                var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+
+                if (progressBar) progressBar.style.width = pct + '%';
+
+                if (header) {
+                    if (scrollTop > 12) {
+                        header.classList.add('shadow-lg', 'shadow-slate-900/5', 'dark:shadow-black/30');
+                    } else {
+                        header.classList.remove('shadow-lg', 'shadow-slate-900/5', 'dark:shadow-black/30');
+                    }
+                }
+
+                if (backToTop) {
+                    backToTop.classList.toggle('show', scrollTop > 500);
+                }
+                ticking = false;
+            }
+
+            window.addEventListener('scroll', function () {
+                if (!ticking) {
+                    ticking = true;
+                    requestAnimationFrame(onScroll);
+                }
+            }, { passive: true });
+            onScroll();
+
+            if (backToTop) {
+                backToTop.addEventListener('click', function () {
+                    window.scrollTo({ top: 0, behavior: prefersReduced ? 'auto' : 'smooth' });
+                });
+            }
+
+            /* ------------------------------------------------------------
+               5. SCROLL REVEAL
+               ------------------------------------------------------------ */
+            var reveals = document.querySelectorAll('.reveal');
+            if ('IntersectionObserver' in window && !prefersReduced) {
+                var revealObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('in');
+                            revealObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+                reveals.forEach(function (el) { revealObserver.observe(el); });
+            } else {
+                reveals.forEach(function (el) { el.classList.add('in'); });
+            }
+
+            /* ------------------------------------------------------------
+               6. ACTIVE NAV LINK
+               ------------------------------------------------------------ */
+            var navLinks = document.querySelectorAll('.nav-link');
+            var sections = document.querySelectorAll('main section[id]');
+
+            if ('IntersectionObserver' in window && navLinks.length) {
+                var navObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            var id = entry.target.id;
+                            navLinks.forEach(function (link) {
+                                var href = link.getAttribute('href');
+                                link.classList.toggle('active', href === '#' + id);
+                            });
+                        }
+                    });
+                }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+
+                sections.forEach(function (sec) { navObserver.observe(sec); });
+            }
+
+            /* ------------------------------------------------------------
+               7. HERO SPOTLIGHT (follows mouse)
+               ------------------------------------------------------------ */
+            var hero = document.getElementById('hero');
+            var spotlight = document.getElementById('hero-spotlight');
+            if (hero && spotlight && finePointer && !prefersReduced) {
+                hero.addEventListener('mousemove', function (e) {
+                    var rect = hero.getBoundingClientRect();
+                    var x = ((e.clientX - rect.left) / rect.width) * 100;
+                    var y = ((e.clientY - rect.top) / rect.height) * 100;
+                    spotlight.style.setProperty('--mx', x + '%');
+                    spotlight.style.setProperty('--my', y + '%');
+                }, { passive: true });
+            }
+
+            /* ------------------------------------------------------------
+               8. TILT CARDS (3D)
+               ------------------------------------------------------------ */
+            if (finePointer && !prefersReduced) {
+                document.querySelectorAll('[data-tilt]').forEach(function (card) {
+                    var raf = null;
+                    var targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+
+                    function animate() {
+                        currentX += (targetX - currentX) * 0.15;
+                        currentY += (targetY - currentY) * 0.15;
+                        card.style.transform =
+                            'perspective(1000px) rotateX(' + currentY + 'deg) rotateY(' + currentX + 'deg) translateZ(0)';
+                        if (Math.abs(targetX - currentX) > 0.01 || Math.abs(targetY - currentY) > 0.01) {
+                            raf = requestAnimationFrame(animate);
+                        } else {
+                            raf = null;
+                        }
+                    }
+
+                    card.addEventListener('mousemove', function (e) {
+                        var rect = card.getBoundingClientRect();
+                        var x = e.clientX - rect.left;
+                        var y = e.clientY - rect.top;
+                        var cx = rect.width / 2;
+                        var cy = rect.height / 2;
+                        targetX = ((x - cx) / cx) * 6;
+                        targetY = ((y - cy) / cy) * -6;
+                        if (!raf) raf = requestAnimationFrame(animate);
+                    });
+
+                    card.addEventListener('mouseleave', function () {
+                        targetX = 0;
+                        targetY = 0;
+                        if (!raf) raf = requestAnimationFrame(animate);
+                    });
+                });
+            }
+
+            /* ------------------------------------------------------------
+               9. MAGNETIC BUTTONS
+               ------------------------------------------------------------ */
+            if (finePointer && !prefersReduced) {
+                document.querySelectorAll('[data-magnetic]').forEach(function (btn) {
+                    btn.addEventListener('mousemove', function (e) {
+                        var rect = btn.getBoundingClientRect();
+                        var x = e.clientX - rect.left - rect.width / 2;
+                        var y = e.clientY - rect.top - rect.height / 2;
+                        btn.style.transform = 'translate(' + (x * 0.25) + 'px,' + (y * 0.25) + 'px)';
+                    });
+                    btn.addEventListener('mouseleave', function () {
+                        btn.style.transform = '';
+                    });
+                });
+            }
+
+            /* ------------------------------------------------------------
+               10. SMOOTH ANCHOR (with fixed-header offset)
+               ------------------------------------------------------------ */
+            document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+                link.addEventListener('click', function (e) {
+                    var href = link.getAttribute('href');
+                    if (!href || href === '#' || href.length < 2) return;
+                    var target = document.querySelector(href);
+                    if (!target) return;
+                    e.preventDefault();
+                    var headerOffset = 80;
+                    var rect = target.getBoundingClientRect();
+                    var top = rect.top + window.pageYOffset - headerOffset;
+                    window.scrollTo({
+                        top: top,
+                        behavior: prefersReduced ? 'auto' : 'smooth'
+                    });
+                });
             });
-        });
+        })();
     </script>
 </body>
 </html>
