@@ -46,7 +46,51 @@
         body {
             font-family: 'Inter', sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease;
+            /* Ẩn con trỏ chuột mặc định trên máy tính để dùng custom cursor */
+            cursor: auto; 
         }
+
+        /* --- HIỆU ỨNG CON CHUỘT (CUSTOM CURSOR) --- */
+        .cursor-dot,
+        .cursor-outline {
+            pointer-events: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 9999;
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #0284c7;
+        }
+
+        .cursor-outline {
+            width: 36px;
+            height: 36px;
+            border: 2px solid rgba(2, 132, 199, 0.5);
+            transition: width 0.2s, height 0.2s, background-color 0.2s, border-color 0.2s;
+        }
+
+        /* Hiệu ứng khi rê chuột vào các phần tử tương tác (link, button) */
+        body.cursor-hover .cursor-outline {
+            width: 55px;
+            height: 55px;
+            background-color: rgba(2, 132, 199, 0.1);
+            border-color: rgba(2, 132, 199, 0.8);
+        }
+
+        /* Ẩn custom cursor trên thiết bị di động/cảm ứng để không bị vướng màn hình */
+        @media (max-width: 768px) {
+            .cursor-dot, .cursor-outline {
+                display: none;
+            }
+        }
+
         .glass {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(12px);
@@ -67,6 +111,10 @@
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+
+    <!-- Elements hiệu ứng con chuột -->
+    <div class="cursor-dot" data-cursor-dot></div>
+    <div class="cursor-outline" data-cursor-outline></div>
 
     <!-- ==================== HEADER / NAVBAR ==================== -->
     <header class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-200/50 dark:border-slate-800/50 transition-all duration-300">
@@ -152,7 +200,6 @@
                         <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6 text-center">
                             <!-- KHU VỰC ẢNH ĐẠI DIỆN -->
                             <div class="relative mx-auto w-36 h-36 rounded-full overflow-hidden border-2 border-sky-500/30 shadow-inner bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                                <!-- Bạn tải ảnh Gumball lên cùng thư mục GitHub rồi đặt tên là avatar.jpg -->
                                 <img src="avt.jfif" alt="Lê Anh Khoa Avatar" class="w-full h-full object-cover" onerror="this.onerror=null; this.src='https://i.ibb.co/6P0kH7f/gumball-avatar.jpg';">
                             </div>
 
@@ -304,11 +351,36 @@
         </div>
     </footer>
 
-    <!-- ==================== JAVASCRIPT CHUẨN XỬ LÝ THEME & MENU ==================== -->
+    <!-- ==================== JAVASCRIPT ==================== -->
     <script>
         document.getElementById('year').textContent = new Date().getFullYear();
 
-        // Xử lý chuyển đổi theme Sáng / Tối
+        // --- XỬ LÝ HIỆU ỨNG CON CHUỘT ---
+        const cursorDot = document.querySelector('[data-cursor-dot]');
+        const cursorOutline = document.querySelector('[data-cursor-outline]');
+
+        window.addEventListener('mousemove', function(e) {
+            const posX = e.clientX;
+            const posY = e.clientY;
+
+            // Chấm nhỏ bám sát vị trí chuột ngay lập tức
+            cursorDot.style.transform = `translate(${posX}px, ${posY}px)`;
+
+            // Vòng tròn lớn chuyển động có độ trễ mượt mà
+            cursorOutline.animate({
+                left: `${posX}px`,
+                top: `${posY}px`
+            }, { duration: 500, fill: "forwards" });
+        });
+
+        // Hiệu ứng phình to vòng tròn khi di chuột qua các liên kết/nút bấm
+        const interactiveElements = document.querySelectorAll('a, button, input, iframe');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+        });
+
+        // --- Xử lý chuyển đổi theme Sáng / Tối ---
         const themeToggleBtn = document.getElementById('theme-toggle');
         const darkIcon = document.getElementById('theme-toggle-dark-icon');
         const lightIcon = document.getElementById('theme-toggle-light-icon');
@@ -340,7 +412,7 @@
             }
         });
 
-        // Xử lý Menu trên điện thoại
+        // --- Xử lý Menu trên điện thoại ---
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const mobileMenu = document.getElementById('mobile-menu');
 
