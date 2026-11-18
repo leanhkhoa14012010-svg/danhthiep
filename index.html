@@ -467,6 +467,9 @@
 
         <!-- ============ HERO ============ -->
         <section id="hero" class="relative overflow-hidden">
+            <!-- Canvas Hiệu ứng Vật lý Trọng lực (Đặc trưng 11 Lý) -->
+            <canvas id="physics-canvas" class="absolute inset-0 pointer-events-none z-0 opacity-60 dark:opacity-40"></canvas>
+
             <!-- Animated blobs -->
             <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
                 <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-sky-400/30 to-indigo-500/20 dark:from-sky-500/20 dark:to-indigo-600/15 blur-3xl animate-blob"></div>
@@ -477,7 +480,7 @@
             <!-- Spotlight (mouse) -->
             <div id="hero-spotlight" class="hero-spotlight" aria-hidden="true"></div>
 
-            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 z-10">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
 
                     <!-- Text -->
@@ -1070,7 +1073,103 @@
             }
 
             /* ------------------------------------------------------------
-               10. SMOOTH ANCHOR (with fixed-header offset)
+               10. PHYSICS CANVAS ANIMATION (Hiệu ứng Vật lý tương tác)
+               ------------------------------------------------------------ */
+            var canvas = document.getElementById('physics-canvas');
+            if (canvas && !prefersReduced) {
+                var ctx = canvas.getContext('2d');
+                var particles = [];
+                var numParticles = 35;
+                var mouse = { x: null, y: null, radius: 120 };
+
+                function resizeCanvas() {
+                    if (!hero) return;
+                    canvas.width = hero.offsetWidth;
+                    canvas.height = hero.offsetHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                hero.addEventListener('mousemove', function(e) {
+                    var rect = hero.getBoundingClientRect();
+                    mouse.x = e.clientX - rect.left;
+                    mouse.y = e.clientY - rect.top;
+                });
+                hero.addEventListener('mouseleave', function() {
+                    mouse.x = null;
+                    mouse.y = null;
+                });
+
+                class Particle {
+                    constructor() {
+                        this.x = Math.random() * canvas.width;
+                        this.y = Math.random() * canvas.height;
+                        this.vx = (Math.random() - 0.5) * 1.2;
+                        this.vy = (Math.random() - 0.5) * 1.2;
+                        this.radius = Math.random() * 3 + 1.5;
+                        this.color = Math.random() > 0.5 ? '#0ea5e9' : '#6366f1';
+                    }
+                    update() {
+                        this.x += this.vx;
+                        this.y += this.vy;
+
+                        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+                        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+                        // Tương tác lực đẩy nhẹ khi chuột đến gần (Hiệu ứng vật lý)
+                        if (mouse.x !== null && mouse.y !== null) {
+                            var dx = mouse.x - this.x;
+                            var dy = mouse.y - this.y;
+                            var dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < mouse.radius) {
+                                var force = (mouse.radius - dist) / mouse.radius;
+                                this.x -= (dx / dist) * force * 2;
+                                this.y -= (dy / dist) * force * 2;
+                            }
+                        }
+                    }
+                    draw() {
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = this.color;
+                        ctx.globalAlpha = 0.5;
+                        ctx.fill();
+                    }
+                }
+
+                for (var i = 0; i < numParticles; i++) {
+                    particles.push(new Particle());
+                }
+
+                function animatePhysics() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Vẽ lưới liên kết các hạt gần nhau (giống trường lực vật lý)
+                    for (var i = 0; i < particles.length; i++) {
+                        particles[i].update();
+                        particles[i].draw();
+
+                        for (var j = i + 1; j < particles.length; j++) {
+                            var dx = particles[i].x - particles[j].x;
+                            var dy = particles[i].y - particles[j].y;
+                            var dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 100) {
+                                ctx.beginPath();
+                                ctx.moveTo(particles[i].x, particles[i].y);
+                                ctx.lineTo(particles[j].x, particles[j].y);
+                                ctx.strokeStyle = '#0ea5e9';
+                                ctx.globalAlpha = (1 - (dist / 100)) * 0.15;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    requestAnimationFrame(animatePhysics);
+                }
+                animatePhysics();
+            }
+
+            /* ------------------------------------------------------------
+               11. SMOOTH ANCHOR (with fixed-header offset)
                ------------------------------------------------------------ */
             document.querySelectorAll('a[href^="#"]').forEach(function (link) {
                 link.addEventListener('click', function (e) {
