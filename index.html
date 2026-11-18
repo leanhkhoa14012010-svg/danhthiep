@@ -403,7 +403,7 @@
     <div class="cursor-outline" data-cursor-outline aria-hidden="true"></div>
     <div class="cursor-dot" data-cursor-dot aria-hidden="true"></div>
 
-    <!-- ==================== ACHIEVEMENT POPUP TOAST (Ý tưởng 4) ==================== -->
+    <!-- ==================== ACHIEVEMENT POPUP TOAST ==================== -->
     <div id="achievement-toast" class="flex items-center gap-3.5 bg-slate-900/90 dark:bg-slate-800/90 backdrop-blur-md border border-sky-500/40 text-white px-5 py-3.5 rounded-2xl shadow-2xl">
         <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-white text-lg shrink-0 shadow-md">
             <i class="fas fa-trophy"></i>
@@ -468,6 +468,9 @@
 
         <!-- ============ HERO ============ -->
         <section id="hero" class="relative overflow-hidden">
+            <!-- Physics Gravity Particles Canvas (Tương tác trọng lực & lực đẩy chuột) -->
+            <canvas id="hero-particles" class="absolute inset-0 pointer-events-none z-0" aria-hidden="true"></canvas>
+
             <!-- Animated blobs -->
             <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
                 <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-sky-400/30 to-indigo-500/20 dark:from-sky-500/20 dark:to-indigo-600/15 blur-3xl animate-blob"></div>
@@ -478,7 +481,7 @@
             <!-- Spotlight (mouse) -->
             <div id="hero-spotlight" class="hero-spotlight" aria-hidden="true"></div>
 
-            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 z-10">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
 
                     <!-- Text -->
@@ -535,7 +538,7 @@
                         </div>
                     </div>
 
-                    <!-- Card & RPG Stat Switcher (Ý tưởng 2) -->
+                    <!-- Card & RPG Stat Switcher -->
                     <div class="md:col-span-5 flex justify-center reveal" data-delay="2">
                         <div class="relative w-full max-w-sm">
                             <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 rounded-3xl blur-xl opacity-30 dark:opacity-40 animate-pulse"></div>
@@ -938,9 +941,106 @@
             }
 
             /* ------------------------------------------------------------
-               5. SCROLL REVEAL & ACHIEVEMENTS (Ý tưởng 4)
+               5. HERO PHYSICS GRAVITY PARTICLES (Tương tác trọng lực với chuột)
                ------------------------------------------------------------ */
-            var achievementsUnlocked = { explorer: false, gamer: false, donator: false };
+            var canvas = document.getElementById('hero-particles');
+            var heroSection = document.getElementById('hero');
+            if (canvas && heroSection && !prefersReduced) {
+                var ctx = canvas.getContext('2d');
+                var particles = [];
+                var numParticles = 45;
+                var mousePos = { x: -1000, y: -1000, active: false };
+
+                function resizeCanvas() {
+                    canvas.width = heroSection.offsetWidth;
+                    canvas.height = heroSection.offsetHeight;
+                }
+                resizeCanvas();
+                window.addEventListener('resize', resizeCanvas);
+
+                heroSection.addEventListener('mousemove', function(e) {
+                    var rect = heroSection.getBoundingClientRect();
+                    mousePos.x = e.clientX - rect.left;
+                    mousePos.y = e.clientY - rect.top;
+                    mousePos.active = true;
+                });
+                heroSection.addEventListener('mouseleave', function() {
+                    mousePos.active = false;
+                    mousePos.x = -1000;
+                    mousePos.y = -1000;
+                });
+
+                for (var i = 0; i < numParticles; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: (Math.random() - 0.5) * 1.2,
+                        vy: (Math.random() - 0.5) * 1.2,
+                        radius: Math.random() * 2.5 + 1.5,
+                        baseColor: Math.random() > 0.5 ? 'rgba(14, 165, 233, 0.6)' : 'rgba(99, 102, 241, 0.6)'
+                    });
+                }
+
+                function animateParticles() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                    for (var i = 0; i < particles.length; i++) {
+                        var p = particles[i];
+                        
+                        // Cập nhật vị trí hạt
+                        p.x += p.vx;
+                        p.y += p.vy;
+
+                        // Va chạm biên canvas
+                        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                        // Tương tác lực đẩy nhẹ nhàng với chuột (Physics Mouse Repulsion)
+                        if (mousePos.active) {
+                            var dx = p.x - mousePos.x;
+                            var dy = p.y - mousePos.y;
+                            var dist = Math.sqrt(dx * dx + dy * dy);
+                            var maxDist = 110;
+                            if (dist < maxDist && dist > 0) {
+                                var force = (1 - dist / maxDist) * 2.5;
+                                p.x += (dx / dist) * force;
+                                p.y += (dy / dist) * force;
+                            }
+                        }
+
+                        // Vẽ hạt
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                        ctx.fillStyle = p.baseColor;
+                        ctx.fill();
+
+                        // Nối các hạt gần nhau tạo hiệu ứng lưới mạng tinh thể Vật lý
+                        for (var j = i + 1; j < particles.length; j++) {
+                            var p2 = particles[j];
+                            var ndx = p.x - p2.x;
+                            var ndy = p.y - p2.y;
+                            var ndist = Math.sqrt(ndx * ndx + ndy * ndy);
+                            if (ndist < 90) {
+                                ctx.beginPath();
+                                ctx.moveTo(p.x, p.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.strokeStyle = document.documentElement.classList.contains('dark') 
+                                    ? 'rgba(56, 189, 248, ' + (1 - ndist / 90) * 0.18 + ')' 
+                                    : 'rgba(14, 165, 233, ' + (1 - ndist / 90) * 0.15 + ')';
+                                ctx.lineWidth = 0.8;
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    requestAnimationFrame(animateParticles);
+                }
+                animateParticles();
+            }
+
+            /* ------------------------------------------------------------
+               6. SCROLL REVEAL & ACHIEVEMENTS
+               ------------------------------------------------------------ */
+            var achievementsUnlocked = { explorer: false, gamer: false };
             var toastEl = document.getElementById('achievement-toast');
             var toastTitle = document.getElementById('achievement-title');
 
@@ -961,7 +1061,6 @@
                             entry.target.classList.add('in');
                             revealObserver.unobserve(entry.target);
                             
-                            // Mở khóa thành tựu khi lướt tới cuối trang
                             if (entry.target.id === 'donate' && !achievementsUnlocked.explorer) {
                                 achievementsUnlocked.explorer = true;
                                 showAchievement('Nhà Thám Hiểm Bến Tre');
@@ -975,7 +1074,7 @@
             }
 
             /* ------------------------------------------------------------
-               6. RPG STAT CARD SWITCHER (Ý tưởng 2)
+               7. RPG STAT CARD SWITCHER (Đại Cao Thủ - Top Butterfly)
                ------------------------------------------------------------ */
             var modePhysics = document.getElementById('mode-physics');
             var modeGaming = document.getElementById('mode-gaming');
@@ -1007,7 +1106,7 @@
                     cardStats.innerHTML = `
                         <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
                             <span class="text-slate-500 dark:text-slate-400">Liên Quân:</span>
-                            <span class="font-bold text-purple-500">Cao Thủ (Top Tướng Tủ)</span>
+                            <span class="font-bold text-purple-500">Đại Cao Thủ (Top Butterfly)</span>
                         </div>
                         <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
                             <span class="text-slate-500 dark:text-slate-400">Roblox:</span>
@@ -1027,7 +1126,7 @@
             }
 
             /* ------------------------------------------------------------
-               7. ACTIVE NAV LINK & TILT / MAGNETIC
+               8. ACTIVE NAV LINK & TILT / MAGNETIC
                ------------------------------------------------------------ */
             var navLinks = document.querySelectorAll('.nav-link');
             var sections = document.querySelectorAll('main section[id]');
