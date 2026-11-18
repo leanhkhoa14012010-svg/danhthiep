@@ -152,6 +152,32 @@
         }
 
         /* ============================================================
+           IOS 26 BUBBLES EFFECT (Hiệu ứng bong bóng nổi)
+           ============================================================ */
+        .ios-bubble {
+            position: absolute;
+            bottom: -50px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(14, 165, 233, 0.15));
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+            box-shadow: inset 0 0 12px rgba(255, 255, 255, 0.6), 0 8px 16px rgba(14, 165, 233, 0.1);
+            animation: riseBubble linear infinite;
+            z-index: 1;
+            pointer-events: none;
+        }
+        .dark .ios-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(56, 189, 248, 0.4), rgba(99, 102, 241, 0.1));
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: inset 0 0 12px rgba(56, 189, 248, 0.3), 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        @keyframes riseBubble {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            15% { opacity: 0.8; }
+            85% { opacity: 0.8; }
+            100% { transform: translateY(-110vh) scale(1.2); opacity: 0; }
+        }
+
+        /* ============================================================
            CUSTOM CURSOR
            ============================================================ */
         .cursor-dot,
@@ -287,7 +313,7 @@
         @keyframes spinSlow { to { transform: rotate(360deg); } }
 
         /* ============================================================
-           TILT CARD
+           TILT CARD & 3D QR TILT
            ============================================================ */
         .tilt-card {
             transform-style: preserve-3d;
@@ -298,6 +324,15 @@
         }
         .tilt-card:hover {
             box-shadow: 0 25px 60px -20px rgba(2, 132, 199, 0.35);
+        }
+
+        .qr-3d-container {
+            perspective: 1000px;
+        }
+        .qr-3d-card {
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease-out, box-shadow 0.2s ease-out;
+            will-change: transform;
         }
 
         /* ============================================================
@@ -394,7 +429,7 @@
         }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col selection:bg-sky-500 selection:text-white relative overflow-x-hidden">
 
     <!-- Scroll progress -->
     <div id="scroll-progress" aria-hidden="true"></div>
@@ -402,6 +437,9 @@
     <!-- Custom cursor -->
     <div class="cursor-outline" data-cursor-outline aria-hidden="true"></div>
     <div class="cursor-dot" data-cursor-dot aria-hidden="true"></div>
+
+    <!-- ==================== IOS 26 BUBBLES CONTAINER ==================== -->
+    <div id="ios-bubbles-container" class="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true"></div>
 
     <!-- ==================== ACHIEVEMENT POPUP TOAST ==================== -->
     <div id="achievement-toast" class="flex items-center gap-3.5 bg-slate-900/90 dark:bg-slate-800/90 backdrop-blur-md border border-sky-500/40 text-white px-5 py-3.5 rounded-2xl shadow-2xl">
@@ -464,11 +502,11 @@
     </header>
 
     <!-- ==================== MAIN ==================== -->
-    <main id="top" class="flex-grow pt-24 relative">
+    <main id="top" class="flex-grow pt-24 relative z-10">
 
         <!-- ============ HERO ============ -->
         <section id="hero" class="relative overflow-hidden">
-            <!-- Physics Gravity Particles Canvas (Tương tác trọng lực & lực đẩy chuột) -->
+            <!-- Physics Gravity Particles Canvas -->
             <canvas id="hero-particles" class="absolute inset-0 pointer-events-none z-0" aria-hidden="true"></canvas>
 
             <!-- Animated blobs -->
@@ -731,9 +769,9 @@
                         </div>
                     </div>
 
-                    <!-- Donate -->
+                    <!-- Donate with 3D Tilt QR Code Effect -->
                     <div id="donate" class="lg:col-span-6 scroll-mt-24">
-                        <div class="reveal relative p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-6 overflow-hidden" data-delay="2">
+                        <div class="reveal relative p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm text-center space-y-6 overflow-hidden qr-3d-container" data-delay="2">
                             <div class="absolute -top-20 -right-20 w-48 h-48 rounded-full bg-gradient-to-br from-sky-400/20 to-indigo-500/20 blur-3xl pointer-events-none"></div>
 
                             <div class="relative">
@@ -747,12 +785,13 @@
                                 </p>
                             </div>
 
-                            <div class="relative mx-auto w-full max-w-[280px] rounded-2xl border border-slate-200 dark:border-slate-700 bg-white p-2.5 shadow-sm overflow-hidden group">
+                            <!-- 3D Tilt QR Card Wrapper -->
+                            <div id="qr-3d-card" class="qr-3d-card relative mx-auto w-full max-w-[280px] rounded-2xl border border-slate-200 dark:border-slate-700 bg-white p-2.5 shadow-md overflow-hidden group">
                                 <div class="absolute inset-0 bg-gradient-to-tr from-sky-400/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                                 <img
                                     src="https://img.vietqr.io/image/VCB-1065359553-compact2.png?accountName=LE%20ANH%20KHOA"
                                     alt="Mã QR Vietcombank — Lê Anh Khoa"
-                                    class="relative w-full h-auto rounded-xl"
+                                    class="relative w-full h-auto rounded-xl pointer-events-none"
                                     loading="lazy">
                             </div>
 
@@ -768,7 +807,7 @@
     </main>
 
     <!-- ==================== FOOTER ==================== -->
-    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/60 backdrop-blur py-8 text-center text-xs text-slate-500 dark:text-slate-400">
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/60 backdrop-blur py-8 text-center text-xs text-slate-500 dark:text-slate-400 z-10 relative">
         <div class="max-w-6xl mx-auto px-4 space-y-2">
             <p>&copy; <span id="year"></span> Lê Anh Khoa. All rights reserved.</p>
             <p class="text-[11px] text-slate-400 dark:text-slate-500">
@@ -941,7 +980,26 @@
             }
 
             /* ------------------------------------------------------------
-               5. HERO PHYSICS GRAVITY PARTICLES (Tương tác trọng lực với chuột)
+               5. IOS 26 BUBBLES EFFECT GENERATOR
+               ------------------------------------------------------------ */
+            var bubblesContainer = document.getElementById('ios-bubbles-container');
+            if (bubblesContainer && !prefersReduced) {
+                var numBubbles = 18;
+                for (var i = 0; i < numBubbles; i++) {
+                    var bubble = document.createElement('div');
+                    bubble.className = 'ios-bubble';
+                    var size = Math.floor(Math.random() * 32) + 12; // 12px to 44px
+                    bubble.style.width = size + 'px';
+                    bubble.style.height = size + 'px';
+                    bubble.style.left = Math.random() * 100 + '%';
+                    bubble.style.animationDuration = (Math.random() * 8 + 6) + 's'; // 6s to 14s
+                    bubble.style.animationDelay = (Math.random() * 8) + 's';
+                    bubblesContainer.appendChild(bubble);
+                }
+            }
+
+            /* ------------------------------------------------------------
+               6. HERO PHYSICS GRAVITY PARTICLES (Tương tác trọng lực với chuột)
                ------------------------------------------------------------ */
             var canvas = document.getElementById('hero-particles');
             var heroSection = document.getElementById('hero');
@@ -986,16 +1044,12 @@
 
                     for (var i = 0; i < particles.length; i++) {
                         var p = particles[i];
-                        
-                        // Cập nhật vị trí hạt
                         p.x += p.vx;
                         p.y += p.vy;
 
-                        // Va chạm biên canvas
                         if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
                         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
 
-                        // Tương tác lực đẩy nhẹ nhàng với chuột (Physics Mouse Repulsion)
                         if (mousePos.active) {
                             var dx = p.x - mousePos.x;
                             var dy = p.y - mousePos.y;
@@ -1008,13 +1062,11 @@
                             }
                         }
 
-                        // Vẽ hạt
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
                         ctx.fillStyle = p.baseColor;
                         ctx.fill();
 
-                        // Nối các hạt gần nhau tạo hiệu ứng lưới mạng tinh thể Vật lý
                         for (var j = i + 1; j < particles.length; j++) {
                             var p2 = particles[j];
                             var ndx = p.x - p2.x;
@@ -1038,7 +1090,7 @@
             }
 
             /* ------------------------------------------------------------
-               6. SCROLL REVEAL & ACHIEVEMENTS
+               7. SCROLL REVEAL & ACHIEVEMENTS
                ------------------------------------------------------------ */
             var achievementsUnlocked = { explorer: false, gamer: false };
             var toastEl = document.getElementById('achievement-toast');
@@ -1074,7 +1126,7 @@
             }
 
             /* ------------------------------------------------------------
-               7. RPG STAT CARD SWITCHER (Đại Cao Thủ - Top Butterfly)
+               8. RPG STAT CARD SWITCHER (Đại Cao Thủ - Top Butterfly)
                ------------------------------------------------------------ */
             var modePhysics = document.getElementById('mode-physics');
             var modeGaming = document.getElementById('mode-gaming');
@@ -1126,7 +1178,28 @@
             }
 
             /* ------------------------------------------------------------
-               8. ACTIVE NAV LINK & TILT / MAGNETIC
+               9. 3D TILT EFFECT FOR QR CODE (Hiệu ứng 3D cho QR chuyển tiền)
+               ------------------------------------------------------------ */
+            var qrCard = document.getElementById('qr-3d-card');
+            var donateSection = document.getElementById('donate');
+            if (qrCard && donateSection && finePointer && !prefersReduced) {
+                donateSection.addEventListener('mousemove', function (e) {
+                    var rect = donateSection.getBoundingClientRect();
+                    var x = e.clientX - rect.left;
+                    var y = e.clientY - rect.top;
+                    var centerX = rect.width / 2;
+                    var centerY = rect.height / 2;
+                    var rotateX = ((y - centerY) / centerY) * -12;
+                    var rotateY = ((x - centerX) / centerX) * 12;
+                    qrCard.style.transform = 'perspective(1000px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) scale3d(1.03, 1.03, 1.03)';
+                });
+                donateSection.addEventListener('mouseleave', function () {
+                    qrCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+                });
+            }
+
+            /* ------------------------------------------------------------
+               10. ACTIVE NAV LINK & TILT / MAGNETIC
                ------------------------------------------------------------ */
             var navLinks = document.querySelectorAll('.nav-link');
             var sections = document.querySelectorAll('main section[id]');
