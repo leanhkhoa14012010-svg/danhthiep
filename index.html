@@ -336,13 +336,23 @@
         .nav-link.active { color: #0ea5e9; }
 
         /* ============================================================
-           MISC UTILITIES
+           ACHIEVEMENT POPUP TOAST
            ============================================================ */
-        .bg-animated-gradient {
-            background: linear-gradient(120deg, #0ea5e9, #6366f1, #a855f7);
-            background-size: 200% 200%;
-            animation: gradientShift 6s ease infinite;
+        #achievement-toast {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            z-index: 10000;
+            transform: translateY(120px) scale(0.9);
+            opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
         }
+        #achievement-toast.show {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+        }
+
+        /* Misc */
         .shine {
             position: relative;
             overflow: hidden;
@@ -351,12 +361,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(
-                110deg,
-                transparent 25%,
-                rgba(255, 255, 255, 0.35) 50%,
-                transparent 75%
-            );
+            background: linear-gradient(110deg, transparent 25%, rgba(255, 255, 255, 0.35) 50%, transparent 75%);
             transform: translateX(-100%);
             transition: transform .8s ease;
             pointer-events: none;
@@ -387,21 +392,6 @@
             visibility: visible;
             transform: translateY(0) scale(1);
         }
-
-        /* ============================================================
-           REDUCED MOTION
-           ============================================================ */
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: .001ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: .001ms !important;
-                scroll-behavior: auto !important;
-            }
-            .js .reveal { opacity: 1 !important; transform: none !important; }
-            .cursor-dot, .cursor-outline { display: none !important; }
-            body { cursor: auto !important; }
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col selection:bg-sky-500 selection:text-white">
@@ -412,6 +402,17 @@
     <!-- Custom cursor -->
     <div class="cursor-outline" data-cursor-outline aria-hidden="true"></div>
     <div class="cursor-dot" data-cursor-dot aria-hidden="true"></div>
+
+    <!-- ==================== ACHIEVEMENT POPUP TOAST (Ý tưởng 4) ==================== -->
+    <div id="achievement-toast" class="flex items-center gap-3.5 bg-slate-900/90 dark:bg-slate-800/90 backdrop-blur-md border border-sky-500/40 text-white px-5 py-3.5 rounded-2xl shadow-2xl">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-orange-500 flex items-center justify-center text-white text-lg shrink-0 shadow-md">
+            <i class="fas fa-trophy"></i>
+        </div>
+        <div>
+            <div class="text-[10px] uppercase font-bold tracking-wider text-amber-400">Mở Khóa Thành Tựu Mới!</div>
+            <div id="achievement-title" class="text-sm font-extrabold">Nhà Thám Hiểm Bến Tre</div>
+        </div>
+    </div>
 
     <!-- ==================== HEADER ==================== -->
     <header id="site-header" class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-200/60 dark:border-slate-800/60 transition-all duration-300">
@@ -467,9 +468,6 @@
 
         <!-- ============ HERO ============ -->
         <section id="hero" class="relative overflow-hidden">
-            <!-- Canvas Hiệu ứng Vật lý Trọng lực (Đặc trưng 11 Lý) -->
-            <canvas id="physics-canvas" class="absolute inset-0 pointer-events-none z-0 opacity-60 dark:opacity-40"></canvas>
-
             <!-- Animated blobs -->
             <div aria-hidden="true" class="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
                 <div class="absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full bg-gradient-to-tr from-sky-400/30 to-indigo-500/20 dark:from-sky-500/20 dark:to-indigo-600/15 blur-3xl animate-blob"></div>
@@ -480,7 +478,7 @@
             <!-- Spotlight (mouse) -->
             <div id="hero-spotlight" class="hero-spotlight" aria-hidden="true"></div>
 
-            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 z-10">
+            <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
                 <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
 
                     <!-- Text -->
@@ -537,26 +535,38 @@
                         </div>
                     </div>
 
-                    <!-- Card -->
+                    <!-- Card & RPG Stat Switcher (Ý tưởng 2) -->
                     <div class="md:col-span-5 flex justify-center reveal" data-delay="2">
                         <div class="relative w-full max-w-sm">
                             <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 rounded-3xl blur-xl opacity-30 dark:opacity-40 animate-pulse"></div>
 
-                            <div class="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-6 text-center">
+                            <div class="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-5 text-center">
+                                
+                                <!-- Mode Switcher Buttons -->
+                                <div class="flex items-center justify-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-semibold gap-1">
+                                    <button id="mode-physics" type="button" class="flex-1 py-2 px-3 rounded-lg bg-sky-500 text-white shadow transition-all">
+                                        <i class="fas fa-atom mr-1"></i> Chuyên Lý
+                                    </button>
+                                    <button id="mode-gaming" type="button" class="flex-1 py-2 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-all">
+                                        <i class="fas fa-gamepad mr-1"></i> Gamer & Thể Thao
+                                    </button>
+                                </div>
+
                                 <!-- Avatar -->
-                                <div class="avatar-ring relative mx-auto w-36 h-36 rounded-full overflow-hidden border-2 border-sky-500/40 shadow-inner bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                                <div class="avatar-ring relative mx-auto w-32 h-32 rounded-full overflow-hidden border-2 border-sky-500/40 shadow-inner bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                                     <img src="avt.jfif" alt="Ảnh đại diện Lê Anh Khoa" class="w-full h-full object-cover"
                                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230ea5e9%22/><stop offset=%221%22 stop-color=%22%236366f1%22/></linearGradient></defs><rect width=%22100%22 height=%22100%22 fill=%22url(%23g)%22/><text x=%2250%22 y=%2263%22 font-size=%2244%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial,sans-serif%22 font-weight=%22bold%22>K</text></svg>';">
                                 </div>
 
                                 <div>
                                     <h3 class="text-lg font-bold">Lê Anh Khoa</h3>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                    <p id="card-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
                                         <i class="fas fa-location-dot text-red-500 mr-1"></i> Bến Tre, Việt Nam
                                     </p>
                                 </div>
 
-                                <div class="space-y-2.5 pt-2 text-sm border-t border-slate-100 dark:border-slate-800 text-left">
+                                <!-- Dynamic RPG Stats content -->
+                                <div id="card-stats" class="space-y-2.5 pt-2 text-sm border-t border-slate-100 dark:border-slate-800 text-left">
                                     <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                                         <span class="text-slate-500 dark:text-slate-400">Trường:</span>
                                         <span class="font-medium text-right">THPT Chuyên Bến Tre</span>
@@ -566,13 +576,11 @@
                                         <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
                                     </div>
                                     <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                                        <span class="text-slate-500 dark:text-slate-400">Trạng thái:</span>
-                                        <span class="inline-flex items-center gap-1.5 font-semibold text-emerald-500">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                            Đang học tập
-                                        </span>
+                                        <span class="text-slate-500 dark:text-slate-400">Sở trường:</span>
+                                        <span class="font-semibold text-indigo-500">Tư duy logic & Giải bài tập</span>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -784,7 +792,7 @@
             if (yearEl) yearEl.textContent = new Date().getFullYear();
 
             /* ------------------------------------------------------------
-               1. CUSTOM CURSOR (dot = instant, outline = smooth lerp)
+               1. CUSTOM CURSOR
                ------------------------------------------------------------ */
             var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -809,24 +817,17 @@
                     mouseX = e.clientX;
                     mouseY = e.clientY;
                     showCursor();
-
-                    // Dot follows instantly
                     if (dot) {
-                        dot.style.transform =
-                            'translate3d(' + mouseX + 'px,' + mouseY + 'px,0) translate(-50%,-50%)';
+                        dot.style.transform = 'translate3d(' + mouseX + 'px,' + mouseY + 'px,0) translate(-50%,-50%)';
                     }
-
-                    if (!rafId) {
-                        rafId = requestAnimationFrame(loop);
-                    }
+                    if (!rafId) rafId = requestAnimationFrame(loop);
                 }, { passive: true });
 
                 function loop() {
                     outX += (mouseX - outX) * 0.18;
                     outY += (mouseY - outY) * 0.18;
                     if (outline) {
-                        outline.style.transform =
-                            'translate3d(' + outX + 'px,' + outY + 'px,0) translate(-50%,-50%)';
+                        outline.style.transform = 'translate3d(' + outX + 'px,' + outY + 'px,0) translate(-50%,-50%)';
                     }
                     if (Math.abs(mouseX - outX) > 0.1 || Math.abs(mouseY - outY) > 0.1) {
                         rafId = requestAnimationFrame(loop);
@@ -835,30 +836,17 @@
                     }
                 }
 
-                document.addEventListener('mouseleave', function () {
-                    document.body.classList.remove('cursor-visible');
-                });
-                document.addEventListener('mouseenter', function () {
-                    document.body.classList.add('cursor-visible');
-                });
-                document.addEventListener('mousedown', function () {
-                    document.body.classList.add('cursor-down');
-                });
-                document.addEventListener('mouseup', function () {
-                    document.body.classList.remove('cursor-down');
-                });
+                document.addEventListener('mouseleave', function () { document.body.classList.remove('cursor-visible'); });
+                document.addEventListener('mouseenter', function () { document.body.classList.add('cursor-visible'); });
+                document.addEventListener('mousedown', function () { document.body.classList.add('cursor-down'); });
+                document.addEventListener('mouseup', function () { document.body.classList.remove('cursor-down'); });
 
-                // Hover state for interactive elements
                 var hoverTargets = 'a, button, input, textarea, select, iframe, [data-tilt], [data-magnetic]';
                 document.addEventListener('mouseover', function (e) {
-                    if (e.target.closest(hoverTargets)) {
-                        document.body.classList.add('cursor-hover');
-                    }
+                    if (e.target.closest(hoverTargets)) document.body.classList.add('cursor-hover');
                 });
                 document.addEventListener('mouseout', function (e) {
-                    if (e.target.closest(hoverTargets)) {
-                        document.body.classList.remove('cursor-hover');
-                    }
+                    if (e.target.closest(hoverTargets)) document.body.classList.remove('cursor-hover');
                 });
             }
 
@@ -866,8 +854,8 @@
                2. THEME TOGGLE
                ------------------------------------------------------------ */
             var themeToggleBtn = document.getElementById('theme-toggle');
-            var darkIcon = document.getElementById('theme-toggle-dark-icon');   // moon
-            var lightIcon = document.getElementById('theme-toggle-light-icon'); // sun
+            var darkIcon = document.getElementById('theme-toggle-dark-icon');
+            var lightIcon = document.getElementById('theme-toggle-light-icon');
 
             function updateThemeIcons() {
                 var isDark = document.documentElement.classList.contains('dark');
@@ -879,9 +867,7 @@
             if (themeToggleBtn) {
                 themeToggleBtn.addEventListener('click', function () {
                     var isDark = document.documentElement.classList.toggle('dark');
-                    try {
-                        localStorage.setItem('color-theme', isDark ? 'dark' : 'light');
-                    } catch (e) {}
+                    try { localStorage.setItem('color-theme', isDark ? 'dark' : 'light'); } catch (e) {}
                     updateThemeIcons();
                 });
             }
@@ -912,10 +898,7 @@
                         mobileMenuIcon.classList.toggle('fa-xmark', !isHidden);
                     }
                 });
-
-                mobileMenu.querySelectorAll('a').forEach(function (link) {
-                    link.addEventListener('click', closeMobileMenu);
-                });
+                mobileMenu.querySelectorAll('a').forEach(function (link) { link.addEventListener('click', closeMobileMenu); });
             }
 
             /* ------------------------------------------------------------
@@ -932,18 +915,11 @@
                 var pct = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
 
                 if (progressBar) progressBar.style.width = pct + '%';
-
                 if (header) {
-                    if (scrollTop > 12) {
-                        header.classList.add('shadow-lg', 'shadow-slate-900/5', 'dark:shadow-black/30');
-                    } else {
-                        header.classList.remove('shadow-lg', 'shadow-slate-900/5', 'dark:shadow-black/30');
-                    }
+                    header.classList.toggle('shadow-lg', scrollTop > 12);
+                    header.classList.toggle('shadow-slate-900/5', scrollTop > 12);
                 }
-
-                if (backToTop) {
-                    backToTop.classList.toggle('show', scrollTop > 500);
-                }
+                if (backToTop) backToTop.classList.toggle('show', scrollTop > 500);
                 ticking = false;
             }
 
@@ -962,8 +938,21 @@
             }
 
             /* ------------------------------------------------------------
-               5. SCROLL REVEAL
+               5. SCROLL REVEAL & ACHIEVEMENTS (Ý tưởng 4)
                ------------------------------------------------------------ */
+            var achievementsUnlocked = { explorer: false, gamer: false, donator: false };
+            var toastEl = document.getElementById('achievement-toast');
+            var toastTitle = document.getElementById('achievement-title');
+
+            function showAchievement(title) {
+                if (!toastEl || !toastTitle) return;
+                toastTitle.textContent = title;
+                toastEl.classList.add('show');
+                setTimeout(function() {
+                    toastEl.classList.remove('show');
+                }, 4000);
+            }
+
             var reveals = document.querySelectorAll('.reveal');
             if ('IntersectionObserver' in window && !prefersReduced) {
                 var revealObserver = new IntersectionObserver(function (entries) {
@@ -971,6 +960,12 @@
                         if (entry.isIntersecting) {
                             entry.target.classList.add('in');
                             revealObserver.unobserve(entry.target);
+                            
+                            // Mở khóa thành tựu khi lướt tới cuối trang
+                            if (entry.target.id === 'donate' && !achievementsUnlocked.explorer) {
+                                achievementsUnlocked.explorer = true;
+                                showAchievement('Nhà Thám Hiểm Bến Tre');
+                            }
                         }
                     });
                 }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
@@ -980,7 +975,59 @@
             }
 
             /* ------------------------------------------------------------
-               6. ACTIVE NAV LINK
+               6. RPG STAT CARD SWITCHER (Ý tưởng 2)
+               ------------------------------------------------------------ */
+            var modePhysics = document.getElementById('mode-physics');
+            var modeGaming = document.getElementById('mode-gaming');
+            var cardStats = document.getElementById('card-stats');
+
+            if (modePhysics && modeGaming && cardStats) {
+                modePhysics.addEventListener('click', function () {
+                    modePhysics.className = 'flex-1 py-2 px-3 rounded-lg bg-sky-500 text-white shadow transition-all';
+                    modeGaming.className = 'flex-1 py-2 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-all';
+                    cardStats.innerHTML = `
+                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                            <span class="text-slate-500 dark:text-slate-400">Trường:</span>
+                            <span class="font-medium text-right">THPT Chuyên Bến Tre</span>
+                        </div>
+                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                            <span class="text-slate-500 dark:text-slate-400">Chuyên ngành:</span>
+                            <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
+                        </div>
+                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                            <span class="text-slate-500 dark:text-slate-400">Sở trường:</span>
+                            <span class="font-semibold text-indigo-500">Tư duy logic & Giải bài tập</span>
+                        </div>
+                    `;
+                });
+
+                modeGaming.addEventListener('click', function () {
+                    modeGaming.className = 'flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow transition-all';
+                    modePhysics.className = 'flex-1 py-2 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-all';
+                    cardStats.innerHTML = `
+                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
+                            <span class="text-slate-500 dark:text-slate-400">Liên Quân:</span>
+                            <span class="font-bold text-purple-500">Cao Thủ (Top Tướng Tủ)</span>
+                        </div>
+                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
+                            <span class="text-slate-500 dark:text-slate-400">Roblox:</span>
+                            <span class="font-bold text-indigo-500">Pro Builder / Blox Fruits</span>
+                        </div>
+                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
+                            <span class="text-slate-500 dark:text-slate-400">Thể thao:</span>
+                            <span class="font-bold text-amber-500">Cầu lông (Năng suất đỉnh)</span>
+                        </div>
+                    `;
+
+                    if (!achievementsUnlocked.gamer) {
+                        achievementsUnlocked.gamer = true;
+                        showAchievement('Game Thủ & Vận Động Viên Pro');
+                    }
+                });
+            }
+
+            /* ------------------------------------------------------------
+               7. ACTIVE NAV LINK & TILT / MAGNETIC
                ------------------------------------------------------------ */
             var navLinks = document.querySelectorAll('.nav-link');
             var sections = document.querySelectorAll('main section[id]');
@@ -991,186 +1038,58 @@
                         if (entry.isIntersecting) {
                             var id = entry.target.id;
                             navLinks.forEach(function (link) {
-                                var href = link.getAttribute('href');
-                                link.classList.toggle('active', href === '#' + id);
+                                link.classList.toggle('active', link.getAttribute('href') === '#' + id);
                             });
                         }
                     });
                 }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
-
                 sections.forEach(function (sec) { navObserver.observe(sec); });
             }
 
-            /* ------------------------------------------------------------
-               7. HERO SPOTLIGHT (follows mouse)
-               ------------------------------------------------------------ */
             var hero = document.getElementById('hero');
             var spotlight = document.getElementById('hero-spotlight');
             if (hero && spotlight && finePointer && !prefersReduced) {
                 hero.addEventListener('mousemove', function (e) {
                     var rect = hero.getBoundingClientRect();
-                    var x = ((e.clientX - rect.left) / rect.width) * 100;
-                    var y = ((e.clientY - rect.top) / rect.height) * 100;
-                    spotlight.style.setProperty('--mx', x + '%');
-                    spotlight.style.setProperty('--my', y + '%');
+                    spotlight.style.setProperty('--mx', ((e.clientX - rect.left) / rect.width) * 100 + '%');
+                    spotlight.style.setProperty('--my', ((e.clientY - rect.top) / rect.height) * 100 + '%');
                 }, { passive: true });
             }
 
-            /* ------------------------------------------------------------
-               8. TILT CARDS (3D)
-               ------------------------------------------------------------ */
             if (finePointer && !prefersReduced) {
                 document.querySelectorAll('[data-tilt]').forEach(function (card) {
-                    var raf = null;
-                    var targetX = 0, targetY = 0, currentX = 0, currentY = 0;
-
+                    var raf = null, targetX = 0, targetY = 0, currentX = 0, currentY = 0;
                     function animate() {
                         currentX += (targetX - currentX) * 0.15;
                         currentY += (targetY - currentY) * 0.15;
-                        card.style.transform =
-                            'perspective(1000px) rotateX(' + currentY + 'deg) rotateY(' + currentX + 'deg) translateZ(0)';
+                        card.style.transform = 'perspective(1000px) rotateX(' + currentY + 'deg) rotateY(' + currentX + 'deg) translateZ(0)';
                         if (Math.abs(targetX - currentX) > 0.01 || Math.abs(targetY - currentY) > 0.01) {
                             raf = requestAnimationFrame(animate);
                         } else {
                             raf = null;
                         }
                     }
-
                     card.addEventListener('mousemove', function (e) {
                         var rect = card.getBoundingClientRect();
-                        var x = e.clientX - rect.left;
-                        var y = e.clientY - rect.top;
-                        var cx = rect.width / 2;
-                        var cy = rect.height / 2;
-                        targetX = ((x - cx) / cx) * 6;
-                        targetY = ((y - cy) / cy) * -6;
+                        targetX = ((e.clientX - rect.left - rect.width / 2) / (rect.width / 2)) * 6;
+                        targetY = ((e.clientY - rect.top - rect.height / 2) / (rect.height / 2)) * -6;
                         if (!raf) raf = requestAnimationFrame(animate);
                     });
-
                     card.addEventListener('mouseleave', function () {
-                        targetX = 0;
-                        targetY = 0;
+                        targetX = 0; targetY = 0;
                         if (!raf) raf = requestAnimationFrame(animate);
                     });
                 });
-            }
 
-            /* ------------------------------------------------------------
-               9. MAGNETIC BUTTONS
-               ------------------------------------------------------------ */
-            if (finePointer && !prefersReduced) {
                 document.querySelectorAll('[data-magnetic]').forEach(function (btn) {
                     btn.addEventListener('mousemove', function (e) {
                         var rect = btn.getBoundingClientRect();
-                        var x = e.clientX - rect.left - rect.width / 2;
-                        var y = e.clientY - rect.top - rect.height / 2;
-                        btn.style.transform = 'translate(' + (x * 0.25) + 'px,' + (y * 0.25) + 'px)';
+                        btn.style.transform = 'translate(' + ((e.clientX - rect.left - rect.width / 2) * 0.25) + 'px,' + ((e.clientY - rect.top - rect.height / 2) * 0.25) + 'px)';
                     });
-                    btn.addEventListener('mouseleave', function () {
-                        btn.style.transform = '';
-                    });
+                    btn.addEventListener('mouseleave', function () { btn.style.transform = ''; });
                 });
             }
 
-            /* ------------------------------------------------------------
-               10. PHYSICS CANVAS ANIMATION (Hiệu ứng Vật lý tương tác)
-               ------------------------------------------------------------ */
-            var canvas = document.getElementById('physics-canvas');
-            if (canvas && !prefersReduced) {
-                var ctx = canvas.getContext('2d');
-                var particles = [];
-                var numParticles = 35;
-                var mouse = { x: null, y: null, radius: 120 };
-
-                function resizeCanvas() {
-                    if (!hero) return;
-                    canvas.width = hero.offsetWidth;
-                    canvas.height = hero.offsetHeight;
-                }
-                resizeCanvas();
-                window.addEventListener('resize', resizeCanvas);
-
-                hero.addEventListener('mousemove', function(e) {
-                    var rect = hero.getBoundingClientRect();
-                    mouse.x = e.clientX - rect.left;
-                    mouse.y = e.clientY - rect.top;
-                });
-                hero.addEventListener('mouseleave', function() {
-                    mouse.x = null;
-                    mouse.y = null;
-                });
-
-                class Particle {
-                    constructor() {
-                        this.x = Math.random() * canvas.width;
-                        this.y = Math.random() * canvas.height;
-                        this.vx = (Math.random() - 0.5) * 1.2;
-                        this.vy = (Math.random() - 0.5) * 1.2;
-                        this.radius = Math.random() * 3 + 1.5;
-                        this.color = Math.random() > 0.5 ? '#0ea5e9' : '#6366f1';
-                    }
-                    update() {
-                        this.x += this.vx;
-                        this.y += this.vy;
-
-                        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-                        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-
-                        // Tương tác lực đẩy nhẹ khi chuột đến gần (Hiệu ứng vật lý)
-                        if (mouse.x !== null && mouse.y !== null) {
-                            var dx = mouse.x - this.x;
-                            var dy = mouse.y - this.y;
-                            var dist = Math.sqrt(dx * dx + dy * dy);
-                            if (dist < mouse.radius) {
-                                var force = (mouse.radius - dist) / mouse.radius;
-                                this.x -= (dx / dist) * force * 2;
-                                this.y -= (dy / dist) * force * 2;
-                            }
-                        }
-                    }
-                    draw() {
-                        ctx.beginPath();
-                        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                        ctx.fillStyle = this.color;
-                        ctx.globalAlpha = 0.5;
-                        ctx.fill();
-                    }
-                }
-
-                for (var i = 0; i < numParticles; i++) {
-                    particles.push(new Particle());
-                }
-
-                function animatePhysics() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    
-                    // Vẽ lưới liên kết các hạt gần nhau (giống trường lực vật lý)
-                    for (var i = 0; i < particles.length; i++) {
-                        particles[i].update();
-                        particles[i].draw();
-
-                        for (var j = i + 1; j < particles.length; j++) {
-                            var dx = particles[i].x - particles[j].x;
-                            var dy = particles[i].y - particles[j].y;
-                            var dist = Math.sqrt(dx * dx + dy * dy);
-                            if (dist < 100) {
-                                ctx.beginPath();
-                                ctx.moveTo(particles[i].x, particles[i].y);
-                                ctx.lineTo(particles[j].x, particles[j].y);
-                                ctx.strokeStyle = '#0ea5e9';
-                                ctx.globalAlpha = (1 - (dist / 100)) * 0.15;
-                                ctx.stroke();
-                            }
-                        }
-                    }
-                    requestAnimationFrame(animatePhysics);
-                }
-                animatePhysics();
-            }
-
-            /* ------------------------------------------------------------
-               11. SMOOTH ANCHOR (with fixed-header offset)
-               ------------------------------------------------------------ */
             document.querySelectorAll('a[href^="#"]').forEach(function (link) {
                 link.addEventListener('click', function (e) {
                     var href = link.getAttribute('href');
@@ -1178,11 +1097,8 @@
                     var target = document.querySelector(href);
                     if (!target) return;
                     e.preventDefault();
-                    var headerOffset = 80;
-                    var rect = target.getBoundingClientRect();
-                    var top = rect.top + window.pageYOffset - headerOffset;
                     window.scrollTo({
-                        top: top,
+                        top: target.getBoundingClientRect().top + window.pageYOffset - 80,
                         behavior: prefersReduced ? 'auto' : 'smooth'
                     });
                 });
