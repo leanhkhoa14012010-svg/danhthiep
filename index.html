@@ -178,6 +178,35 @@
         }
 
         /* ============================================================
+           IGLOO.INC STYLE EFFECT FRAME
+           ============================================================ */
+        .igloo-frame {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1.75rem;
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.1), rgba(99, 102, 241, 0.1));
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(14, 165, 233, 0.25);
+            box-shadow: 0 20px 40px -15px rgba(14, 165, 233, 0.2);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+        }
+        .igloo-frame:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 30px 60px -20px rgba(99, 102, 241, 0.35);
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+        .igloo-glow {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.4), transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            transition: transform 0.1s ease-out;
+            mix-blend-mode: overlay;
+        }
+
+        /* ============================================================
            CUSTOM CURSOR
            ============================================================ */
         .cursor-dot,
@@ -629,19 +658,41 @@
             </div>
         </section>
 
-        <!-- ============ ABOUT ============ -->
-        <section id="about" class="py-16 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
+        <!-- ============ ABOUT (Đã cập nhật khung Video hiệu ứng Igloo.inc bên trái & nội dung bên phải) ============ -->
+        <section id="about" class="py-20 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="max-w-3xl mx-auto text-center space-y-4">
-                    <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Về Bản Thân</h2>
-                    <p class="reveal text-2xl sm:text-3xl font-bold tracking-tight leading-snug" data-delay="1">
-                        "Sự tò mò là ngọn đuốc dẫn đường cho tri thức."
-                    </p>
-                    <p class="reveal text-slate-600 dark:text-slate-400 leading-relaxed pt-2" data-delay="2">
-                        Là một học sinh chuyên Vật lý tại trường Chuyên Bến Tre, tôi luôn nhìn thế giới xung quanh
-                        qua góc nhìn chủ động và giàu năng lượng. Dù trên sân tập thể thao hay trong học tập,
-                        tinh thần kiên trì và mong muốn vượt qua giới hạn của bản thân luôn là mục tiêu hàng đầu.
-                    </p>
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                    
+                    <!-- Góc bên trái: Khung chứa video & hiệu ứng igloo.inc -->
+                    <div class="lg:col-span-5 reveal" data-delay="1">
+                        <div id="igloo-container" class="igloo-frame p-3 relative group">
+                            <div id="igloo-glow" class="igloo-glow"></div>
+                            <div class="relative w-full aspect-[4/3] rounded-2xl overflow-hidden bg-slate-900 shadow-inner flex items-center justify-center">
+                                <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700">
+                                    <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-screens-and-lights-31955-large.mp4" type="video/mp4">
+                                    Trình duyệt của bạn không hỗ trợ video thẻ.
+                                </video>
+                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent pointer-events-none"></div>
+                                <div class="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-[11px] font-mono text-sky-400">
+                                    <i class="fas fa-sparkles mr-1"></i> Igloo Experience
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Góc bên phải: Phần về bản thân -->
+                    <div class="lg:col-span-7 space-y-4 text-left reveal" data-delay="2">
+                        <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Về Bản Thân</h2>
+                        <p class="text-2xl sm:text-3xl font-bold tracking-tight leading-snug">
+                            "Sự tò mò là ngọn đuốc dẫn đường cho tri thức."
+                        </p>
+                        <p class="text-slate-600 dark:text-slate-400 leading-relaxed pt-2">
+                            Là một học sinh chuyên Vật lý tại trường Chuyên Bến Tre, tôi luôn nhìn thế giới xung quanh
+                            qua góc nhìn chủ động và giàu năng lượng. Dù trên sân tập thể thao hay trong học tập,
+                            tinh thần kiên trì và mong muốn vượt qua giới hạn của bản thân luôn là mục tiêu hàng đầu.
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </section>
@@ -988,18 +1039,18 @@
                 for (var i = 0; i < numBubbles; i++) {
                     var bubble = document.createElement('div');
                     bubble.className = 'ios-bubble';
-                    var size = Math.floor(Math.random() * 32) + 12; // 12px to 44px
+                    var size = Math.floor(Math.random() * 32) + 12;
                     bubble.style.width = size + 'px';
                     bubble.style.height = size + 'px';
                     bubble.style.left = Math.random() * 100 + '%';
-                    bubble.style.animationDuration = (Math.random() * 8 + 6) + 's'; // 6s to 14s
+                    bubble.style.animationDuration = (Math.random() * 8 + 6) + 's';
                     bubble.style.animationDelay = (Math.random() * 8) + 's';
                     bubblesContainer.appendChild(bubble);
                 }
             }
 
             /* ------------------------------------------------------------
-               6. HERO PHYSICS GRAVITY PARTICLES (Tương tác trọng lực với chuột)
+               6. HERO PHYSICS GRAVITY PARTICLES
                ------------------------------------------------------------ */
             var canvas = document.getElementById('hero-particles');
             var heroSection = document.getElementById('hero');
@@ -1090,7 +1141,21 @@
             }
 
             /* ------------------------------------------------------------
-               7. SCROLL REVEAL & ACHIEVEMENTS
+               7. IGLOO EFFECT INTERACTION
+               ------------------------------------------------------------ */
+            var iglooContainer = document.getElementById('igloo-container');
+            var iglooGlow = document.getElementById('igloo-glow');
+            if (iglooContainer && iglooGlow && finePointer && !prefersReduced) {
+                iglooContainer.addEventListener('mousemove', function(e) {
+                    var rect = iglooContainer.getBoundingClientRect();
+                    var x = e.clientX - rect.left;
+                    var y = e.clientY - rect.top;
+                    iglooGlow.style.transform = 'translate(' + (x - 70) + 'px, ' + (y - 70) + 'px)';
+                });
+            }
+
+            /* ------------------------------------------------------------
+               8. SCROLL REVEAL & ACHIEVEMENTS
                ------------------------------------------------------------ */
             var achievementsUnlocked = { explorer: false, gamer: false };
             var toastEl = document.getElementById('achievement-toast');
@@ -1126,7 +1191,7 @@
             }
 
             /* ------------------------------------------------------------
-               8. RPG STAT CARD SWITCHER (Đại Cao Thủ - Top Butterfly)
+               9. RPG STAT CARD SWITCHER
                ------------------------------------------------------------ */
             var modePhysics = document.getElementById('mode-physics');
             var modeGaming = document.getElementById('mode-gaming');
@@ -1178,7 +1243,7 @@
             }
 
             /* ------------------------------------------------------------
-               9. 3D TILT EFFECT FOR QR CODE (Hiệu ứng 3D cho QR chuyển tiền)
+               10. 3D TILT EFFECT FOR QR CODE
                ------------------------------------------------------------ */
             var qrCard = document.getElementById('qr-3d-card');
             var donateSection = document.getElementById('donate');
@@ -1199,7 +1264,7 @@
             }
 
             /* ------------------------------------------------------------
-               10. ACTIVE NAV LINK & TILT / MAGNETIC
+               11. ACTIVE NAV LINK & TILT / MAGNETIC
                ------------------------------------------------------------ */
             var navLinks = document.querySelectorAll('.nav-link');
             var sections = document.querySelectorAll('main section[id]');
