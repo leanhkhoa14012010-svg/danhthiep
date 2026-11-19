@@ -51,6 +51,7 @@
                     },
                     fontFamily: {
                         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
                     },
                     animation: {
                         'float': 'float 6s ease-in-out infinite',
@@ -86,10 +87,10 @@
         };
     </script>
 
-    <!-- Google Font Inter -->
+    <!-- Google Fonts Inter & JetBrains Mono (hỗ trợ tiếng Việt đầy đủ) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -105,8 +106,32 @@
             transition: background-color .3s ease, color .3s ease;
             overflow-x: hidden;
         }
+        .telemetry-font {
+            font-family: 'JetBrains Mono', 'Inter', system-ui, sans-serif;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.01em;
+        }
         img { -webkit-user-drag: none; user-select: none; }
         a, button { -webkit-user-select: none; user-select: none; }
+
+        /* Chill / Focus mode styling */
+        body.focus-mode #ios-bubbles-container,
+        body.focus-mode #hero-particles,
+        body.focus-mode .hero-spotlight {
+            opacity: 0.14;
+            transition: opacity 0.45s ease;
+        }
+        body.focus-mode #about,
+        body.focus-mode #interests,
+        body.focus-mode #contact {
+            opacity: 0.72;
+            transition: opacity 0.4s ease;
+        }
+        body.focus-mode #about:hover,
+        body.focus-mode #interests:hover,
+        body.focus-mode #contact:hover {
+            opacity: 1;
+        }
 
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -526,7 +551,7 @@
             </a>
 
             <!-- Desktop nav -->
-            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium" aria-label="Primary">
+            <nav class="hidden md:flex items-center space-x-6 lg:space-x-8 text-sm font-medium" aria-label="Primary">
                 <a href="#about" class="nav-link hover:text-sky-500">Về Tôi</a>
                 <a href="#interests" class="nav-link hover:text-sky-500">Sở Thích</a>
                 <a href="#documents" class="nav-link hover:text-sky-500">Flashcard & Tài Liệu</a>
@@ -534,8 +559,22 @@
                 <a href="#donate" class="nav-link hover:text-sky-500">plsss donet</a>
             </nav>
 
-            <!-- Actions -->
-            <div class="flex items-center space-x-2.5">
+            <!-- Actions: Chill/Focus + Sound + Theme -->
+            <div class="flex items-center space-x-2">
+                <button id="chill-focus-toggle" type="button" aria-pressed="false"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold transition-all hover:scale-105 active:scale-95"
+                    title="Chế độ Chill / Focus (làm dịu nền & tập trung)">
+                    <i class="fas fa-spa text-teal-500"></i>
+                    <span class="hidden sm:inline">Chill / Focus</span>
+                </button>
+
+                <button id="ambient-sound-toggle" type="button" data-sound="off"
+                    class="inline-flex items-center gap-1.5 px-2.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/70 dark:bg-slate-900/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold transition-all hover:scale-105 active:scale-95"
+                    title="Âm thanh nền Web Audio: Tắt -> Tiếng mưa rơi -> Tiếng phím gõ nhẹ">
+                    <i id="ambient-sound-icon" class="fas fa-volume-xmark text-slate-400"></i>
+                    <span id="ambient-sound-label" class="hidden lg:inline">Âm: Tắt</span>
+                </button>
+
                 <button id="theme-toggle" type="button" aria-label="Chuyển đổi giao diện sáng/tối"
                     class="relative p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-900/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-all hover:scale-105 active:scale-95">
                     <i id="theme-toggle-dark-icon" class="fas fa-moon text-base hidden"></i>
@@ -704,11 +743,11 @@
                                     <i class="fas fa-gamepad"></i>
                                 </div>
                                 
-                                <div class="relative z-10 mt-4 text-xs font-mono font-semibold tracking-wider text-slate-300 uppercase group-hover:text-white transition-colors">
+                                <div class="relative z-10 mt-4 text-xs telemetry-font font-semibold tracking-wider text-slate-300 uppercase group-hover:text-white transition-colors">
                                     <span class="text-sky-400">&lt;</span> Igloo.inc Link <span class="text-sky-400">&gt;</span>
                                 </div>
                                 
-                                <div class="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-[11px] font-mono text-sky-400 flex items-center gap-1.5">
+                                <div class="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/10 text-[11px] telemetry-font text-sky-400 flex items-center gap-1.5">
                                     <i class="fas fa-arrow-up-right-from-square text-[9px]"></i> Mở igloo.inc
                                 </div>
                             </div>
@@ -747,7 +786,7 @@
                                 <label class="space-y-1">
                                     <div class="flex justify-between text-slate-500 dark:text-slate-400">
                                         <span id="phys-p1-label">Góc bắn</span>
-                                        <strong id="phys-p1-val" class="font-mono text-sky-500">45°</strong>
+                                        <strong id="phys-p1-val" class="telemetry-font text-sky-500">45°</strong>
                                     </div>
                                     <input id="phys-p1-input" type="range" min="10" max="80" value="45" class="w-full accent-sky-500">
                                 </label>
@@ -755,7 +794,7 @@
                                 <label class="space-y-1">
                                     <div class="flex justify-between text-slate-500 dark:text-slate-400">
                                         <span id="phys-p2-label">Vận tốc v₀</span>
-                                        <strong id="phys-p2-val" class="font-mono text-indigo-500">28 m/s</strong>
+                                        <strong id="phys-p2-val" class="telemetry-font text-indigo-500">28 m/s</strong>
                                     </div>
                                     <input id="phys-p2-input" type="range" min="10" max="45" value="28" class="w-full accent-indigo-500">
                                 </label>
@@ -767,7 +806,7 @@
                                 </div>
                             </div>
 
-                            <div id="phys-formula-readout" class="text-[11px] font-mono text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                            <div id="phys-formula-readout" class="text-[11px] telemetry-font text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
                                 <span id="phys-eq-text">y(x) = x·tan(α) - g·x² / (2·v₀²·cos²α)</span>
                                 <span id="phys-telemetry-text" class="text-sky-500 font-semibold">g = 9.8 m/s²</span>
                             </div>
@@ -827,7 +866,7 @@
                     <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Học Tập Tương Tác</h2>
                     <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Flashcard Từ Vựng, Dấu Nhấn & Loại Từ</h3>
                     <p class="reveal text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto" data-delay="2">
-                        Tải lên file từ vựng tiếng Anh (<code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.csv</code> hoặc <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.txt</code>) để tự động tạo bộ thẻ Flashcard lật 3D ôn từ vựng, loại từ và dấu nhấn.
+                        Tải lên file từ vựng tiếng Anh (<code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 telemetry-font text-xs">.csv</code> hoặc <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 telemetry-font text-xs">.txt</code>) để tự động tạo bộ thẻ Flashcard lật 3D ôn từ vựng, loại từ và dấu nhấn.
                     </p>
                 </div>
 
@@ -887,7 +926,7 @@
                                         <span id="fc-front-badge" class="px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 font-bold uppercase tracking-wider">
                                             Từ vựng
                                         </span>
-                                        <span id="fc-card-index" class="font-mono text-slate-400">1 / 6</span>
+                                        <span id="fc-card-index" class="telemetry-font text-slate-400">1 / 6</span>
                                     </div>
 
                                     <div class="text-center my-auto space-y-3">
@@ -970,10 +1009,10 @@
 
                         <!-- Keyboard Shortcuts Hint -->
                         <div class="mt-3 text-center text-[11px] text-slate-400 dark:text-slate-500">
-                            Phím tắt: <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">Space</kbd> lật thẻ &bull;
-                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">←</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">→</kbd> chuyển thẻ &bull;
-                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">1</kbd> Cần ôn lại &bull;
-                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">2</kbd> Đã nhớ
+                            Phím tắt: <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 telemetry-font">Space</kbd> lật thẻ &bull;
+                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 telemetry-font">←</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 telemetry-font">→</kbd> chuyển thẻ &bull;
+                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 telemetry-font">1</kbd> Cần ôn lại &bull;
+                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 telemetry-font">2</kbd> Đã nhớ
                         </div>
                     </div>
 
@@ -981,7 +1020,7 @@
                     <div class="mt-8 pt-6 border-t border-slate-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
                         <div>
                             <span class="font-semibold text-slate-700 dark:text-slate-300">Định dạng file hỗ trợ:</span>
-                            Mỗi dòng ghi theo mẫu <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">word, pos, stress, meaning, example</code> (ngăn cách bằng dấu phẩy <code class="font-mono">,</code> hoặc <code class="font-mono">|</code>).
+                            Mỗi dòng ghi theo mẫu <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 telemetry-font">word, pos, stress, meaning, example</code> (ngăn cách bằng dấu phẩy <code class="telemetry-font">,</code> hoặc <code class="telemetry-font">|</code>).
                         </div>
                         <a href="/document.pdf" target="_blank" rel="noopener noreferrer" class="shrink-0 inline-flex items-center gap-1.5 font-semibold text-sky-500 hover:text-sky-600">
                             <i class="fas fa-file-pdf"></i>
@@ -1048,7 +1087,7 @@
                                 </h4>
                                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">
                                     Ủng hộ cho Lê Anh Khoa<br>
-                                    <span class="font-mono font-semibold text-slate-700 dark:text-slate-300">Vietcombank: 1065359553</span>
+                                    <span class="telemetry-font font-semibold text-slate-700 dark:text-slate-300">Vietcombank: 1065359553</span>
                                 </p>
                             </div>
 
@@ -1229,7 +1268,117 @@
             }
 
             /* ------------------------------------------------------------
-               2. THEME TOGGLE + HUD/TELEMETRY SYNC
+               1B. CHILL / FOCUS MODE + WEB AUDIO AMBIENT SOUND
+               ------------------------------------------------------------ */
+            var chillFocusBtn = document.getElementById('chill-focus-toggle');
+            var soundToggleBtn = document.getElementById('ambient-sound-toggle');
+            var soundIconEl = document.getElementById('ambient-sound-icon');
+            var soundLabelEl = document.getElementById('ambient-sound-label');
+
+            var audioCtx = null;
+            var rainTimer = null;
+            var keyTimer = null;
+            var soundModes = ['off', 'rain', 'keys'];
+            var soundIdx = 0;
+
+            function stopAmbientAudio() {
+                if (rainTimer) { clearInterval(rainTimer); rainTimer = null; }
+                if (keyTimer) { clearInterval(keyTimer); keyTimer = null; }
+            }
+
+            function ensureAudioContext() {
+                var Ctx = window.AudioContext || window.webkitAudioContext;
+                if (!Ctx) return null;
+                if (!audioCtx) audioCtx = new Ctx();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                return audioCtx;
+            }
+
+            function triggerRainBurst(ctx) {
+                var bufferSize = Math.floor(ctx.sampleRate * 0.35);
+                var buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                var data = buffer.getChannelData(0);
+                for (var i = 0; i < bufferSize; i++) {
+                    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.55));
+                }
+                var noise = ctx.createBufferSource();
+                noise.buffer = buffer;
+
+                var filter = ctx.createBiquadFilter();
+                filter.type = 'bandpass';
+                filter.frequency.value = 1100 + Math.random() * 700;
+                filter.Q.value = 0.8;
+
+                var gain = ctx.createGain();
+                gain.gain.value = 0.045;
+
+                noise.connect(filter);
+                filter.connect(gain);
+                gain.connect(ctx.destination);
+                noise.start();
+            }
+
+            function triggerSoftKeyTap(ctx) {
+                var osc = ctx.createOscillator();
+                var gain = ctx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(340 + Math.random() * 140, ctx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(110, ctx.currentTime + 0.035);
+
+                gain.gain.setValueAtTime(0.035, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0008, ctx.currentTime + 0.04);
+
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.045);
+            }
+
+            function applySoundMode(mode) {
+                stopAmbientAudio();
+                if (mode === 'off') {
+                    if (soundIconEl) soundIconEl.className = 'fas fa-volume-xmark text-slate-400';
+                    if (soundLabelEl) soundLabelEl.textContent = 'Âm: Tắt';
+                    return;
+                }
+                var ctx = ensureAudioContext();
+                if (!ctx) return;
+
+                if (mode === 'rain') {
+                    if (soundIconEl) soundIconEl.className = 'fas fa-cloud-rain text-sky-400';
+                    if (soundLabelEl) soundLabelEl.textContent = 'Mưa rơi';
+                    triggerRainBurst(ctx);
+                    rainTimer = setInterval(function () { triggerRainBurst(ctx); }, 220);
+                } else if (mode === 'keys') {
+                    if (soundIconEl) soundIconEl.className = 'fas fa-keyboard text-indigo-400';
+                    if (soundLabelEl) soundLabelEl.textContent = 'Phím gõ';
+                    triggerSoftKeyTap(ctx);
+                    keyTimer = setInterval(function () {
+                        if (Math.random() > 0.25) triggerSoftKeyTap(ctx);
+                    }, 260);
+                }
+            }
+
+            if (chillFocusBtn) {
+                chillFocusBtn.addEventListener('click', function () {
+                    var active = document.body.classList.toggle('focus-mode');
+                    chillFocusBtn.setAttribute('aria-pressed', String(active));
+                    chillFocusBtn.classList.toggle('border-teal-500', active);
+                    chillFocusBtn.classList.toggle('bg-teal-500/15', active);
+                });
+            }
+
+            if (soundToggleBtn) {
+                soundToggleBtn.addEventListener('click', function () {
+                    soundIdx = (soundIdx + 1) % soundModes.length;
+                    var nextMode = soundModes[soundIdx];
+                    soundToggleBtn.setAttribute('data-sound', nextMode);
+                    applySoundMode(nextMode);
+                });
+            }
+
+            /* ------------------------------------------------------------
+               2. THEME TOGGLE + HUD/TELEMETRY SYNC (SỬA FONT CHỮ RÕ NÉT)
                ------------------------------------------------------------ */
             var themeToggleBtn = document.getElementById('theme-toggle');
             var darkIcon = document.getElementById('theme-toggle-dark-icon');
@@ -1245,14 +1394,23 @@
                 if (currentCardMode === 'physics') {
                     if (useHud) {
                         cardStats.innerHTML = `
-                            <div class="p-3 rounded-xl bg-slate-950/90 text-sky-400 border border-sky-500/30 font-mono text-xs space-y-1.5">
+                            <div class="p-3.5 rounded-xl bg-slate-950/90 text-sky-400 border border-sky-500/30 telemetry-font text-xs space-y-2">
                                 <div class="flex justify-between text-[10px] uppercase tracking-widest text-slate-400">
                                     <span>[TELEMETRY // PHYS-11]</span>
                                     <span class="text-emerald-400">ONLINE</span>
                                 </div>
-                                <div class="flex justify-between"><span>UNIT:</span><span class="text-white font-bold">CHUYÊN LÝ — CBT</span></div>
-                                <div class="flex justify-between"><span>GRAVITY_REF:</span><span class="text-sky-300">g = 9.80 m/s²</span></div>
-                                <div class="flex justify-between"><span>CORE_SKILL:</span><span class="text-indigo-300">LOGIC &amp; PROBLEM SOLVING</span></div>
+                                <div class="flex justify-between items-center gap-2">
+                                    <span class="text-sky-400">UNIT:</span>
+                                    <span class="text-white font-bold text-right">CHUYÊN LÝ — CBT</span>
+                                </div>
+                                <div class="flex justify-between items-center gap-2">
+                                    <span class="text-sky-400">GRAVITY_REF:</span>
+                                    <span class="text-sky-300 font-semibold text-right">g = 9.80 m/s²</span>
+                                </div>
+                                <div class="flex justify-between items-center gap-2">
+                                    <span class="text-sky-400">CORE_SKILL:</span>
+                                    <span class="text-indigo-300 font-semibold text-right">LOGIC &amp; PROBLEM SOLVING</span>
+                                </div>
                             </div>
                         `;
                     } else {
@@ -1274,14 +1432,23 @@
                 } else {
                     if (useHud) {
                         cardStats.innerHTML = `
-                            <div class="p-3 rounded-xl bg-slate-950/95 text-purple-300 border border-purple-500/40 font-mono text-xs space-y-1.5">
+                            <div class="p-3.5 rounded-xl bg-slate-950/95 text-purple-300 border border-purple-500/40 telemetry-font text-xs space-y-2">
                                 <div class="flex justify-between text-[10px] uppercase tracking-widest text-purple-400">
                                     <span>[HUD // GAMER-TELEMETRY]</span>
                                     <span class="text-amber-400">ACTIVE</span>
                                 </div>
-                                <div class="flex justify-between"><span>AOV_RANK:</span><span class="text-purple-300 font-bold">ĐẠI CAO THỦ (TOP BUTTERFLY)</span></div>
-                                <div class="flex justify-between"><span>ROBLOX_MOD:</span><span class="text-indigo-300 font-bold">PRO BUILDER / BLOX FRUITS</span></div>
-                                <div class="flex justify-between"><span>STAMINA_LKP:</span><span class="text-amber-300 font-bold">CẦU LÔNG // PEAK</span></div>
+                                <div class="flex justify-between items-center gap-2">
+                                    <span>AOV_RANK:</span>
+                                    <span class="text-purple-300 font-bold text-right">ĐẠI CAO THỦ (TOP BUTTERFLY)</span>
+                                </div>
+                                <div class="flex justify-between items-center gap-2">
+                                    <span>ROBLOX_MOD:</span>
+                                    <span class="text-indigo-300 font-bold text-right">PRO BUILDER / BLOX FRUITS</span>
+                                </div>
+                                <div class="flex justify-between items-center gap-2">
+                                    <span>STAMINA_LKP:</span>
+                                    <span class="text-amber-300 font-bold text-right">CẦU LÔNG // PEAK</span>
+                                </div>
                             </div>
                         `;
                     } else {
@@ -1515,7 +1682,7 @@
                 var simCanvas = document.getElementById('physics-sim-canvas');
                 if (!simCanvas) return;
                 var sctx = simCanvas.getContext('2d');
-                var physMode = 'projectile'; // 'projectile' | 'pendulum' | 'wave'
+                var physMode = 'projectile';
                 var p1Input = document.getElementById('phys-p1-input');
                 var p2Input = document.getElementById('phys-p2-input');
                 var p1Label = document.getElementById('phys-p1-label');
@@ -1582,7 +1749,6 @@
                         var h = simCanvas.height;
                         sctx.clearRect(0, 0, w, h);
 
-                        // subtle grid
                         sctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
                         sctx.lineWidth = 1;
                         for (var gx = 0; gx < w; gx += 28) {
@@ -1781,7 +1947,7 @@
             var fcQueue = defaultVocabDeck.slice();
             var fcMastered = 0;
             var fcCurrentIdx = 0;
-            var fcMode = 'all'; // 'all' | 'pos' | 'stress'
+            var fcMode = 'all';
 
             var fcScene = document.getElementById('flashcard-scene');
             var fcInner = document.getElementById('flashcard-inner');
@@ -1915,7 +2081,6 @@
             if (fcKnowBtn) fcKnowBtn.addEventListener('click', markKnown);
             if (fcReviewBtn) fcReviewBtn.addEventListener('click', markReview);
 
-            // Keyboard shortcuts for Flashcard (Space, ArrowLeft, ArrowRight, 1, 2)
             document.addEventListener('keydown', function (e) {
                 var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
                 if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
@@ -1949,7 +2114,6 @@
                 });
             });
 
-            // Parse uploaded CSV/TXT file
             function parseVocabText(rawText) {
                 var lines = rawText.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
                 var parsed = [];
@@ -2137,7 +2301,6 @@
                     return buildQuickQuizFromDeck();
                 }
 
-                // 1. Kiểm tra nhu cầu tìm file / tài liệu
                 var isFileSearch = /(tìm|tim|file|fiel|tài liệu|tai lieu|pdf|csv|tải|tai|download|đề cương)/i.test(q);
                 var matchedFiles = siteFilesCatalog.filter(function (f) {
                     return f.keywords.some(function (kw) { return q.indexOf(kw) !== -1; });
@@ -2161,7 +2324,6 @@
                     return html;
                 }
 
-                // 2. Giới thiệu tổng quan website
                 if (/(web|trang|có gì|co gi|giới thiệu|gioi thieu|tổng quan)/i.test(q)) {
                     return '<p>Trang web cá nhân của <strong>Lê Anh Khoa</strong> (11 Lý — THPT Chuyên Bến Tre) gồm các khu vực chính:</p>' +
                         '<ul class="list-disc pl-4 space-y-1 text-xs">' +
@@ -2173,20 +2335,17 @@
                         '</ul>';
                 }
 
-                // 3. Thông tin cá nhân / học vấn / game
                 if (/(khoa|ai|trường|truong|lớp|lop|chuyên|liên quân|lien quan|game|rank|butterfly|sở thích|so thich|cầu lông)/i.test(q)) {
                     return '<p><strong>Lê Anh Khoa</strong> hiện là học sinh lớp <strong>11 Lý, Trường THPT Chuyên Bến Tre</strong>.</p>' +
                         '<p>Ngoài tư duy Vật lý và giải bài tập, Khoa còn chơi <strong>Cầu lông</strong>, đạt rank <strong>Đại Cao Thủ (Top Butterfly)</strong> trong Liên Quân và chơi Roblox. Bạn có thể bấm nút <em>Gamer &amp; Thể Thao</em> trên thẻ hồ sơ ở đầu trang để xem chi tiết!</p>';
                 }
 
-                // 4. Flashcard
                 if (/(flashcard|học từ|hoc tu|ôn tập|on tap|cách chơi|cach choi)/i.test(q)) {
                     return '<p>Ở mục <strong>Flashcard Từ Vựng</strong>, bạn có thể nhấn <em>"Tải file từ vựng (.csv / .txt)"</em> theo cấu trúc <code>word, pos, stress, meaning, example</code>.</p>' +
                         '<p>Sau đó dùng phím tắt <code>Space</code> để lật, <code>← / →</code> chuyển thẻ, <code>1 / 2</code> để đánh dấu Cần ôn lại / Đã nhớ.</p>' +
                         '<button type="button" data-chat-scroll="#documents" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Tới khu Flashcard ngay</button>';
                 }
 
-                // 5. Liên hệ & Donate
                 if (/(liên hệ|lien he|zalo|facebook|fb|sđt|sdt|donate|donet|ủng hộ|ung ho|bank|ngân hàng|qr)/i.test(q)) {
                     return '<p>Bạn có thể kết nối hoặc ủng hộ Khoa qua:</p>' +
                         '<ul class="list-disc pl-4 space-y-1 text-xs">' +
@@ -2197,7 +2356,6 @@
                         '<button type="button" data-chat-scroll="#contact" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Xem mục Liên hệ &amp; QR 3D</button>';
                 }
 
-                // 6. Phản hồi mặc định linh hoạt
                 return '<p>Mình đã ghi nhận câu hỏi: <em>"' + rawQuery.replace(/</g, '&lt;') + '"</em>.</p>' +
                     '<p>Bạn có thể hỏi mình chi tiết hơn về <strong>Lê Anh Khoa</strong>, <strong>cách dùng Flashcard</strong>, <strong>liên hệ/donate</strong>, hoặc gõ từ khóa như <strong>"tìm file pdf"</strong> để tra cứu tài liệu nhé!</p>';
             }
