@@ -94,16 +94,6 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Thư viện đọc đa định dạng file (PDF, Word DOCX, Excel XLSX/XLS/CSV) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script>
-        if (window.pdfjsLib) {
-            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        }
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-
     <style>
         /* ============================================================
            BASE / RESET
@@ -351,8 +341,8 @@
             animation: gradientShift 9s ease infinite;
         }
         @keyframes gradientShift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
+            0%, 100% { backgroundPosition: 0% 50%; }
+            50% { backgroundPosition: 100% 50%; }
         }
 
         /* Avatar ring */
@@ -696,7 +686,7 @@
             </div>
         </section>
 
-        <!-- ============ ABOUT (Khung Gamepad liên kết igloo.inc bên trái & nội dung bên phải) ============ -->
+        <!-- ============ ABOUT (Khung Gamepad liên kết igloo.inc bên trái & nội dung bên phải + Physics Playground) ============ -->
         <section id="about" class="py-20 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -725,7 +715,7 @@
                         </a>
                     </div>
 
-                    <!-- Góc bên phải: Phần về bản thân -->
+                    <!-- Góc bên phải: Phần về bản thân + Physics Playground mini-widget -->
                     <div class="lg:col-span-7 space-y-4 text-left reveal" data-delay="2">
                         <h2 class="text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Về Bản Thân</h2>
                         <p class="text-2xl sm:text-3xl font-bold tracking-tight leading-snug">
@@ -736,6 +726,52 @@
                             qua góc nhìn chủ động và giàu năng lượng. Dù trên sân tập thể thao hay trong học tập,
                             tinh thần kiên trì và mong muốn vượt qua giới hạn của bản thân luôn là mục tiêu hàng đầu.
                         </p>
+
+                        <!-- Physics Playground Mini-Widget -->
+                        <div id="physics-playground" class="mt-4 p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-500">
+                                    <i class="fas fa-atom"></i>
+                                    <span>Physics Playground (11 Lý)</span>
+                                </div>
+                                <div class="flex items-center gap-1 p-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold">
+                                    <button type="button" data-phys-mode="projectile" class="phys-mode-btn px-2.5 py-1 rounded-md bg-sky-500 text-white transition-all">Ném xiên</button>
+                                    <button type="button" data-phys-mode="pendulum" class="phys-mode-btn px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all">Con lắc đơn</button>
+                                    <button type="button" data-phys-mode="wave" class="phys-mode-btn px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all">Sóng cơ</button>
+                                </div>
+                            </div>
+
+                            <canvas id="physics-sim-canvas" class="w-full h-36 rounded-xl bg-slate-950/90 border border-slate-800 block"></canvas>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center text-xs">
+                                <label class="space-y-1">
+                                    <div class="flex justify-between text-slate-500 dark:text-slate-400">
+                                        <span id="phys-p1-label">Góc bắn</span>
+                                        <strong id="phys-p1-val" class="font-mono text-sky-500">45°</strong>
+                                    </div>
+                                    <input id="phys-p1-input" type="range" min="10" max="80" value="45" class="w-full accent-sky-500">
+                                </label>
+
+                                <label class="space-y-1">
+                                    <div class="flex justify-between text-slate-500 dark:text-slate-400">
+                                        <span id="phys-p2-label">Vận tốc v₀</span>
+                                        <strong id="phys-p2-val" class="font-mono text-indigo-500">28 m/s</strong>
+                                    </div>
+                                    <input id="phys-p2-input" type="range" min="10" max="45" value="28" class="w-full accent-indigo-500">
+                                </label>
+
+                                <div class="flex items-center justify-end gap-2 pt-1 sm:pt-0">
+                                    <button id="phys-run-btn" type="button" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs shadow hover:opacity-95 active:scale-95 transition-all">
+                                        <i class="fas fa-play mr-1"></i> Bắn / Chạy
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="phys-formula-readout" class="text-[11px] font-mono text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
+                                <span id="phys-eq-text">y(x) = x·tan(α) - g·x² / (2·v₀²·cos²α)</span>
+                                <span id="phys-telemetry-text" class="text-sky-500 font-semibold">g = 9.8 m/s²</span>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
@@ -791,7 +827,7 @@
                     <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Học Tập Tương Tác</h2>
                     <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Flashcard Từ Vựng, Dấu Nhấn & Loại Từ</h3>
                     <p class="reveal text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto" data-delay="2">
-                        Tải lên file từ vựng tiếng Anh dưới mọi định dạng (<code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.pdf</code>, <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.docx</code>, <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.xlsx</code>, <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.csv</code>, <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.txt</code>...) để tự động tạo bộ thẻ Flashcard lật 3D.
+                        Tải lên file từ vựng tiếng Anh (<code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.csv</code> hoặc <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.txt</code>) để tự động tạo bộ thẻ Flashcard lật 3D ôn từ vựng, loại từ và dấu nhấn.
                     </p>
                 </div>
 
@@ -803,9 +839,9 @@
                         <div class="flex flex-wrap items-center gap-3">
                             <label for="vocab-file-input" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold shadow-md shadow-sky-500/20 hover:shadow-sky-500/40 transition-all cursor-pointer">
                                 <i class="fas fa-file-arrow-up"></i>
-                                <span>Tải file từ vựng (.pdf, .docx, .xlsx, .csv, .txt...)</span>
+                                <span>Tải file từ vựng (.csv / .txt)</span>
                             </label>
-                            <input id="vocab-file-input" type="file" accept="*/*" class="hidden">
+                            <input id="vocab-file-input" type="file" accept=".csv,.txt" class="hidden">
 
                             <button id="download-sample-csv" type="button" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors">
                                 <i class="fas fa-download text-sky-500"></i>
@@ -842,7 +878,7 @@
 
                     <!-- 3D Flashcard Area -->
                     <div class="max-w-xl mx-auto my-4">
-                        <div id="flashcard-scene" class="flashcard-scene w-full h-[310px] sm:h-[330px] cursor-pointer select-none" title="Nhấn để lật thẻ">
+                        <div id="flashcard-scene" class="flashcard-scene w-full h-[310px] sm:h-[330px] cursor-pointer select-none" title="Nhấn để lật thẻ (Phím Space)">
                             <div id="flashcard-inner" class="flashcard-inner">
                                 
                                 <!-- Front Face -->
@@ -931,13 +967,21 @@
                                 Tiếp <i class="fas fa-chevron-right ml-1"></i>
                             </button>
                         </div>
+
+                        <!-- Keyboard Shortcuts Hint -->
+                        <div class="mt-3 text-center text-[11px] text-slate-400 dark:text-slate-500">
+                            Phím tắt: <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">Space</kbd> lật thẻ &bull;
+                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">←</kbd> / <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">→</kbd> chuyển thẻ &bull;
+                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">1</kbd> Cần ôn lại &bull;
+                            <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">2</kbd> Đã nhớ
+                        </div>
                     </div>
 
                     <!-- Format Guide Accordion / Box -->
                     <div class="mt-8 pt-6 border-t border-slate-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
                         <div>
-                            <span class="font-semibold text-slate-700 dark:text-slate-300">Hỗ trợ mọi loại file (.pdf, .docx, .xlsx, .csv, .txt, .json...):</span>
-                            Nội dung mỗi dòng ghi theo mẫu <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">word, pos, stress, meaning, example</code> (ngăn cách bằng <code class="font-mono">,</code>, <code class="font-mono">|</code>, <code class="font-mono">;</code> hoặc các cột Excel).
+                            <span class="font-semibold text-slate-700 dark:text-slate-300">Định dạng file hỗ trợ:</span>
+                            Mỗi dòng ghi theo mẫu <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">word, pos, stress, meaning, example</code> (ngăn cách bằng dấu phẩy <code class="font-mono">,</code> hoặc <code class="font-mono">|</code>).
                         </div>
                         <a href="/document.pdf" target="_blank" rel="noopener noreferrer" class="shrink-0 inline-flex items-center gap-1.5 font-semibold text-sky-500 hover:text-sky-600">
                             <i class="fas fa-file-pdf"></i>
@@ -1053,7 +1097,7 @@
                         <div class="text-sm font-bold leading-tight">Khoa AI Assistant</div>
                         <div class="text-[10px] text-sky-100 flex items-center gap-1">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                            Hỏi đáp & Tìm kiếm tài liệu
+                            Hỏi đáp & Đọc file từ vựng
                         </div>
                     </div>
                 </div>
@@ -1069,7 +1113,7 @@
                         <i class="fas fa-robot text-xs"></i>
                     </div>
                     <div class="p-3 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
-                        Chào bạn! Mình là trợ lý AI của <strong>Lê Anh Khoa</strong>. Bạn có thể hỏi mình về thông tin trang web, thành tích, hoặc gõ tên tài liệu/file để mình tìm giúp nhé!
+                        Chào bạn! Mình là trợ lý AI của <strong>Lê Anh Khoa</strong>. Bạn có thể hỏi mình về thông tin trang web, gõ tên tài liệu/file để tìm, hoặc tải file từ vựng lên khu Flashcard để mình gợi ý kiểm tra nhanh loại từ & dấu nhấn!
                     </div>
                 </div>
             </div>
@@ -1082,8 +1126,8 @@
                 <button type="button" class="ai-chip shrink-0 px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors" data-prompt="Tìm file tài liệu">
                     Tìm file tài liệu
                 </button>
-                <button type="button" class="ai-chip shrink-0 px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors" data-prompt="Cách chơi Flashcard">
-                    Cách chơi Flashcard
+                <button type="button" class="ai-chip shrink-0 px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors" data-prompt="Kiểm tra nhanh 3 câu loại từ/dấu nhấn">
+                    Kiểm tra 3 câu nhanh
                 </button>
                 <button type="button" class="ai-chip shrink-0 px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors" data-prompt="Liên hệ & Donate">
                     Liên hệ & Donate
@@ -1185,16 +1229,85 @@
             }
 
             /* ------------------------------------------------------------
-               2. THEME TOGGLE
+               2. THEME TOGGLE + HUD/TELEMETRY SYNC
                ------------------------------------------------------------ */
             var themeToggleBtn = document.getElementById('theme-toggle');
             var darkIcon = document.getElementById('theme-toggle-dark-icon');
             var lightIcon = document.getElementById('theme-toggle-light-icon');
+            var currentCardMode = 'physics';
+
+            function renderCardStats() {
+                var cardStats = document.getElementById('card-stats');
+                if (!cardStats) return;
+                var isDark = document.documentElement.classList.contains('dark');
+                var useHud = isDark || currentCardMode === 'gaming';
+
+                if (currentCardMode === 'physics') {
+                    if (useHud) {
+                        cardStats.innerHTML = `
+                            <div class="p-3 rounded-xl bg-slate-950/90 text-sky-400 border border-sky-500/30 font-mono text-xs space-y-1.5">
+                                <div class="flex justify-between text-[10px] uppercase tracking-widest text-slate-400">
+                                    <span>[TELEMETRY // PHYS-11]</span>
+                                    <span class="text-emerald-400">ONLINE</span>
+                                </div>
+                                <div class="flex justify-between"><span>UNIT:</span><span class="text-white font-bold">CHUYÊN LÝ — CBT</span></div>
+                                <div class="flex justify-between"><span>GRAVITY_REF:</span><span class="text-sky-300">g = 9.80 m/s²</span></div>
+                                <div class="flex justify-between"><span>CORE_SKILL:</span><span class="text-indigo-300">LOGIC &amp; PROBLEM SOLVING</span></div>
+                            </div>
+                        `;
+                    } else {
+                        cardStats.innerHTML = `
+                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                <span class="text-slate-500 dark:text-slate-400">Trường:</span>
+                                <span class="font-medium text-right">THPT Chuyên Bến Tre</span>
+                            </div>
+                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                <span class="text-slate-500 dark:text-slate-400">Chuyên ngành:</span>
+                                <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
+                            </div>
+                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                <span class="text-slate-500 dark:text-slate-400">Sở trường:</span>
+                                <span class="font-semibold text-indigo-500">Tư duy logic &amp; Giải bài tập</span>
+                            </div>
+                        `;
+                    }
+                } else {
+                    if (useHud) {
+                        cardStats.innerHTML = `
+                            <div class="p-3 rounded-xl bg-slate-950/95 text-purple-300 border border-purple-500/40 font-mono text-xs space-y-1.5">
+                                <div class="flex justify-between text-[10px] uppercase tracking-widest text-purple-400">
+                                    <span>[HUD // GAMER-TELEMETRY]</span>
+                                    <span class="text-amber-400">ACTIVE</span>
+                                </div>
+                                <div class="flex justify-between"><span>AOV_RANK:</span><span class="text-purple-300 font-bold">ĐẠI CAO THỦ (TOP BUTTERFLY)</span></div>
+                                <div class="flex justify-between"><span>ROBLOX_MOD:</span><span class="text-indigo-300 font-bold">PRO BUILDER / BLOX FRUITS</span></div>
+                                <div class="flex justify-between"><span>STAMINA_LKP:</span><span class="text-amber-300 font-bold">CẦU LÔNG // PEAK</span></div>
+                            </div>
+                        `;
+                    } else {
+                        cardStats.innerHTML = `
+                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
+                                <span class="text-slate-500 dark:text-slate-400">Liên Quân:</span>
+                                <span class="font-bold text-purple-500">Đại Cao Thủ (Top Butterfly)</span>
+                            </div>
+                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
+                                <span class="text-slate-500 dark:text-slate-400">Roblox:</span>
+                                <span class="font-bold text-indigo-500">Pro Builder / Blox Fruits</span>
+                            </div>
+                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
+                                <span class="text-slate-500 dark:text-slate-400">Thể thao:</span>
+                                <span class="font-bold text-amber-500">Cầu lông (Năng suất đỉnh)</span>
+                            </div>
+                        `;
+                    }
+                }
+            }
 
             function updateThemeIcons() {
                 var isDark = document.documentElement.classList.contains('dark');
                 if (darkIcon) darkIcon.classList.toggle('hidden', isDark);
                 if (lightIcon) lightIcon.classList.toggle('hidden', !isDark);
+                renderCardStats();
             }
             updateThemeIcons();
 
@@ -1396,6 +1509,180 @@
             }
 
             /* ------------------------------------------------------------
+               7B. PHYSICS PLAYGROUND MINI-WIDGET (Ném xiên / Con lắc / Sóng cơ)
+               ------------------------------------------------------------ */
+            (function () {
+                var simCanvas = document.getElementById('physics-sim-canvas');
+                if (!simCanvas) return;
+                var sctx = simCanvas.getContext('2d');
+                var physMode = 'projectile'; // 'projectile' | 'pendulum' | 'wave'
+                var p1Input = document.getElementById('phys-p1-input');
+                var p2Input = document.getElementById('phys-p2-input');
+                var p1Label = document.getElementById('phys-p1-label');
+                var p2Label = document.getElementById('phys-p2-label');
+                var p1Val = document.getElementById('phys-p1-val');
+                var p2Val = document.getElementById('phys-p2-val');
+                var eqText = document.getElementById('phys-eq-text');
+                var telemText = document.getElementById('phys-telemetry-text');
+                var runBtn = document.getElementById('phys-run-btn');
+
+                var simTime = 0;
+                var animHandle = null;
+                var trailPoints = [];
+
+                function syncSimSize() {
+                    var rect = simCanvas.getBoundingClientRect();
+                    if (rect.width > 0) {
+                        simCanvas.width = Math.floor(rect.width);
+                        simCanvas.height = Math.floor(rect.height);
+                    }
+                }
+
+                function updateLabels() {
+                    var v1 = Number(p1Input.value);
+                    var v2 = Number(p2Input.value);
+                    if (physMode === 'projectile') {
+                        p1Label.textContent = 'Góc bắn';
+                        p1Val.textContent = v1 + '°';
+                        p2Label.textContent = 'Vận tốc v₀';
+                        p2Val.textContent = v2 + ' m/s';
+                        eqText.textContent = 'y(x) = x·tan(α) - g·x² / (2·v₀²·cos²α)';
+                        var rad = v1 * Math.PI / 180;
+                        var range = ((v2 * v2 * Math.sin(2 * rad)) / 9.8).toFixed(1);
+                        telemText.textContent = 'Tầm xa ước tính: ' + range + ' m';
+                    } else if (physMode === 'pendulum') {
+                        p1Label.textContent = 'Biên độ α₀';
+                        p1Val.textContent = v1 + '°';
+                        p2Label.textContent = 'Cản / Tần số';
+                        p2Val.textContent = (v2 / 25).toFixed(2);
+                        eqText.textContent = 'α(t) = α₀·e^(-γt)·cos(ωt + φ)';
+                        var period = (2 * Math.PI * Math.sqrt(1.0 / 9.8)).toFixed(2);
+                        telemText.textContent = 'Chu kỳ chuẩn T ≈ ' + period + ' s';
+                    } else {
+                        p1Label.textContent = 'Tần số f';
+                        p1Val.textContent = (v1 / 15).toFixed(1) + ' Hz';
+                        p2Label.textContent = 'Biên độ A';
+                        p2Val.textContent = v2 + ' px';
+                        eqText.textContent = 'u(x,t) = A·cos(2πft - 2πx/λ)';
+                        var vWave = (v2 * 4).toFixed(0);
+                        telemText.textContent = 'v_truyền ≈ ' + vWave + ' px/s';
+                    }
+                }
+
+                function startSim() {
+                    syncSimSize();
+                    updateLabels();
+                    simTime = 0;
+                    trailPoints = [];
+                    if (animHandle) cancelAnimationFrame(animHandle);
+
+                    function step() {
+                        simTime += 0.04;
+                        var w = simCanvas.width;
+                        var h = simCanvas.height;
+                        sctx.clearRect(0, 0, w, h);
+
+                        // subtle grid
+                        sctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
+                        sctx.lineWidth = 1;
+                        for (var gx = 0; gx < w; gx += 28) {
+                            sctx.beginPath(); sctx.moveTo(gx, 0); sctx.lineTo(gx, h); sctx.stroke();
+                        }
+
+                        var v1 = Number(p1Input.value);
+                        var v2 = Number(p2Input.value);
+
+                        if (physMode === 'projectile') {
+                            var alpha = v1 * Math.PI / 180;
+                            var speed = v2 * 3.2;
+                            var g = 9.8 * 14;
+                            var groundY = h - 18;
+                            var startX = 24;
+
+                            var px = startX + speed * Math.cos(alpha) * simTime;
+                            var py = groundY - (speed * Math.sin(alpha) * simTime - 0.5 * g * simTime * simTime);
+
+                            if (py <= groundY && px <= w - 12) {
+                                trailPoints.push({ x: px, y: py });
+                            } else {
+                                simTime = 0;
+                                trailPoints = [];
+                            }
+
+                            if (trailPoints.length > 1) {
+                                sctx.beginPath();
+                                sctx.moveTo(trailPoints[0].x, trailPoints[0].y);
+                                for (var k = 1; k < trailPoints.length; k++) sctx.lineTo(trailPoints[k].x, trailPoints[k].y);
+                                sctx.strokeStyle = '#38bdf8';
+                                sctx.lineWidth = 2;
+                                sctx.stroke();
+                            }
+
+                            sctx.beginPath();
+                            sctx.arc(px, Math.min(py, groundY), 5, 0, Math.PI * 2);
+                            sctx.fillStyle = '#f59e0b';
+                            sctx.fill();
+                        } else if (physMode === 'pendulum') {
+                            var pivotX = w / 2;
+                            var pivotY = 16;
+                            var len = Math.min(h - 34, 92);
+                            var maxAngle = (v1 * Math.PI / 180);
+                            var damping = Math.exp(-0.08 * (v2 / 25) * simTime);
+                            var theta = maxAngle * damping * Math.cos(3.1 * simTime);
+                            var bx = pivotX + len * Math.sin(theta);
+                            var by = pivotY + len * Math.cos(theta);
+
+                            sctx.beginPath();
+                            sctx.moveTo(pivotX, pivotY);
+                            sctx.lineTo(bx, by);
+                            sctx.strokeStyle = '#94a3b8';
+                            sctx.lineWidth = 2;
+                            sctx.stroke();
+
+                            sctx.beginPath();
+                            sctx.arc(bx, by, 8, 0, Math.PI * 2);
+                            sctx.fillStyle = '#6366f1';
+                            sctx.fill();
+                        } else {
+                            var freq = v1 / 15;
+                            var amp = (v2 / 45) * (h * 0.34);
+                            var midY = h / 2;
+                            sctx.beginPath();
+                            for (var x = 0; x <= w; x += 4) {
+                                var y = midY + amp * Math.sin(x * 0.045 - simTime * freq * 5);
+                                if (x === 0) sctx.moveTo(x, y);
+                                else sctx.lineTo(x, y);
+                            }
+                            sctx.strokeStyle = '#0ea5e9';
+                            sctx.lineWidth = 2.5;
+                            sctx.stroke();
+                        }
+
+                        animHandle = requestAnimationFrame(step);
+                    }
+                    step();
+                }
+
+                document.querySelectorAll('.phys-mode-btn').forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        physMode = btn.getAttribute('data-phys-mode') || 'projectile';
+                        document.querySelectorAll('.phys-mode-btn').forEach(function (b) {
+                            b.className = 'phys-mode-btn px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all';
+                        });
+                        btn.className = 'phys-mode-btn px-2.5 py-1 rounded-md bg-sky-500 text-white transition-all';
+                        startSim();
+                    });
+                });
+
+                if (p1Input) p1Input.addEventListener('input', updateLabels);
+                if (p2Input) p2Input.addEventListener('input', updateLabels);
+                if (runBtn) runBtn.addEventListener('click', startSim);
+                window.addEventListener('resize', syncSimSize);
+
+                setTimeout(startSim, 200);
+            })();
+
+            /* ------------------------------------------------------------
                8. SCROLL REVEAL & ACHIEVEMENTS
                ------------------------------------------------------------ */
             var achievementsUnlocked = { explorer: false, gamer: false, flashcard: false };
@@ -1436,45 +1723,20 @@
                ------------------------------------------------------------ */
             var modePhysics = document.getElementById('mode-physics');
             var modeGaming = document.getElementById('mode-gaming');
-            var cardStats = document.getElementById('card-stats');
 
-            if (modePhysics && modeGaming && cardStats) {
+            if (modePhysics && modeGaming) {
                 modePhysics.addEventListener('click', function () {
+                    currentCardMode = 'physics';
                     modePhysics.className = 'flex-1 py-2 px-3 rounded-lg bg-sky-500 text-white shadow transition-all';
                     modeGaming.className = 'flex-1 py-2 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-all';
-                    cardStats.innerHTML = `
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                            <span class="text-slate-500 dark:text-slate-400">Trường:</span>
-                            <span class="font-medium text-right">THPT Chuyên Bến Tre</span>
-                        </div>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                            <span class="text-slate-500 dark:text-slate-400">Chuyên ngành:</span>
-                            <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
-                        </div>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                            <span class="text-slate-500 dark:text-slate-400">Sở trường:</span>
-                            <span class="font-semibold text-indigo-500">Tư duy logic & Giải bài tập</span>
-                        </div>
-                    `;
+                    renderCardStats();
                 });
 
                 modeGaming.addEventListener('click', function () {
+                    currentCardMode = 'gaming';
                     modeGaming.className = 'flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow transition-all';
                     modePhysics.className = 'flex-1 py-2 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-all';
-                    cardStats.innerHTML = `
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
-                            <span class="text-slate-500 dark:text-slate-400">Liên Quân:</span>
-                            <span class="font-bold text-purple-500">Đại Cao Thủ (Top Butterfly)</span>
-                        </div>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
-                            <span class="text-slate-500 dark:text-slate-400">Roblox:</span>
-                            <span class="font-bold text-indigo-500">Pro Builder / Blox Fruits</span>
-                        </div>
-                        <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
-                            <span class="text-slate-500 dark:text-slate-400">Thể thao:</span>
-                            <span class="font-bold text-amber-500">Cầu lông (Năng suất đỉnh)</span>
-                        </div>
-                    `;
+                    renderCardStats();
 
                     if (!achievementsUnlocked.gamer) {
                         achievementsUnlocked.gamer = true;
@@ -1505,7 +1767,7 @@
             }
 
             /* ------------------------------------------------------------
-               11. FLASHCARD VOCABULARY GAME (Hỗ trợ PDF, DOCX, XLSX, CSV, TXT, JSON...)
+               11. FLASHCARD VOCABULARY GAME (Từ vựng, Dấu nhấn, Loại từ + Phím tắt)
                ------------------------------------------------------------ */
             var defaultVocabDeck = [
                 { word: 'develop', pos: 'verb (v)', stress: 'de-VEL-op (nhấn âm 2)', meaning: 'phát triển, mở rộng', example: 'They plan to develop a new physics learning app.' },
@@ -1584,10 +1846,49 @@
                 if (fcBackExample) fcBackExample.textContent = item.example ? ('"' + item.example + '"') : '"Không có câu ví dụ."';
             }
 
+            function flipCard() {
+                if (!fcInner || !fcQueue.length) return;
+                fcInner.classList.toggle('is-flipped');
+            }
+
+            function prevCard() {
+                if (!fcQueue.length) return;
+                fcCurrentIdx--;
+                renderFlashcard();
+            }
+
+            function nextCard() {
+                if (!fcQueue.length) return;
+                fcCurrentIdx++;
+                renderFlashcard();
+            }
+
+            function markKnown() {
+                if (!fcQueue.length) return;
+                fcQueue.splice(fcCurrentIdx, 1);
+                fcMastered++;
+                if (fcMastered >= 3 && !achievementsUnlocked.flashcard) {
+                    achievementsUnlocked.flashcard = true;
+                    showAchievement('Bậc Thầy Từ Vựng Tiếng Anh');
+                }
+                renderFlashcard();
+            }
+
+            function markReview() {
+                if (!fcQueue.length) return;
+                if (fcQueue.length <= 1) {
+                    fcInner.classList.remove('is-flipped');
+                    return;
+                }
+                var currentCard = fcQueue.splice(fcCurrentIdx, 1)[0];
+                fcQueue.push(currentCard);
+                renderFlashcard();
+            }
+
             if (fcScene && fcInner) {
                 fcScene.addEventListener('click', function (e) {
                     if (e.target.closest('#fc-speak-btn')) return;
-                    fcInner.classList.toggle('is-flipped');
+                    flipCard();
                 });
             }
 
@@ -1609,33 +1910,33 @@
             var fcKnowBtn = document.getElementById('fc-know-btn');
             var fcReviewBtn = document.getElementById('fc-review-btn');
 
-            if (fcPrevBtn) fcPrevBtn.addEventListener('click', function () { fcCurrentIdx--; renderFlashcard(); });
-            if (fcNextBtn) fcNextBtn.addEventListener('click', function () { fcCurrentIdx++; renderFlashcard(); });
+            if (fcPrevBtn) fcPrevBtn.addEventListener('click', prevCard);
+            if (fcNextBtn) fcNextBtn.addEventListener('click', nextCard);
+            if (fcKnowBtn) fcKnowBtn.addEventListener('click', markKnown);
+            if (fcReviewBtn) fcReviewBtn.addEventListener('click', markReview);
 
-            if (fcKnowBtn) {
-                fcKnowBtn.addEventListener('click', function () {
-                    if (!fcQueue.length) return;
-                    fcQueue.splice(fcCurrentIdx, 1);
-                    fcMastered++;
-                    if (fcMastered >= 3 && !achievementsUnlocked.flashcard) {
-                        achievementsUnlocked.flashcard = true;
-                        showAchievement('Bậc Thầy Từ Vựng Tiếng Anh');
-                    }
-                    renderFlashcard();
-                });
-            }
+            // Keyboard shortcuts for Flashcard (Space, ArrowLeft, ArrowRight, 1, 2)
+            document.addEventListener('keydown', function (e) {
+                var tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
+                if (tag === 'input' || tag === 'textarea' || tag === 'select' || e.target.isContentEditable) return;
 
-            if (fcReviewBtn) {
-                fcReviewBtn.addEventListener('click', function () {
-                    if (fcQueue.length <= 1) {
-                        fcInner.classList.remove('is-flipped');
-                        return;
-                    }
-                    var currentCard = fcQueue.splice(fcCurrentIdx, 1)[0];
-                    fcQueue.push(currentCard);
-                    renderFlashcard();
-                });
-            }
+                if (e.code === 'Space') {
+                    e.preventDefault();
+                    flipCard();
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    prevCard();
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    nextCard();
+                } else if (e.key === '1') {
+                    e.preventDefault();
+                    markReview();
+                } else if (e.key === '2') {
+                    e.preventDefault();
+                    markKnown();
+                }
+            });
 
             document.querySelectorAll('.fc-mode-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {
@@ -1648,138 +1949,35 @@
                 });
             });
 
-            // Phân tích dữ liệu text/JSON từ mọi loại file
+            // Parse uploaded CSV/TXT file
             function parseVocabText(rawText) {
-                var trimmed = rawText.trim();
-                if (!trimmed) return [];
-
-                // Hỗ trợ định dạng JSON nếu người dùng tải file .json
-                if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
-                    try {
-                        var jsonData = JSON.parse(trimmed);
-                        var arr = Array.isArray(jsonData) ? jsonData : (jsonData.cards || jsonData.vocab || []);
-                        if (Array.isArray(arr) && arr.length > 0) {
-                            return arr.map(function (item) {
-                                return {
-                                    word: String(item.word || item.english || item.term || '').trim(),
-                                    pos: String(item.pos || item.type || item.partOfSpeech || 'Chưa rõ').trim(),
-                                    stress: String(item.stress || item.pronunciation || 'Chưa rõ').trim(),
-                                    meaning: String(item.meaning || item.vietnamese || item.definition || 'Chưa có nghĩa').trim(),
-                                    example: String(item.example || item.sentence || '').trim()
-                                };
-                            }).filter(function (c) { return c.word; });
-                        }
-                    } catch (e) {}
-                }
-
-                var lines = trimmed.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+                var lines = rawText.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
                 var parsed = [];
                 lines.forEach(function (line, idx) {
-                    // Hỗ trợ ngăn cách bằng | , ; tab hoặc dấu gạch ngang ( - )
-                    var sep = line.indexOf('|') !== -1 ? '|' :
-                              (line.indexOf('\t') !== -1 ? '\t' :
-                              (line.indexOf(';') !== -1 ? ';' :
-                              (line.indexOf(',') !== -1 ? ',' :
-                              (/\s+[-–:]\s+/.test(line) ? /\s+[-–:]\s+/ : ','))));
+                    var sep = line.indexOf('|') !== -1 ? '|' : (line.indexOf(';') !== -1 ? ';' : ',');
                     var parts = line.split(sep).map(function (p) { return p.trim().replace(/^"|"$/g, ''); });
-                    if (idx === 0 && /^(word|tu vung|từ vựng|english|stt)/i.test(parts[0])) return;
+                    if (idx === 0 && /^(word|tu vung|từ vựng|english)/i.test(parts[0])) return;
                     if (parts[0]) {
-                        // Nếu file chỉ có 2 cột: word - meaning
-                        if (parts.length === 2) {
-                            parsed.push({
-                                word: parts[0],
-                                pos: 'Chưa rõ',
-                                stress: 'Chưa rõ',
-                                meaning: parts[1] || 'Chưa có nghĩa',
-                                example: ''
-                            });
-                        } else {
-                            parsed.push({
-                                word: parts[0],
-                                pos: parts[1] || 'Chưa rõ',
-                                stress: parts[2] || 'Chưa rõ',
-                                meaning: parts[3] || 'Chưa có nghĩa',
-                                example: parts[4] || ''
-                            });
-                        }
+                        parsed.push({
+                            word: parts[0],
+                            pos: parts[1] || 'Chưa rõ',
+                            stress: parts[2] || 'Chưa rõ',
+                            meaning: parts[3] || 'Chưa có nghĩa',
+                            example: parts[4] || ''
+                        });
                     }
                 });
                 return parsed;
             }
 
-            // Trích xuất nội dung từ mọi định dạng file (.pdf, .docx, .xlsx, .xls, .csv, .txt, .json...)
-            async function extractTextFromAnyFile(file) {
-                var ext = (file.name.split('.').pop() || '').toLowerCase();
-
-                // 1. File PDF (.pdf)
-                if (ext === 'pdf' && window.pdfjsLib) {
-                    var arrayBuffer = await file.arrayBuffer();
-                    var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    var fullText = '';
-                    for (var p = 1; p <= pdf.numPages; p++) {
-                        var page = await pdf.getPage(p);
-                        var content = await page.getTextContent();
-                        var lastY = null;
-                        var pageLines = '';
-                        content.items.forEach(function (item) {
-                            var currentY = item.transform ? item.transform[5] : null;
-                            if (lastY !== null && currentY !== null && Math.abs(currentY - lastY) > 5) {
-                                pageLines += '\n';
-                            } else if (pageLines && !pageLines.endsWith('\n') && !pageLines.endsWith(' ')) {
-                                pageLines += ' ';
-                            }
-                            pageLines += item.str;
-                            lastY = currentY;
-                        });
-                        fullText += pageLines + '\n';
-                    }
-                    return fullText;
-                }
-
-                // 2. File Word (.docx)
-                if (ext === 'docx' && window.mammoth) {
-                    var docxBuffer = await file.arrayBuffer();
-                    var result = await mammoth.extractRawText({ arrayBuffer: docxBuffer });
-                    return result.value || '';
-                }
-
-                // 3. File Excel (.xlsx, .xls, .ods)
-                if ((ext === 'xlsx' || ext === 'xls' || ext === 'ods') && window.XLSX) {
-                    var wbBuffer = await file.arrayBuffer();
-                    var workbook = XLSX.read(wbBuffer, { type: 'array' });
-                    var firstSheetName = workbook.SheetNames[0];
-                    var worksheet = workbook.Sheets[firstSheetName];
-                    return XLSX.utils.sheet_to_csv(worksheet, { FS: '|' });
-                }
-
-                // 4. Các file văn bản / dữ liệu khác (.txt, .csv, .tsv, .json, .md, .xml, .html...)
-                return await new Promise(function (resolve, reject) {
-                    var reader = new FileReader();
-                    reader.onload = function (evt) {
-                        var text = String(evt.target.result || '');
-                        // Lọc bỏ ký tự nhị phân không đọc được nếu người dùng tải file lạ
-                        resolve(text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, ''));
-                    };
-                    reader.onerror = reject;
-                    reader.readAsText(file, 'UTF-8');
-                });
-            }
-
             var vocabFileInput = document.getElementById('vocab-file-input');
             if (vocabFileInput) {
-                vocabFileInput.addEventListener('change', async function (e) {
+                vocabFileInput.addEventListener('change', function (e) {
                     var file = e.target.files && e.target.files[0];
                     if (!file) return;
-
-                    if (fcUploadMsgEl) {
-                        fcUploadMsgEl.textContent = '⏳ Đang đọc file ' + file.name + '...';
-                        fcUploadMsgEl.className = 'text-sky-500 font-medium';
-                        fcUploadMsgEl.classList.remove('hidden');
-                    }
-
-                    try {
-                        var extractedText = await extractTextFromAnyFile(file);
-                        var cards = parseVocabText(extractedText);
+                    var reader = new FileReader();
+                    reader.onload = function (evt) {
+                        var cards = parseVocabText(String(evt.target.result || ''));
                         if (cards.length > 0) {
                             fcQueue = cards;
                             fcMastered = 0;
@@ -1789,23 +1987,18 @@
                             }
                             if (fcUploadMsgEl) {
                                 fcUploadMsgEl.textContent = '✓ Đã nạp thành công!';
-                                fcUploadMsgEl.className = 'text-emerald-500 font-medium';
                                 fcUploadMsgEl.classList.remove('hidden');
                             }
                             renderFlashcard();
+                            if (typeof window.notifyAiUploadedDeck === 'function') {
+                                window.notifyAiUploadedDeck(file.name, cards);
+                            }
                         } else if (fcUploadMsgEl) {
-                            fcUploadMsgEl.textContent = '⚠ Không tìm thấy từ vựng hợp lệ trong file.';
-                            fcUploadMsgEl.className = 'text-amber-500 font-medium';
+                            fcUploadMsgEl.textContent = '⚠ File trống hoặc chưa đúng định dạng.';
                             fcUploadMsgEl.classList.remove('hidden');
                         }
-                    } catch (err) {
-                        if (fcUploadMsgEl) {
-                            fcUploadMsgEl.textContent = '⚠ Lỗi khi đọc file. Hãy kiểm tra lại nội dung file!';
-                            fcUploadMsgEl.className = 'text-rose-500 font-medium';
-                            fcUploadMsgEl.classList.remove('hidden');
-                        }
-                    }
-                    vocabFileInput.value = '';
+                    };
+                    reader.readAsText(file, 'UTF-8');
                 });
             }
 
@@ -1845,7 +2038,7 @@
             renderFlashcard();
 
             /* ------------------------------------------------------------
-               12. AI CHATBOT WIDGET (Hỏi đáp & Tìm kiếm File)
+               12. AI CHATBOT WIDGET (Hỏi đáp, Tìm kiếm File & Đọc file vừa tải)
                ------------------------------------------------------------ */
             var siteFilesCatalog = [
                 {
@@ -1906,8 +2099,43 @@
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
 
+            function buildQuickQuizFromDeck() {
+                var source = fcQueue.length ? fcQueue : defaultVocabDeck;
+                var picked = source.slice(0, Math.min(3, source.length));
+                var html = '<p><strong>Kiểm tra nhanh ' + picked.length + ' từ về loại từ &amp; dấu nhấn:</strong></p><ol class="list-decimal pl-4 space-y-1.5 text-xs">';
+                picked.forEach(function (item) {
+                    html += '<li><strong>' + item.word + '</strong> — Loại từ: <code>' + item.pos + '</code> | Dấu nhấn: <code>' + item.stress + '</code></li>';
+                });
+                html += '</ol><p class="text-[11px] text-sky-500 font-medium">Mẹo: Chuyển chế độ "Loại từ" hoặc "Dấu nhấn" ở Flashcard để tự lật kiểm tra nhé!</p>';
+                return html;
+            }
+
+            window.notifyAiUploadedDeck = function (fileName, cards) {
+                toggleChat(true);
+                var preview = cards.slice(0, 3).map(function (c) {
+                    return '<code>' + c.word + '</code> (' + c.pos + ', ' + c.stress + ')';
+                }).join(', ');
+                appendChatBubble(
+                    'bot',
+                    '<p>Bạn vừa nạp <strong>' + cards.length + '</strong> từ vựng từ file <strong>' + fileName.replace(/</g, '&lt;') + '</strong>.</p>' +
+                    '<p class="text-xs">Ví dụ nổi bật: ' + preview + '.</p>' +
+                    '<button type="button" id="ai-run-3q-btn" class="mt-1 px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs font-semibold shadow hover:opacity-95 transition-all">' +
+                    'Kiểm tra nhanh 3 câu loại từ / dấu nhấn</button>'
+                );
+                var quizBtn = document.getElementById('ai-run-3q-btn');
+                if (quizBtn) {
+                    quizBtn.addEventListener('click', function () {
+                        appendChatBubble('bot', buildQuickQuizFromDeck());
+                    });
+                }
+            };
+
             function buildBotReply(rawQuery) {
                 var q = rawQuery.toLowerCase().trim();
+
+                if (/(kiểm tra|kiem tra|3 câu|3 cau|câu hỏi|cau hoi|loại từ|loai tu|dấu nhấn|dau nhan|từ khó|tu kho)/i.test(q)) {
+                    return buildQuickQuizFromDeck();
+                }
 
                 // 1. Kiểm tra nhu cầu tìm file / tài liệu
                 var isFileSearch = /(tìm|tim|file|fiel|tài liệu|tai lieu|pdf|csv|tải|tai|download|đề cương)/i.test(q);
@@ -1937,24 +2165,24 @@
                 if (/(web|trang|có gì|co gi|giới thiệu|gioi thieu|tổng quan)/i.test(q)) {
                     return '<p>Trang web cá nhân của <strong>Lê Anh Khoa</strong> (11 Lý — THPT Chuyên Bến Tre) gồm các khu vực chính:</p>' +
                         '<ul class="list-disc pl-4 space-y-1 text-xs">' +
-                        '<li><strong>Hero & Thẻ RPG:</strong> Giới thiệu bản thân, hiệu ứng hạt vật lý và công tắc chuyển đổi chế độ <em>Chuyên Lý / Gamer & Thể Thao</em>.</li>' +
-                        '<li><strong>Về Bản Thân:</strong> Khung tương tác liên kết <em>Igloo.inc</em> cùng triết lý học tập.</li>' +
+                        '<li><strong>Hero &amp; Thẻ RPG:</strong> Giới thiệu bản thân, hiệu ứng hạt vật lý và công tắc chuyển đổi chế độ <em>Chuyên Lý / Gamer &amp; Thể Thao</em>.</li>' +
+                        '<li><strong>Về Bản Thân:</strong> Khung tương tác liên kết <em>Igloo.inc</em> cùng <em>Physics Playground</em> mô phỏng Vật lý.</li>' +
                         '<li><strong>Sở Thích:</strong> Thể thao (cầu lông) và khám phá tri thức mới.</li>' +
-                        '<li><strong>Flashcard Tiếng Anh:</strong> Tải file từ vựng (.pdf, .docx, .xlsx, .csv, .txt...) để ôn từ, loại từ và dấu nhấn.</li>' +
-                        '<li><strong>Liên Hệ & Donate:</strong> Zalo, Facebook và mã QR Vietcombank 3D.</li>' +
+                        '<li><strong>Flashcard Tiếng Anh:</strong> Tải file từ vựng để ôn từ, loại từ và dấu nhấn.</li>' +
+                        '<li><strong>Liên Hệ &amp; Donate:</strong> Zalo, Facebook và mã QR Vietcombank 3D.</li>' +
                         '</ul>';
                 }
 
                 // 3. Thông tin cá nhân / học vấn / game
                 if (/(khoa|ai|trường|truong|lớp|lop|chuyên|liên quân|lien quan|game|rank|butterfly|sở thích|so thich|cầu lông)/i.test(q)) {
                     return '<p><strong>Lê Anh Khoa</strong> hiện là học sinh lớp <strong>11 Lý, Trường THPT Chuyên Bến Tre</strong>.</p>' +
-                        '<p>Ngoài tư duy Vật lý và giải bài tập, Khoa còn chơi <strong>Cầu lông</strong>, đạt rank <strong>Đại Cao Thủ (Top Butterfly)</strong> trong Liên Quân và chơi Roblox. Bạn có thể bấm nút <em>Gamer & Thể Thao</em> trên thẻ hồ sơ ở đầu trang để xem chi tiết!</p>';
+                        '<p>Ngoài tư duy Vật lý và giải bài tập, Khoa còn chơi <strong>Cầu lông</strong>, đạt rank <strong>Đại Cao Thủ (Top Butterfly)</strong> trong Liên Quân và chơi Roblox. Bạn có thể bấm nút <em>Gamer &amp; Thể Thao</em> trên thẻ hồ sơ ở đầu trang để xem chi tiết!</p>';
                 }
 
                 // 4. Flashcard
                 if (/(flashcard|học từ|hoc tu|ôn tập|on tap|cách chơi|cach choi)/i.test(q)) {
-                    return '<p>Ở mục <strong>Flashcard Từ Vựng</strong>, bạn có thể nhấn <em>"Tải file từ vựng (.pdf, .docx, .xlsx, .csv, .txt...)"</em> theo cấu trúc <code>word, pos, stress, meaning, example</code>.</p>' +
-                        '<p>Sau đó chọn chế độ ôn <strong>Từ vựng / Loại từ / Dấu nhấn</strong>, chạm vào thẻ để lật 3D và bấm <em>Đã nhớ</em> hoặc <em>Cần ôn lại</em>.</p>' +
+                    return '<p>Ở mục <strong>Flashcard Từ Vựng</strong>, bạn có thể nhấn <em>"Tải file từ vựng (.csv / .txt)"</em> theo cấu trúc <code>word, pos, stress, meaning, example</code>.</p>' +
+                        '<p>Sau đó dùng phím tắt <code>Space</code> để lật, <code>← / →</code> chuyển thẻ, <code>1 / 2</code> để đánh dấu Cần ôn lại / Đã nhớ.</p>' +
                         '<button type="button" data-chat-scroll="#documents" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Tới khu Flashcard ngay</button>';
                 }
 
@@ -1966,7 +2194,7 @@
                         '<li><strong>Facebook:</strong> facebook.com/le.akhoa.2024</li>' +
                         '<li><strong>Vietcombank:</strong> <code>1065359553</code> (LE ANH KHOA)</li>' +
                         '</ul>' +
-                        '<button type="button" data-chat-scroll="#contact" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Xem mục Liên hệ & QR 3D</button>';
+                        '<button type="button" data-chat-scroll="#contact" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Xem mục Liên hệ &amp; QR 3D</button>';
                 }
 
                 // 6. Phản hồi mặc định linh hoạt
