@@ -94,6 +94,16 @@
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- Thư viện đọc đa định dạng file (PDF, Word DOCX, Excel XLSX/XLS/CSV) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
     <style>
         /* ============================================================
            BASE / RESET
@@ -781,7 +791,7 @@
                     <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Học Tập Tương Tác</h2>
                     <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Flashcard Từ Vựng, Dấu Nhấn & Loại Từ</h3>
                     <p class="reveal text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto" data-delay="2">
-                        Tải lên file từ vựng tiếng Anh (<code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.csv</code> hoặc <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.txt</code>) để tự động tạo bộ thẻ Flashcard lật 3D ôn từ vựng, loại từ và dấu nhấn.
+                        Tải lên file từ vựng tiếng Anh dưới mọi định dạng (<code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.pdf</code>, <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.docx</code>, <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.xlsx</code>, <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.csv</code>, <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.txt</code>...) để tự động tạo bộ thẻ Flashcard lật 3D.
                     </p>
                 </div>
 
@@ -793,9 +803,9 @@
                         <div class="flex flex-wrap items-center gap-3">
                             <label for="vocab-file-input" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold shadow-md shadow-sky-500/20 hover:shadow-sky-500/40 transition-all cursor-pointer">
                                 <i class="fas fa-file-arrow-up"></i>
-                                <span>Tải file từ vựng (.csv / .txt)</span>
+                                <span>Tải file từ vựng (.pdf, .docx, .xlsx, .csv, .txt...)</span>
                             </label>
-                            <input id="vocab-file-input" type="file" accept=".csv,.txt" class="hidden">
+                            <input id="vocab-file-input" type="file" accept="*/*" class="hidden">
 
                             <button id="download-sample-csv" type="button" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors">
                                 <i class="fas fa-download text-sky-500"></i>
@@ -926,8 +936,8 @@
                     <!-- Format Guide Accordion / Box -->
                     <div class="mt-8 pt-6 border-t border-slate-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
                         <div>
-                            <span class="font-semibold text-slate-700 dark:text-slate-300">Định dạng file hỗ trợ:</span>
-                            Mỗi dòng ghi theo mẫu <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">word, pos, stress, meaning, example</code> (ngăn cách bằng dấu phẩy <code class="font-mono">,</code> hoặc <code class="font-mono">|</code>).
+                            <span class="font-semibold text-slate-700 dark:text-slate-300">Hỗ trợ mọi loại file (.pdf, .docx, .xlsx, .csv, .txt, .json...):</span>
+                            Nội dung mỗi dòng ghi theo mẫu <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">word, pos, stress, meaning, example</code> (ngăn cách bằng <code class="font-mono">,</code>, <code class="font-mono">|</code>, <code class="font-mono">;</code> hoặc các cột Excel).
                         </div>
                         <a href="/document.pdf" target="_blank" rel="noopener noreferrer" class="shrink-0 inline-flex items-center gap-1.5 font-semibold text-sky-500 hover:text-sky-600">
                             <i class="fas fa-file-pdf"></i>
@@ -1495,7 +1505,7 @@
             }
 
             /* ------------------------------------------------------------
-               11. FLASHCARD VOCABULARY GAME (Từ vựng, Dấu nhấn, Loại từ)
+               11. FLASHCARD VOCABULARY GAME (Hỗ trợ PDF, DOCX, XLSX, CSV, TXT, JSON...)
                ------------------------------------------------------------ */
             var defaultVocabDeck = [
                 { word: 'develop', pos: 'verb (v)', stress: 'de-VEL-op (nhấn âm 2)', meaning: 'phát triển, mở rộng', example: 'They plan to develop a new physics learning app.' },
@@ -1638,35 +1648,138 @@
                 });
             });
 
-            // Parse uploaded CSV/TXT file
+            // Phân tích dữ liệu text/JSON từ mọi loại file
             function parseVocabText(rawText) {
-                var lines = rawText.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+                var trimmed = rawText.trim();
+                if (!trimmed) return [];
+
+                // Hỗ trợ định dạng JSON nếu người dùng tải file .json
+                if (trimmed.startsWith('[') || trimmed.startsWith('{')) {
+                    try {
+                        var jsonData = JSON.parse(trimmed);
+                        var arr = Array.isArray(jsonData) ? jsonData : (jsonData.cards || jsonData.vocab || []);
+                        if (Array.isArray(arr) && arr.length > 0) {
+                            return arr.map(function (item) {
+                                return {
+                                    word: String(item.word || item.english || item.term || '').trim(),
+                                    pos: String(item.pos || item.type || item.partOfSpeech || 'Chưa rõ').trim(),
+                                    stress: String(item.stress || item.pronunciation || 'Chưa rõ').trim(),
+                                    meaning: String(item.meaning || item.vietnamese || item.definition || 'Chưa có nghĩa').trim(),
+                                    example: String(item.example || item.sentence || '').trim()
+                                };
+                            }).filter(function (c) { return c.word; });
+                        }
+                    } catch (e) {}
+                }
+
+                var lines = trimmed.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
                 var parsed = [];
                 lines.forEach(function (line, idx) {
-                    var sep = line.indexOf('|') !== -1 ? '|' : (line.indexOf(';') !== -1 ? ';' : ',');
+                    // Hỗ trợ ngăn cách bằng | , ; tab hoặc dấu gạch ngang ( - )
+                    var sep = line.indexOf('|') !== -1 ? '|' :
+                              (line.indexOf('\t') !== -1 ? '\t' :
+                              (line.indexOf(';') !== -1 ? ';' :
+                              (line.indexOf(',') !== -1 ? ',' :
+                              (/\s+[-–:]\s+/.test(line) ? /\s+[-–:]\s+/ : ','))));
                     var parts = line.split(sep).map(function (p) { return p.trim().replace(/^"|"$/g, ''); });
-                    if (idx === 0 && /^(word|tu vung|từ vựng|english)/i.test(parts[0])) return;
+                    if (idx === 0 && /^(word|tu vung|từ vựng|english|stt)/i.test(parts[0])) return;
                     if (parts[0]) {
-                        parsed.push({
-                            word: parts[0],
-                            pos: parts[1] || 'Chưa rõ',
-                            stress: parts[2] || 'Chưa rõ',
-                            meaning: parts[3] || 'Chưa có nghĩa',
-                            example: parts[4] || ''
-                        });
+                        // Nếu file chỉ có 2 cột: word - meaning
+                        if (parts.length === 2) {
+                            parsed.push({
+                                word: parts[0],
+                                pos: 'Chưa rõ',
+                                stress: 'Chưa rõ',
+                                meaning: parts[1] || 'Chưa có nghĩa',
+                                example: ''
+                            });
+                        } else {
+                            parsed.push({
+                                word: parts[0],
+                                pos: parts[1] || 'Chưa rõ',
+                                stress: parts[2] || 'Chưa rõ',
+                                meaning: parts[3] || 'Chưa có nghĩa',
+                                example: parts[4] || ''
+                            });
+                        }
                     }
                 });
                 return parsed;
             }
 
-            var vocabFileInput = document.getElementById('vocab-file-input');
-            if (vocabFileInput) {
-                vocabFileInput.addEventListener('change', function (e) {
-                    var file = e.target.files && e.target.files[0];
-                    if (!file) return;
+            // Trích xuất nội dung từ mọi định dạng file (.pdf, .docx, .xlsx, .xls, .csv, .txt, .json...)
+            async function extractTextFromAnyFile(file) {
+                var ext = (file.name.split('.').pop() || '').toLowerCase();
+
+                // 1. File PDF (.pdf)
+                if (ext === 'pdf' && window.pdfjsLib) {
+                    var arrayBuffer = await file.arrayBuffer();
+                    var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                    var fullText = '';
+                    for (var p = 1; p <= pdf.numPages; p++) {
+                        var page = await pdf.getPage(p);
+                        var content = await page.getTextContent();
+                        var lastY = null;
+                        var pageLines = '';
+                        content.items.forEach(function (item) {
+                            var currentY = item.transform ? item.transform[5] : null;
+                            if (lastY !== null && currentY !== null && Math.abs(currentY - lastY) > 5) {
+                                pageLines += '\n';
+                            } else if (pageLines && !pageLines.endsWith('\n') && !pageLines.endsWith(' ')) {
+                                pageLines += ' ';
+                            }
+                            pageLines += item.str;
+                            lastY = currentY;
+                        });
+                        fullText += pageLines + '\n';
+                    }
+                    return fullText;
+                }
+
+                // 2. File Word (.docx)
+                if (ext === 'docx' && window.mammoth) {
+                    var docxBuffer = await file.arrayBuffer();
+                    var result = await mammoth.extractRawText({ arrayBuffer: docxBuffer });
+                    return result.value || '';
+                }
+
+                // 3. File Excel (.xlsx, .xls, .ods)
+                if ((ext === 'xlsx' || ext === 'xls' || ext === 'ods') && window.XLSX) {
+                    var wbBuffer = await file.arrayBuffer();
+                    var workbook = XLSX.read(wbBuffer, { type: 'array' });
+                    var firstSheetName = workbook.SheetNames[0];
+                    var worksheet = workbook.Sheets[firstSheetName];
+                    return XLSX.utils.sheet_to_csv(worksheet, { FS: '|' });
+                }
+
+                // 4. Các file văn bản / dữ liệu khác (.txt, .csv, .tsv, .json, .md, .xml, .html...)
+                return await new Promise(function (resolve, reject) {
                     var reader = new FileReader();
                     reader.onload = function (evt) {
-                        var cards = parseVocabText(String(evt.target.result || ''));
+                        var text = String(evt.target.result || '');
+                        // Lọc bỏ ký tự nhị phân không đọc được nếu người dùng tải file lạ
+                        resolve(text.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g, ''));
+                    };
+                    reader.onerror = reject;
+                    reader.readAsText(file, 'UTF-8');
+                });
+            }
+
+            var vocabFileInput = document.getElementById('vocab-file-input');
+            if (vocabFileInput) {
+                vocabFileInput.addEventListener('change', async function (e) {
+                    var file = e.target.files && e.target.files[0];
+                    if (!file) return;
+
+                    if (fcUploadMsgEl) {
+                        fcUploadMsgEl.textContent = '⏳ Đang đọc file ' + file.name + '...';
+                        fcUploadMsgEl.className = 'text-sky-500 font-medium';
+                        fcUploadMsgEl.classList.remove('hidden');
+                    }
+
+                    try {
+                        var extractedText = await extractTextFromAnyFile(file);
+                        var cards = parseVocabText(extractedText);
                         if (cards.length > 0) {
                             fcQueue = cards;
                             fcMastered = 0;
@@ -1676,15 +1789,23 @@
                             }
                             if (fcUploadMsgEl) {
                                 fcUploadMsgEl.textContent = '✓ Đã nạp thành công!';
+                                fcUploadMsgEl.className = 'text-emerald-500 font-medium';
                                 fcUploadMsgEl.classList.remove('hidden');
                             }
                             renderFlashcard();
                         } else if (fcUploadMsgEl) {
-                            fcUploadMsgEl.textContent = '⚠ File trống hoặc chưa đúng định dạng.';
+                            fcUploadMsgEl.textContent = '⚠ Không tìm thấy từ vựng hợp lệ trong file.';
+                            fcUploadMsgEl.className = 'text-amber-500 font-medium';
                             fcUploadMsgEl.classList.remove('hidden');
                         }
-                    };
-                    reader.readAsText(file, 'UTF-8');
+                    } catch (err) {
+                        if (fcUploadMsgEl) {
+                            fcUploadMsgEl.textContent = '⚠ Lỗi khi đọc file. Hãy kiểm tra lại nội dung file!';
+                            fcUploadMsgEl.className = 'text-rose-500 font-medium';
+                            fcUploadMsgEl.classList.remove('hidden');
+                        }
+                    }
+                    vocabFileInput.value = '';
                 });
             }
 
@@ -1819,7 +1940,7 @@
                         '<li><strong>Hero & Thẻ RPG:</strong> Giới thiệu bản thân, hiệu ứng hạt vật lý và công tắc chuyển đổi chế độ <em>Chuyên Lý / Gamer & Thể Thao</em>.</li>' +
                         '<li><strong>Về Bản Thân:</strong> Khung tương tác liên kết <em>Igloo.inc</em> cùng triết lý học tập.</li>' +
                         '<li><strong>Sở Thích:</strong> Thể thao (cầu lông) và khám phá tri thức mới.</li>' +
-                        '<li><strong>Flashcard Tiếng Anh:</strong> Tải file từ vựng để ôn từ, loại từ và dấu nhấn.</li>' +
+                        '<li><strong>Flashcard Tiếng Anh:</strong> Tải file từ vựng (.pdf, .docx, .xlsx, .csv, .txt...) để ôn từ, loại từ và dấu nhấn.</li>' +
                         '<li><strong>Liên Hệ & Donate:</strong> Zalo, Facebook và mã QR Vietcombank 3D.</li>' +
                         '</ul>';
                 }
@@ -1832,7 +1953,7 @@
 
                 // 4. Flashcard
                 if (/(flashcard|học từ|hoc tu|ôn tập|on tap|cách chơi|cach choi)/i.test(q)) {
-                    return '<p>Ở mục <strong>Flashcard Từ Vựng</strong>, bạn có thể nhấn <em>"Tải file từ vựng (.csv / .txt)"</em> theo cấu trúc <code>word, pos, stress, meaning, example</code>.</p>' +
+                    return '<p>Ở mục <strong>Flashcard Từ Vựng</strong>, bạn có thể nhấn <em>"Tải file từ vựng (.pdf, .docx, .xlsx, .csv, .txt...)"</em> theo cấu trúc <code>word, pos, stress, meaning, example</code>.</p>' +
                         '<p>Sau đó chọn chế độ ôn <strong>Từ vựng / Loại từ / Dấu nhấn</strong>, chạm vào thẻ để lật 3D và bấm <em>Đã nhớ</em> hoặc <em>Cần ôn lại</em>.</p>' +
                         '<button type="button" data-chat-scroll="#documents" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Tới khu Flashcard ngay</button>';
                 }
