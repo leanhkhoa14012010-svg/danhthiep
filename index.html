@@ -207,6 +207,33 @@
         }
 
         /* ============================================================
+           FLASHCARD 3D FLIP STYLES
+           ============================================================ */
+        .flashcard-scene {
+            perspective: 1200px;
+        }
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+            transform-style: preserve-3d;
+        }
+        .flashcard-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            inset: 0;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.5rem;
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+
+        /* ============================================================
            CUSTOM CURSOR
            ============================================================ */
         .cursor-dot,
@@ -259,7 +286,7 @@
         }
         @media (hover: hover) and (pointer: fine) {
             body { cursor: none; }
-            a, button, input, textarea, select, iframe { cursor: none; }
+            a, button, input, textarea, select, iframe, label { cursor: none; }
         }
 
         /* ============================================================
@@ -404,11 +431,12 @@
            ============================================================ */
         #achievement-toast {
             position: fixed;
-            bottom: 24px;
+            bottom: 88px;
             left: 24px;
             z-index: 10000;
             transform: translateY(120px) scale(0.9);
             opacity: 0;
+            pointer-events: none;
             transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
         }
         #achievement-toast.show {
@@ -501,7 +529,7 @@
             <nav class="hidden md:flex items-center space-x-8 text-sm font-medium" aria-label="Primary">
                 <a href="#about" class="nav-link hover:text-sky-500">Về Tôi</a>
                 <a href="#interests" class="nav-link hover:text-sky-500">Sở Thích</a>
-                <a href="#documents" class="nav-link hover:text-sky-500">Tài Liệu PDF</a>
+                <a href="#documents" class="nav-link hover:text-sky-500">Flashcard & Tài Liệu</a>
                 <a href="#contact" class="nav-link hover:text-sky-500">Liên Hệ</a>
                 <a href="#donate" class="nav-link hover:text-sky-500">plsss donet</a>
             </nav>
@@ -524,7 +552,7 @@
         <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 px-4 pt-2 pb-4 space-y-1.5">
             <a href="#about" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Về Tôi</a>
             <a href="#interests" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Sở Thích</a>
-            <a href="#documents" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Tài Liệu PDF</a>
+            <a href="#documents" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Flashcard & Tài Liệu</a>
             <a href="#contact" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">Liên Hệ</a>
             <a href="#donate" class="block px-3 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 font-medium transition-colors">plsss donet</a>
         </div>
@@ -658,7 +686,7 @@
             </div>
         </section>
 
-        <!-- ============ ABOUT (Đã cập nhật khung Gamepad liên kết igloo.inc bên trái & nội dung bên phải) ============ -->
+        <!-- ============ ABOUT (Khung Gamepad liên kết igloo.inc bên trái & nội dung bên phải) ============ -->
         <section id="about" class="py-20 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
@@ -746,38 +774,165 @@
             </div>
         </section>
 
-        <!-- ============ DOCUMENTS ============ -->
+        <!-- ============ FLASHCARD VOCABULARY & DOCUMENTS ============ -->
         <section id="documents" class="py-20 bg-slate-100/60 dark:bg-slate-900/40 border-y border-slate-200/60 dark:border-slate-800/60">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center space-y-3 mb-12">
-                    <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Tài Liệu Trực Tuyến</h2>
-                    <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Góc Tài Liệu & Chia Sẻ PDF</h3>
-                    <p class="reveal text-sm text-slate-500 dark:text-slate-400 max-w-lg mx-auto" data-delay="2">
-                        Đọc trực tiếp nội dung file PDF trực tuyến ngay trên trang web.
+                    <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Học Tập Tương Tác</h2>
+                    <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Flashcard Từ Vựng, Dấu Nhấn & Loại Từ</h3>
+                    <p class="reveal text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto" data-delay="2">
+                        Tải lên file từ vựng tiếng Anh (<code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.csv</code> hoặc <code class="px-1.5 py-0.5 rounded bg-slate-200/70 dark:bg-slate-800 font-mono text-xs">.txt</code>) để tự động tạo bộ thẻ Flashcard lật 3D ôn từ vựng, loại từ và dấu nhấn.
                     </p>
                 </div>
 
-                <div class="reveal bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-6 shadow-sm" data-delay="2">
-                    <div class="flex items-center justify-between mb-4 px-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-3 h-3 rounded-full bg-red-400"></span>
-                            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
-                            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
-                            <span class="ml-2 text-xs text-slate-500 dark:text-slate-400 font-mono">document.pdf</span>
+                <!-- Flashcard Interactive Studio -->
+                <div class="reveal bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 sm:p-8 shadow-sm" data-delay="2">
+                    
+                    <!-- Top Controls: Upload, Sample Download, Mode Selector -->
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-200/70 dark:border-slate-800">
+                        <div class="flex flex-wrap items-center gap-3">
+                            <label for="vocab-file-input" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-xs sm:text-sm font-semibold shadow-md shadow-sky-500/20 hover:shadow-sky-500/40 transition-all cursor-pointer">
+                                <i class="fas fa-file-arrow-up"></i>
+                                <span>Tải file từ vựng (.csv / .txt)</span>
+                            </label>
+                            <input id="vocab-file-input" type="file" accept=".csv,.txt" class="hidden">
+
+                            <button id="download-sample-csv" type="button" class="inline-flex items-center gap-2 px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/70 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition-colors">
+                                <i class="fas fa-download text-sky-500"></i>
+                                <span>Tải file mẫu</span>
+                            </button>
+
+                            <button id="reset-sample-vocab" type="button" class="inline-flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-medium text-slate-500 hover:text-sky-500 transition-colors">
+                                <i class="fas fa-rotate-left"></i>
+                                <span>Bộ mẫu mặc định</span>
+                            </button>
                         </div>
-                        <a href="/document.pdf"
-                            target="_blank" rel="noopener noreferrer"
-                            class="text-xs font-medium text-sky-500 hover:text-sky-600 inline-flex items-center gap-1.5">
-                            <i class="fas fa-arrow-up-right-from-square"></i>
-                            <span>Mở tab mới</span>
-                        </a>
+
+                        <!-- Study Mode Filter -->
+                        <div class="flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">
+                            <button type="button" data-fc-mode="all" class="fc-mode-btn px-3 py-1.5 rounded-lg bg-sky-500 text-white shadow transition-all">Từ vựng</button>
+                            <button type="button" data-fc-mode="pos" class="fc-mode-btn px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all">Loại từ</button>
+                            <button type="button" data-fc-mode="stress" class="fc-mode-btn px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all">Dấu nhấn</button>
+                        </div>
                     </div>
-                    <div class="w-full h-[600px] rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
-                        <iframe
-                            src="/document.pdf"
-                            title="Trình xem tài liệu PDF"
-                            class="w-full h-full border-0">
-                        </iframe>
+
+                    <!-- Status Bar -->
+                    <div class="flex flex-wrap items-center justify-between gap-2 py-4 text-xs text-slate-500 dark:text-slate-400">
+                        <div class="flex items-center gap-2">
+                            <span id="fc-deck-name" class="font-semibold text-slate-700 dark:text-slate-200">
+                                <i class="fas fa-layer-group text-sky-500 mr-1"></i> Bộ từ mẫu THPT (6 từ)
+                            </span>
+                            <span id="fc-upload-msg" class="text-emerald-500 font-medium hidden"></span>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <span>Đã thuộc: <strong id="fc-mastered-count" class="text-emerald-500">0</strong></span>
+                            <span>Còn lại: <strong id="fc-remaining-count" class="text-sky-500">6</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- 3D Flashcard Area -->
+                    <div class="max-w-xl mx-auto my-4">
+                        <div id="flashcard-scene" class="flashcard-scene w-full h-[310px] sm:h-[330px] cursor-pointer select-none" title="Nhấn để lật thẻ">
+                            <div id="flashcard-inner" class="flashcard-inner">
+                                
+                                <!-- Front Face -->
+                                <div class="flashcard-face bg-gradient-to-br from-slate-50 via-white to-sky-50/70 dark:from-slate-800 dark:via-slate-900 dark:to-indigo-950/40 border-2 border-sky-500/30 shadow-xl p-6 sm:p-8 flex flex-col justify-between">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span id="fc-front-badge" class="px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 font-bold uppercase tracking-wider">
+                                            Từ vựng
+                                        </span>
+                                        <span id="fc-card-index" class="font-mono text-slate-400">1 / 6</span>
+                                    </div>
+
+                                    <div class="text-center my-auto space-y-3">
+                                        <div id="fc-front-main" class="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-800 dark:text-white">
+                                            develop
+                                        </div>
+                                        <div id="fc-front-hint" class="text-sm text-slate-500 dark:text-slate-400">
+                                            Nhấn vào thẻ để xem nghĩa, loại từ và dấu nhấn
+                                        </div>
+                                    </div>
+
+                                    <div class="flex items-center justify-between text-[11px] text-slate-400">
+                                        <span><i class="fas fa-hand-pointer mr-1 text-sky-500"></i> Chạm thẻ để lật</span>
+                                        <button id="fc-speak-btn" type="button" class="px-2.5 py-1 rounded-lg bg-slate-200/70 dark:bg-slate-800 hover:bg-sky-500 hover:text-white text-slate-600 dark:text-slate-300 transition-colors" title="Nghe phát âm">
+                                            <i class="fas fa-volume-high mr-1"></i> Phát âm
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Back Face -->
+                                <div class="flashcard-face flashcard-back bg-gradient-to-br from-indigo-600 via-sky-600 to-cyan-600 text-white shadow-xl p-6 sm:p-8 flex flex-col justify-between">
+                                    <div class="flex items-center justify-between text-xs">
+                                        <span class="px-3 py-1 rounded-full bg-white/20 font-bold uppercase tracking-wider">
+                                            Đáp án chi tiết
+                                        </span>
+                                        <span id="fc-back-word" class="font-bold text-white/90">develop</span>
+                                    </div>
+
+                                    <div class="space-y-3 my-auto text-left">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <span id="fc-back-pos" class="px-2.5 py-1 rounded-lg bg-amber-400/25 border border-amber-300/40 text-amber-100 text-xs font-bold">
+                                                Loại từ: verb (v)
+                                            </span>
+                                            <span id="fc-back-stress" class="px-2.5 py-1 rounded-lg bg-white/20 border border-white/30 text-white text-xs font-bold">
+                                                Dấu nhấn: de-VEL-op (âm 2)
+                                            </span>
+                                        </div>
+
+                                        <div>
+                                            <div class="text-[11px] uppercase tracking-wider text-sky-100/80">Nghĩa tiếng Việt</div>
+                                            <div id="fc-back-meaning" class="text-xl sm:text-2xl font-extrabold">
+                                                phát triển, mở rộng
+                                            </div>
+                                        </div>
+
+                                        <div class="pt-1 border-t border-white/20">
+                                            <div class="text-[11px] uppercase tracking-wider text-sky-100/80">Ví dụ</div>
+                                            <p id="fc-back-example" class="text-xs sm:text-sm italic text-white/90">
+                                                "They plan to develop a new physics learning app."
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="text-center text-[11px] text-white/75">
+                                        <i class="fas fa-rotate mr-1"></i> Nhấn lại để quay về mặt trước
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Flashcard Action Buttons -->
+                        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+                            <button id="fc-prev-btn" type="button" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs sm:text-sm font-semibold transition-colors">
+                                <i class="fas fa-chevron-left mr-1"></i> Trước
+                            </button>
+
+                            <button id="fc-review-btn" type="button" class="px-4 py-2.5 rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/30 hover:bg-amber-500 hover:text-white text-xs sm:text-sm font-semibold transition-all">
+                                <i class="fas fa-clock-rotate-left mr-1"></i> Cần ôn lại
+                            </button>
+
+                            <button id="fc-know-btn" type="button" class="px-4 py-2.5 rounded-xl bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500 hover:text-white text-xs sm:text-sm font-semibold transition-all">
+                                <i class="fas fa-check mr-1"></i> Đã nhớ
+                            </button>
+
+                            <button id="fc-next-btn" type="button" class="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-xs sm:text-sm font-semibold transition-colors">
+                                Tiếp <i class="fas fa-chevron-right ml-1"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Format Guide Accordion / Box -->
+                    <div class="mt-8 pt-6 border-t border-slate-200/70 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+                        <div>
+                            <span class="font-semibold text-slate-700 dark:text-slate-300">Định dạng file hỗ trợ:</span>
+                            Mỗi dòng ghi theo mẫu <code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 font-mono">word, pos, stress, meaning, example</code> (ngăn cách bằng dấu phẩy <code class="font-mono">,</code> hoặc <code class="font-mono">|</code>).
+                        </div>
+                        <a href="/document.pdf" target="_blank" rel="noopener noreferrer" class="shrink-0 inline-flex items-center gap-1.5 font-semibold text-sky-500 hover:text-sky-600">
+                            <i class="fas fa-file-pdf"></i>
+                            <span>Mở tài liệu PDF đính kèm (document.pdf)</span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -874,6 +1029,75 @@
         </div>
     </footer>
 
+    <!-- ==================== AI CHATBOT WIDGET (Hỏi đáp & Tìm kiếm File) ==================== -->
+    <div id="ai-chat-widget" class="fixed bottom-6 left-6 z-50">
+        <!-- Chat Window -->
+        <div id="ai-chat-window" class="hidden mb-3 w-[330px] sm:w-[370px] rounded-3xl bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden flex flex-col transition-all">
+            <!-- Header -->
+            <div class="px-4 py-3.5 bg-gradient-to-r from-sky-500 to-indigo-600 text-white flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-xl bg-white/20 flex items-center justify-center text-sm">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div>
+                        <div class="text-sm font-bold leading-tight">Khoa AI Assistant</div>
+                        <div class="text-[10px] text-sky-100 flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
+                            Hỏi đáp & Tìm kiếm tài liệu
+                        </div>
+                    </div>
+                </div>
+                <button id="ai-chat-close" type="button" aria-label="Đóng khung chat" class="w-7 h-7 rounded-lg hover:bg-white/20 flex items-center justify-center transition-colors">
+                    <i class="fas fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Messages List -->
+            <div id="ai-chat-messages" class="p-4 h-[290px] overflow-y-auto space-y-3 text-xs sm:text-[13px] leading-relaxed">
+                <div class="flex items-start gap-2.5">
+                    <div class="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-500 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fas fa-robot text-xs"></i>
+                    </div>
+                    <div class="p-3 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200">
+                        Chào bạn! Mình là trợ lý AI của <strong>Lê Anh Khoa</strong>. Bạn có thể hỏi mình về thông tin trang web, thành tích, hoặc gõ tên tài liệu/file để mình tìm giúp nhé!
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Suggestion Chips -->
+            <div class="px-3 pb-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                <button type="button" class="ai-chip shrink-0 px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors" data-prompt="Web này có gì?">
+                    Web này có gì?
+                </button>
+                <button type="button" class="ai-chip shrink-0 px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors" data-prompt="Tìm file tài liệu">
+                    Tìm file tài liệu
+                </button>
+                <button type="button" class="ai-chip shrink-0 px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors" data-prompt="Cách chơi Flashcard">
+                    Cách chơi Flashcard
+                </button>
+                <button type="button" class="ai-chip shrink-0 px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors" data-prompt="Liên hệ & Donate">
+                    Liên hệ & Donate
+                </button>
+            </div>
+
+            <!-- Input Form -->
+            <form id="ai-chat-form" class="p-3 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2 bg-white dark:bg-slate-900">
+                <input id="ai-chat-input" type="text" placeholder="Hỏi gì đó hoặc nhập tên file..." autocomplete="off"
+                    class="flex-1 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
+                <button type="submit" aria-label="Gửi tin nhắn" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 text-white flex items-center justify-center shadow hover:opacity-95 active:scale-95 transition-all shrink-0">
+                    <i class="fas fa-paper-plane text-xs"></i>
+                </button>
+            </form>
+        </div>
+
+        <!-- Floating Toggle Button -->
+        <button id="ai-chat-toggle" type="button" aria-label="Mở trợ lý AI"
+            class="group flex items-center gap-2.5 px-4 py-3 rounded-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/30 hover:shadow-sky-500/60 hover:-translate-y-0.5 active:scale-95 transition-all">
+            <i class="fas fa-robot text-base"></i>
+            <span class="text-xs font-bold tracking-wide">Hỏi Khoa AI</span>
+        </button>
+    </div>
+
     <!-- ==================== BACK TO TOP ==================== -->
     <button id="back-to-top" type="button" aria-label="Về đầu trang"
         class="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 text-white shadow-lg shadow-sky-500/30 hover:shadow-sky-500/60 transition-all hover:-translate-y-1 active:scale-95 flex items-center justify-center">
@@ -941,7 +1165,7 @@
                 document.addEventListener('mousedown', function () { document.body.classList.add('cursor-down'); });
                 document.addEventListener('mouseup', function () { document.body.classList.remove('cursor-down'); });
 
-                var hoverTargets = 'a, button, input, textarea, select, iframe, [data-tilt], [data-magnetic]';
+                var hoverTargets = 'a, button, input, textarea, select, iframe, label, #flashcard-scene, [data-tilt], [data-magnetic]';
                 document.addEventListener('mouseover', function (e) {
                     if (e.target.closest(hoverTargets)) document.body.classList.add('cursor-hover');
                 });
@@ -1164,7 +1388,7 @@
             /* ------------------------------------------------------------
                8. SCROLL REVEAL & ACHIEVEMENTS
                ------------------------------------------------------------ */
-            var achievementsUnlocked = { explorer: false, gamer: false };
+            var achievementsUnlocked = { explorer: false, gamer: false, flashcard: false };
             var toastEl = document.getElementById('achievement-toast');
             var toastTitle = document.getElementById('achievement-title');
 
@@ -1271,7 +1495,405 @@
             }
 
             /* ------------------------------------------------------------
-               11. ACTIVE NAV LINK & TILT / MAGNETIC
+               11. FLASHCARD VOCABULARY GAME (Từ vựng, Dấu nhấn, Loại từ)
+               ------------------------------------------------------------ */
+            var defaultVocabDeck = [
+                { word: 'develop', pos: 'verb (v)', stress: 'de-VEL-op (nhấn âm 2)', meaning: 'phát triển, mở rộng', example: 'They plan to develop a new physics learning app.' },
+                { word: 'curiosity', pos: 'noun (n)', stress: 'cu-ri-OS-i-ty (nhấn âm 3)', meaning: 'sự tò mò, ham học hỏi', example: 'Curiosity is the torch that lights the path to knowledge.' },
+                { word: 'accurate', pos: 'adjective (adj)', stress: 'AC-cu-rate (nhấn âm 1)', meaning: 'chính xác, đúng đắn', example: 'Physics experiments require accurate measurements.' },
+                { word: 'efficiently', pos: 'adverb (adv)', stress: 'ef-FI-cient-ly (nhấn âm 2)', meaning: 'một cách hiệu quả', example: 'She manages her study schedule very efficiently.' },
+                { word: 'phenomenon', pos: 'noun (n)', stress: 'phe-NOM-e-non (nhấn âm 2)', meaning: 'hiện tượng (tự nhiên, vật lý)', example: 'Lightning is a fascinating electrical phenomenon.' },
+                { word: 'enthusiastic', pos: 'adjective (adj)', stress: 'en-thu-si-AS-tic (nhấn âm 4)', meaning: 'nhiệt huyết, hào hứng', example: 'He is always enthusiastic about badminton and physics.' }
+            ];
+
+            var fcQueue = defaultVocabDeck.slice();
+            var fcMastered = 0;
+            var fcCurrentIdx = 0;
+            var fcMode = 'all'; // 'all' | 'pos' | 'stress'
+
+            var fcScene = document.getElementById('flashcard-scene');
+            var fcInner = document.getElementById('flashcard-inner');
+            var fcFrontBadge = document.getElementById('fc-front-badge');
+            var fcCardIndex = document.getElementById('fc-card-index');
+            var fcFrontMain = document.getElementById('fc-front-main');
+            var fcFrontHint = document.getElementById('fc-front-hint');
+            var fcBackWord = document.getElementById('fc-back-word');
+            var fcBackPos = document.getElementById('fc-back-pos');
+            var fcBackStress = document.getElementById('fc-back-stress');
+            var fcBackMeaning = document.getElementById('fc-back-meaning');
+            var fcBackExample = document.getElementById('fc-back-example');
+            var fcMasteredEl = document.getElementById('fc-mastered-count');
+            var fcRemainingEl = document.getElementById('fc-remaining-count');
+            var fcDeckNameEl = document.getElementById('fc-deck-name');
+            var fcUploadMsgEl = document.getElementById('fc-upload-msg');
+
+            function renderFlashcard() {
+                if (!fcInner) return;
+                fcInner.classList.remove('is-flipped');
+
+                if (fcMasteredEl) fcMasteredEl.textContent = fcMastered;
+                if (fcRemainingEl) fcRemainingEl.textContent = fcQueue.length;
+
+                if (fcQueue.length === 0) {
+                    if (fcCardIndex) fcCardIndex.textContent = 'Hoàn thành!';
+                    if (fcFrontBadge) fcFrontBadge.textContent = 'Chúc mừng';
+                    if (fcFrontMain) fcFrontMain.textContent = '🎉 Đã thuộc hết!';
+                    if (fcFrontHint) fcFrontHint.textContent = 'Bấm "Bộ mẫu mặc định" hoặc tải file mới để ôn tiếp.';
+                    if (fcBackWord) fcBackWord.textContent = 'Hoàn thành';
+                    if (fcBackPos) fcBackPos.textContent = '100% Đã nhớ';
+                    if (fcBackStress) fcBackStress.textContent = 'Xuất sắc!';
+                    if (fcBackMeaning) fcBackMeaning.textContent = 'Bạn đã hoàn thành toàn bộ thẻ trong danh sách.';
+                    if (fcBackExample) fcBackExample.textContent = '"Keep practicing every day!"';
+                    return;
+                }
+
+                if (fcCurrentIdx >= fcQueue.length) fcCurrentIdx = 0;
+                if (fcCurrentIdx < 0) fcCurrentIdx = fcQueue.length - 1;
+
+                var item = fcQueue[fcCurrentIdx];
+                if (fcCardIndex) fcCardIndex.textContent = (fcCurrentIdx + 1) + ' / ' + fcQueue.length;
+
+                if (fcMode === 'pos') {
+                    if (fcFrontBadge) fcFrontBadge.textContent = 'Thử thách: Loại từ';
+                    if (fcFrontMain) fcFrontMain.textContent = item.word;
+                    if (fcFrontHint) fcFrontHint.textContent = 'Từ này thuộc loại từ nào (n, v, adj, adv...)? Chạm để kiểm tra!';
+                } else if (fcMode === 'stress') {
+                    if (fcFrontBadge) fcFrontBadge.textContent = 'Thử thách: Dấu nhấn';
+                    if (fcFrontMain) fcFrontMain.textContent = item.word;
+                    if (fcFrontHint) fcFrontHint.textContent = 'Từ này nhấn âm tiết thứ mấy? Chạm để kiểm tra!';
+                } else {
+                    if (fcFrontBadge) fcFrontBadge.textContent = 'Ôn tập tổng hợp';
+                    if (fcFrontMain) fcFrontMain.textContent = item.word;
+                    if (fcFrontHint) fcFrontHint.textContent = 'Nhấn vào thẻ để xem nghĩa, loại từ và dấu nhấn';
+                }
+
+                if (fcBackWord) fcBackWord.textContent = item.word;
+                if (fcBackPos) fcBackPos.textContent = 'Loại từ: ' + (item.pos || 'Chưa rõ');
+                if (fcBackStress) fcBackStress.textContent = 'Dấu nhấn: ' + (item.stress || 'Chưa rõ');
+                if (fcBackMeaning) fcBackMeaning.textContent = item.meaning || 'Chưa có nghĩa';
+                if (fcBackExample) fcBackExample.textContent = item.example ? ('"' + item.example + '"') : '"Không có câu ví dụ."';
+            }
+
+            if (fcScene && fcInner) {
+                fcScene.addEventListener('click', function (e) {
+                    if (e.target.closest('#fc-speak-btn')) return;
+                    fcInner.classList.toggle('is-flipped');
+                });
+            }
+
+            var fcSpeakBtn = document.getElementById('fc-speak-btn');
+            if (fcSpeakBtn) {
+                fcSpeakBtn.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    if (!fcQueue.length || !('speechSynthesis' in window)) return;
+                    var utter = new SpeechSynthesisUtterance(fcQueue[fcCurrentIdx].word);
+                    utter.lang = 'en-US';
+                    utter.rate = 0.92;
+                    window.speechSynthesis.cancel();
+                    window.speechSynthesis.speak(utter);
+                });
+            }
+
+            var fcPrevBtn = document.getElementById('fc-prev-btn');
+            var fcNextBtn = document.getElementById('fc-next-btn');
+            var fcKnowBtn = document.getElementById('fc-know-btn');
+            var fcReviewBtn = document.getElementById('fc-review-btn');
+
+            if (fcPrevBtn) fcPrevBtn.addEventListener('click', function () { fcCurrentIdx--; renderFlashcard(); });
+            if (fcNextBtn) fcNextBtn.addEventListener('click', function () { fcCurrentIdx++; renderFlashcard(); });
+
+            if (fcKnowBtn) {
+                fcKnowBtn.addEventListener('click', function () {
+                    if (!fcQueue.length) return;
+                    fcQueue.splice(fcCurrentIdx, 1);
+                    fcMastered++;
+                    if (fcMastered >= 3 && !achievementsUnlocked.flashcard) {
+                        achievementsUnlocked.flashcard = true;
+                        showAchievement('Bậc Thầy Từ Vựng Tiếng Anh');
+                    }
+                    renderFlashcard();
+                });
+            }
+
+            if (fcReviewBtn) {
+                fcReviewBtn.addEventListener('click', function () {
+                    if (fcQueue.length <= 1) {
+                        fcInner.classList.remove('is-flipped');
+                        return;
+                    }
+                    var currentCard = fcQueue.splice(fcCurrentIdx, 1)[0];
+                    fcQueue.push(currentCard);
+                    renderFlashcard();
+                });
+            }
+
+            document.querySelectorAll('.fc-mode-btn').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    fcMode = btn.getAttribute('data-fc-mode') || 'all';
+                    document.querySelectorAll('.fc-mode-btn').forEach(function (b) {
+                        b.className = 'fc-mode-btn px-3 py-1.5 rounded-lg text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all';
+                    });
+                    btn.className = 'fc-mode-btn px-3 py-1.5 rounded-lg bg-sky-500 text-white shadow transition-all';
+                    renderFlashcard();
+                });
+            });
+
+            // Parse uploaded CSV/TXT file
+            function parseVocabText(rawText) {
+                var lines = rawText.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+                var parsed = [];
+                lines.forEach(function (line, idx) {
+                    var sep = line.indexOf('|') !== -1 ? '|' : (line.indexOf(';') !== -1 ? ';' : ',');
+                    var parts = line.split(sep).map(function (p) { return p.trim().replace(/^"|"$/g, ''); });
+                    if (idx === 0 && /^(word|tu vung|từ vựng|english)/i.test(parts[0])) return;
+                    if (parts[0]) {
+                        parsed.push({
+                            word: parts[0],
+                            pos: parts[1] || 'Chưa rõ',
+                            stress: parts[2] || 'Chưa rõ',
+                            meaning: parts[3] || 'Chưa có nghĩa',
+                            example: parts[4] || ''
+                        });
+                    }
+                });
+                return parsed;
+            }
+
+            var vocabFileInput = document.getElementById('vocab-file-input');
+            if (vocabFileInput) {
+                vocabFileInput.addEventListener('change', function (e) {
+                    var file = e.target.files && e.target.files[0];
+                    if (!file) return;
+                    var reader = new FileReader();
+                    reader.onload = function (evt) {
+                        var cards = parseVocabText(String(evt.target.result || ''));
+                        if (cards.length > 0) {
+                            fcQueue = cards;
+                            fcMastered = 0;
+                            fcCurrentIdx = 0;
+                            if (fcDeckNameEl) {
+                                fcDeckNameEl.innerHTML = '<i class="fas fa-file-lines text-sky-500 mr-1"></i> ' + file.name + ' (' + cards.length + ' từ)';
+                            }
+                            if (fcUploadMsgEl) {
+                                fcUploadMsgEl.textContent = '✓ Đã nạp thành công!';
+                                fcUploadMsgEl.classList.remove('hidden');
+                            }
+                            renderFlashcard();
+                        } else if (fcUploadMsgEl) {
+                            fcUploadMsgEl.textContent = '⚠ File trống hoặc chưa đúng định dạng.';
+                            fcUploadMsgEl.classList.remove('hidden');
+                        }
+                    };
+                    reader.readAsText(file, 'UTF-8');
+                });
+            }
+
+            var resetSampleBtn = document.getElementById('reset-sample-vocab');
+            if (resetSampleBtn) {
+                resetSampleBtn.addEventListener('click', function () {
+                    fcQueue = defaultVocabDeck.slice();
+                    fcMastered = 0;
+                    fcCurrentIdx = 0;
+                    if (fcDeckNameEl) {
+                        fcDeckNameEl.innerHTML = '<i class="fas fa-layer-group text-sky-500 mr-1"></i> Bộ từ mẫu THPT (' + fcQueue.length + ' từ)';
+                    }
+                    if (fcUploadMsgEl) fcUploadMsgEl.classList.add('hidden');
+                    renderFlashcard();
+                });
+            }
+
+            var downloadSampleBtn = document.getElementById('download-sample-csv');
+            if (downloadSampleBtn) {
+                downloadSampleBtn.addEventListener('click', function () {
+                    var csvContent = '\uFEFFword,pos,stress,meaning,example\n' +
+                        defaultVocabDeck.map(function (item) {
+                            return [item.word, item.pos, item.stress, item.meaning, '"' + item.example + '"'].join(',');
+                        }).join('\n');
+                    var blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    var url = URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'tu-vung-mau-flashcard.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                });
+            }
+
+            renderFlashcard();
+
+            /* ------------------------------------------------------------
+               12. AI CHATBOT WIDGET (Hỏi đáp & Tìm kiếm File)
+               ------------------------------------------------------------ */
+            var siteFilesCatalog = [
+                {
+                    title: 'document.pdf — Tài liệu học tập chia sẻ',
+                    keywords: ['pdf', 'document', 'tai lieu', 'tài liệu', 'file', 'de cuong', 'đề cương', 'vat ly', 'vật lý'],
+                    desc: 'File tài liệu PDF đính kèm trực tiếp trên trang web của Lê Anh Khoa.',
+                    actionType: 'link',
+                    url: '/document.pdf',
+                    label: 'Mở file document.pdf'
+                },
+                {
+                    title: 'tu-vung-mau-flashcard.csv — Bộ từ vựng tiếng Anh mẫu',
+                    keywords: ['csv', 'tu vung', 'từ vựng', 'tieng anh', 'tiếng anh', 'flashcard', 'dau nhan', 'dấu nhấn', 'loai tu', 'loại từ', 'mau', 'mẫu'],
+                    desc: 'File mẫu cấu trúc từ vựng, loại từ, dấu nhấn và ví dụ dùng cho trò chơi Flashcard.',
+                    actionType: 'scroll',
+                    target: '#documents',
+                    label: 'Đi tới khu Flashcard'
+                },
+                {
+                    title: 'avt.jfif — Ảnh đại diện Lê Anh Khoa',
+                    keywords: ['anh', 'ảnh', 'avatar', 'avt', 'hinh', 'hình'],
+                    desc: 'Ảnh chân dung đại diện của Lê Anh Khoa ở khu vực Hero.',
+                    actionType: 'scroll',
+                    target: '#hero',
+                    label: 'Xem ở đầu trang'
+                }
+            ];
+
+            var chatToggle = document.getElementById('ai-chat-toggle');
+            var chatWindow = document.getElementById('ai-chat-window');
+            var chatClose = document.getElementById('ai-chat-close');
+            var chatForm = document.getElementById('ai-chat-form');
+            var chatInput = document.getElementById('ai-chat-input');
+            var chatMessages = document.getElementById('ai-chat-messages');
+
+            function toggleChat(forceState) {
+                if (!chatWindow) return;
+                var willShow = typeof forceState === 'boolean' ? forceState : chatWindow.classList.contains('hidden');
+                chatWindow.classList.toggle('hidden', !willShow);
+                if (willShow && chatInput) chatInput.focus();
+            }
+
+            if (chatToggle) chatToggle.addEventListener('click', function () { toggleChat(); });
+            if (chatClose) chatClose.addEventListener('click', function () { toggleChat(false); });
+
+            function appendChatBubble(sender, htmlContent) {
+                if (!chatMessages) return;
+                var wrapper = document.createElement('div');
+                if (sender === 'user') {
+                    wrapper.className = 'flex justify-end';
+                    wrapper.innerHTML = '<div class="max-w-[82%] p-3 rounded-2xl rounded-tr-none bg-gradient-to-r from-sky-500 to-indigo-600 text-white shadow-sm">' + htmlContent + '</div>';
+                } else {
+                    wrapper.className = 'flex items-start gap-2.5';
+                    wrapper.innerHTML = '<div class="w-7 h-7 rounded-lg bg-sky-500/15 text-sky-500 flex items-center justify-center shrink-0 mt-0.5"><i class="fas fa-robot text-xs"></i></div>' +
+                        '<div class="max-w-[85%] p-3 rounded-2xl rounded-tl-none bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 space-y-2">' + htmlContent + '</div>';
+                }
+                chatMessages.appendChild(wrapper);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            function buildBotReply(rawQuery) {
+                var q = rawQuery.toLowerCase().trim();
+
+                // 1. Kiểm tra nhu cầu tìm file / tài liệu
+                var isFileSearch = /(tìm|tim|file|fiel|tài liệu|tai lieu|pdf|csv|tải|tai|download|đề cương)/i.test(q);
+                var matchedFiles = siteFilesCatalog.filter(function (f) {
+                    return f.keywords.some(function (kw) { return q.indexOf(kw) !== -1; });
+                });
+
+                if (isFileSearch || matchedFiles.length > 0) {
+                    var listToRender = matchedFiles.length > 0 ? matchedFiles : siteFilesCatalog;
+                    var html = '<p>Mình tìm thấy <strong>' + listToRender.length + '</strong> tài liệu/file phù hợp trên web của Khoa:</p><div class="space-y-2 pt-1">';
+                    listToRender.forEach(function (f) {
+                        html += '<div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">' +
+                            '<div class="font-bold text-sky-600 dark:text-sky-400 text-xs">' + f.title + '</div>' +
+                            '<div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">' + f.desc + '</div>';
+                        if (f.actionType === 'link') {
+                            html += '<a href="' + f.url + '" target="_blank" rel="noopener noreferrer" class="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-500 hover:underline"><i class="fas fa-arrow-up-right-from-square"></i> ' + f.label + '</a>';
+                        } else {
+                            html += '<button type="button" data-chat-scroll="' + f.target + '" class="mt-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-500 hover:underline"><i class="fas fa-location-arrow"></i> ' + f.label + '</button>';
+                        }
+                        html += '</div>';
+                    });
+                    html += '</div>';
+                    return html;
+                }
+
+                // 2. Giới thiệu tổng quan website
+                if (/(web|trang|có gì|co gi|giới thiệu|gioi thieu|tổng quan)/i.test(q)) {
+                    return '<p>Trang web cá nhân của <strong>Lê Anh Khoa</strong> (11 Lý — THPT Chuyên Bến Tre) gồm các khu vực chính:</p>' +
+                        '<ul class="list-disc pl-4 space-y-1 text-xs">' +
+                        '<li><strong>Hero & Thẻ RPG:</strong> Giới thiệu bản thân, hiệu ứng hạt vật lý và công tắc chuyển đổi chế độ <em>Chuyên Lý / Gamer & Thể Thao</em>.</li>' +
+                        '<li><strong>Về Bản Thân:</strong> Khung tương tác liên kết <em>Igloo.inc</em> cùng triết lý học tập.</li>' +
+                        '<li><strong>Sở Thích:</strong> Thể thao (cầu lông) và khám phá tri thức mới.</li>' +
+                        '<li><strong>Flashcard Tiếng Anh:</strong> Tải file từ vựng để ôn từ, loại từ và dấu nhấn.</li>' +
+                        '<li><strong>Liên Hệ & Donate:</strong> Zalo, Facebook và mã QR Vietcombank 3D.</li>' +
+                        '</ul>';
+                }
+
+                // 3. Thông tin cá nhân / học vấn / game
+                if (/(khoa|ai|trường|truong|lớp|lop|chuyên|liên quân|lien quan|game|rank|butterfly|sở thích|so thich|cầu lông)/i.test(q)) {
+                    return '<p><strong>Lê Anh Khoa</strong> hiện là học sinh lớp <strong>11 Lý, Trường THPT Chuyên Bến Tre</strong>.</p>' +
+                        '<p>Ngoài tư duy Vật lý và giải bài tập, Khoa còn chơi <strong>Cầu lông</strong>, đạt rank <strong>Đại Cao Thủ (Top Butterfly)</strong> trong Liên Quân và chơi Roblox. Bạn có thể bấm nút <em>Gamer & Thể Thao</em> trên thẻ hồ sơ ở đầu trang để xem chi tiết!</p>';
+                }
+
+                // 4. Flashcard
+                if (/(flashcard|học từ|hoc tu|ôn tập|on tap|cách chơi|cach choi)/i.test(q)) {
+                    return '<p>Ở mục <strong>Flashcard Từ Vựng</strong>, bạn có thể nhấn <em>"Tải file từ vựng (.csv / .txt)"</em> theo cấu trúc <code>word, pos, stress, meaning, example</code>.</p>' +
+                        '<p>Sau đó chọn chế độ ôn <strong>Từ vựng / Loại từ / Dấu nhấn</strong>, chạm vào thẻ để lật 3D và bấm <em>Đã nhớ</em> hoặc <em>Cần ôn lại</em>.</p>' +
+                        '<button type="button" data-chat-scroll="#documents" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Tới khu Flashcard ngay</button>';
+                }
+
+                // 5. Liên hệ & Donate
+                if (/(liên hệ|lien he|zalo|facebook|fb|sđt|sdt|donate|donet|ủng hộ|ung ho|bank|ngân hàng|qr)/i.test(q)) {
+                    return '<p>Bạn có thể kết nối hoặc ủng hộ Khoa qua:</p>' +
+                        '<ul class="list-disc pl-4 space-y-1 text-xs">' +
+                        '<li><strong>Zalo / SĐT:</strong> 0848 979 877</li>' +
+                        '<li><strong>Facebook:</strong> facebook.com/le.akhoa.2024</li>' +
+                        '<li><strong>Vietcombank:</strong> <code>1065359553</code> (LE ANH KHOA)</li>' +
+                        '</ul>' +
+                        '<button type="button" data-chat-scroll="#contact" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Xem mục Liên hệ & QR 3D</button>';
+                }
+
+                // 6. Phản hồi mặc định linh hoạt
+                return '<p>Mình đã ghi nhận câu hỏi: <em>"' + rawQuery.replace(/</g, '&lt;') + '"</em>.</p>' +
+                    '<p>Bạn có thể hỏi mình chi tiết hơn về <strong>Lê Anh Khoa</strong>, <strong>cách dùng Flashcard</strong>, <strong>liên hệ/donate</strong>, hoặc gõ từ khóa như <strong>"tìm file pdf"</strong> để tra cứu tài liệu nhé!</p>';
+            }
+
+            function handleUserMessage(text) {
+                var clean = text.trim();
+                if (!clean) return;
+                appendChatBubble('user', clean.replace(/</g, '&lt;'));
+                setTimeout(function () {
+                    appendChatBubble('bot', buildBotReply(clean));
+                }, 260);
+            }
+
+            if (chatForm && chatInput) {
+                chatForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    var val = chatInput.value;
+                    chatInput.value = '';
+                    handleUserMessage(val);
+                });
+            }
+
+            document.querySelectorAll('.ai-chip').forEach(function (chip) {
+                chip.addEventListener('click', function () {
+                    handleUserMessage(chip.getAttribute('data-prompt') || chip.textContent);
+                });
+            });
+
+            if (chatMessages) {
+                chatMessages.addEventListener('click', function (e) {
+                    var scrollBtn = e.target.closest('[data-chat-scroll]');
+                    if (!scrollBtn) return;
+                    var selector = scrollBtn.getAttribute('data-chat-scroll');
+                    var target = document.querySelector(selector);
+                    if (target) {
+                        window.scrollTo({
+                            top: target.getBoundingClientRect().top + window.pageYOffset - 80,
+                            behavior: prefersReduced ? 'auto' : 'smooth'
+                        });
+                    }
+                });
+            }
+
+            /* ------------------------------------------------------------
+               13. ACTIVE NAV LINK & TILT / MAGNETIC
                ------------------------------------------------------------ */
             var navLinks = document.querySelectorAll('.nav-link');
             var sections = document.querySelectorAll('main section[id]');
