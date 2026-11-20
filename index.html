@@ -575,6 +575,22 @@
             .khoa-avatar-wrap::before { animation: none; }
         }
     </style>
+    <!-- ===== PWA: cài web thành app "Khoa Physics" ===== -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="icon" type="image/png" href="khoa-icon-192.png">
+    <link rel="apple-touch-icon" href="khoa-apple-touch-icon.png">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Khoa Physics">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        /* ===== Bay giữa các hành tinh (nền vũ trụ + HUD) ===== */
+        #space-flight { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        html.space-off #space-flight { display: none; }
+        body.focus-mode #space-flight, body.focus-mode #space-hud { display: none; }
+        #space-dots button { transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease; }
+        @media print { #space-flight, #space-hud, #pwa-toast { display: none !important; } }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col selection:bg-sky-500 selection:text-white relative overflow-x-hidden">
 
@@ -587,6 +603,20 @@
 
     <!-- ==================== IOS 26 BUBBLES CONTAINER ==================== -->
     <div id="ios-bubbles-container" class="absolute inset-0 pointer-events-none overflow-hidden z-0" aria-hidden="true"></div>
+
+    <!-- ===== Bay giữa các hành tinh: canvas nền + HUD điều hướng ===== -->
+    <canvas id="space-flight" aria-hidden="true"></canvas>
+    <div id="space-hud" class="fixed right-2 top-1/2 -translate-y-1/2 z-40 flex flex-col items-end gap-2 opacity-80 hover:opacity-100 transition-opacity">
+        <div id="space-hud-label" class="hidden md:block px-3 py-1.5 rounded-full glass border border-slate-200/60 dark:border-slate-700/60 text-[11px] font-semibold text-slate-700 dark:text-slate-200 whitespace-nowrap"></div>
+        <div id="space-dots" class="flex flex-col items-center gap-2.5 px-1.5 py-2.5 rounded-full glass border border-slate-200/60 dark:border-slate-700/60" role="navigation" aria-label="Hành trình các hành tinh"></div>
+        <button id="space-toggle" type="button" aria-pressed="true" title="Bật/tắt hiệu ứng vũ trụ" aria-label="Bật/tắt hiệu ứng vũ trụ" class="w-8 h-8 rounded-full glass border border-slate-200/60 dark:border-slate-700/60 flex items-center justify-center text-xs text-sky-500 hover:scale-110 transition-transform">
+            <i class="fas fa-rocket"></i>
+        </button>
+        <button id="pwa-install" type="button" title="Cài web thành ứng dụng Khoa Physics" aria-label="Cài ứng dụng Khoa Physics" class="hidden h-8 px-2.5 rounded-full bg-gradient-to-r from-sky-500 to-indigo-600 text-white text-[11px] font-semibold items-center justify-center shadow-lg hover:scale-105 transition-transform">
+            <i class="fas fa-download"></i><span class="hidden md:inline ml-1.5">Cài app</span>
+        </button>
+    </div>
+    <div id="pwa-toast" role="status" aria-live="polite" class="hidden fixed bottom-24 left-1/2 -translate-x-1/2 z-[60] max-w-[90vw] px-4 py-2.5 rounded-xl bg-slate-900/95 text-white text-xs shadow-lg text-center"></div>
 
     <!-- ==================== ACHIEVEMENT POPUP TOAST ==================== -->
     <div id="achievement-toast" class="flex items-center gap-3.5 bg-slate-900/90 dark:bg-slate-800/90 backdrop-blur-md border border-sky-500/40 text-white px-5 py-3.5 rounded-2xl shadow-2xl">
@@ -3326,5 +3356,296 @@
             });
         })();
     </script>
+<script>
+/* ============================================================
+   BAY GIỮA CÁC HÀNH TINH: mỗi mục là một hành tinh, cuộn trang = bay tới hành tinh kế tiếp.
+   Nền sao chuyển động theo (kéo dài thành vệt sáng khi cuộn nhanh). Khối này độc lập, không đụng tới code khác.
+   ============================================================ */
+(function () {
+    'use strict';
+    var canvas = document.getElementById('space-flight');
+    if (!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+    var TAU = Math.PI * 2;
+    var reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    var PLANETS = [
+        { id: 'hero', name: 'Trái Đất', label: 'Trang chủ', c1: '#7dd3fc', c2: '#0369a1', kind: 'earth' },
+        { id: 'about', name: 'Sao Hỏa', label: 'Về bản thân', c1: '#fdba74', c2: '#b91c1c', kind: 'mars' },
+        { id: 'interests', name: 'Sao Mộc', label: 'Sở thích', c1: '#fde68a', c2: '#b45309', kind: 'jupiter' },
+        { id: 'documents', name: 'Sao Thổ', label: 'Học tập tương tác', c1: '#fef3c7', c2: '#a16207', kind: 'saturn' },
+        { id: 'de-ly', name: 'Sao Thiên Vương', label: 'Thư viện đề Lý', c1: '#a5f3fc', c2: '#0e7490', kind: 'uranus' },
+        { id: 'contact', name: 'Sao Hải Vương', label: 'Liên hệ', c1: '#a5b4fc', c2: '#3730a3', kind: 'neptune' }
+    ];
+    var N = PLANETS.length;
+
+    var W = 0, H = 0, dpr = 1;
+    var stars = [], tops = [], hs = [];
+    var vel = 0, lastY = window.pageYOffset, fs = 0, curIdx = -1;
+    var raf = 0, last = 0, lastDraw = 0, lastMeasure = 0;
+    var enabled = true;
+    try { enabled = localStorage.getItem('khoa-space') !== 'off'; } catch (e) {}
+
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function rgba(hex, a) { var n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')'; }
+    function isDark() { return document.documentElement.classList.contains('dark'); }
+
+    /* ---------- HUD ---------- */
+    var dotsBox = document.getElementById('space-dots');
+    var label = document.getElementById('space-hud-label');
+    var toggle = document.getElementById('space-toggle');
+    var dots = [];
+    function goTo(i) {
+        var el = document.getElementById(PLANETS[i].id);
+        if (!el) return;
+        window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 80, behavior: reduced ? 'auto' : 'smooth' });
+    }
+    if (dotsBox) {
+        PLANETS.forEach(function (P, i) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.title = 'Bay tới ' + P.name + ' · ' + P.label;
+            b.setAttribute('aria-label', 'Bay tới ' + P.name + ', mục ' + P.label);
+            b.addEventListener('click', function () { goTo(i); });
+            dotsBox.appendChild(b);
+            dots.push(b);
+        });
+    }
+    function updateHud(idx) {
+        if (idx === curIdx) return;
+        curIdx = idx;
+        dots.forEach(function (b, i) {
+            b.className = 'w-3 h-3 rounded-full ' + (i === idx
+                ? 'bg-sky-500 scale-125 shadow-[0_0_10px_rgba(14,165,233,0.8)]'
+                : 'bg-slate-400/60 dark:bg-slate-500/60 hover:bg-sky-400 hover:scale-125');
+            if (i === idx) b.setAttribute('aria-current', 'true'); else b.removeAttribute('aria-current');
+        });
+        if (label) label.textContent = PLANETS[idx].name + ' · ' + PLANETS[idx].label;
+    }
+
+    /* ---------- Kích thước, sao, đo vị trí các mục ---------- */
+    function measure() {
+        var y = window.pageYOffset;
+        for (var i = 0; i < N; i++) {
+            var el = document.getElementById(PLANETS[i].id);
+            if (el) { var r = el.getBoundingClientRect(); tops[i] = r.top + y; hs[i] = r.height; }
+            else { tops[i] = i ? tops[i - 1] + (hs[i - 1] || 0) : 0; hs[i] = 0; }
+        }
+    }
+    function resize() {
+        W = window.innerWidth; H = window.innerHeight;
+        dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        canvas.width = Math.floor(W * dpr); canvas.height = Math.floor(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        var count = W < 640 ? 70 : 140;
+        stars = [];
+        for (var i = 0; i < count; i++) {
+            stars.push({ x: Math.random() * W, y: Math.random() * H, z: 0.15 + Math.random() * 0.85, ph: Math.random() * TAU, s: Math.random() < 0.12 ? 1.8 : 1 });
+        }
+        measure();
+    }
+
+    function computeF(center) {
+        var f = 0;
+        for (var i = 0; i < N; i++) {
+            var top = tops[i], bot = i < N - 1 ? tops[i + 1] : top + hs[i];
+            if (center < bot || i === N - 1) { f = i + clamp((center - top) / Math.max(bot - top, 1), 0, 1); break; }
+        }
+        return clamp(f, 0, N - 0.001);
+    }
+
+    /* ---------- Vẽ ---------- */
+    function ring(x, y, r, s, e) {
+        ctx.strokeStyle = 'rgba(254,243,199,0.55)';
+        ctx.lineWidth = Math.max(1, r * 0.16);
+        ctx.beginPath(); ctx.ellipse(x, y, r * 1.85, r * 0.52, -0.38, s, e); ctx.stroke();
+    }
+    function drawPlanet(P, x, y, r, a, ts, dark) {
+        if (a <= 0.01 || r < 1.5) return;
+        ctx.save();
+        ctx.globalAlpha = clamp(a, 0, 1);
+        var glow = ctx.createRadialGradient(x, y, r * 0.8, x, y, r * 1.8);
+        glow.addColorStop(0, rgba(P.c1, dark ? 0.3 : 0.18)); glow.addColorStop(1, rgba(P.c1, 0));
+        ctx.fillStyle = glow; ctx.beginPath(); ctx.arc(x, y, r * 1.8, 0, TAU); ctx.fill();
+        if (P.kind === 'saturn') ring(x, y, r, Math.PI, TAU);
+        var g = ctx.createRadialGradient(x - r * 0.38, y - r * 0.38, r * 0.08, x, y, r);
+        g.addColorStop(0, P.c1); g.addColorStop(1, P.c2);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.fill();
+        ctx.save();
+        ctx.beginPath(); ctx.arc(x, y, r, 0, TAU); ctx.clip();
+        if (P.kind === 'jupiter' || P.kind === 'saturn') {
+            var bh = 2 * r / 7;
+            for (var b = 0; b < 7; b++) {
+                ctx.fillStyle = b % 2 ? 'rgba(120,53,15,0.22)' : 'rgba(255,255,255,0.14)';
+                ctx.fillRect(x - r, y - r + b * bh + bh * 0.15, 2 * r, bh * 0.6);
+            }
+        } else if (P.kind === 'earth') {
+            ctx.fillStyle = 'rgba(34,197,94,0.6)';
+            [[-0.25, -0.1, 0.36, 0.22, 0.5], [0.3, 0.25, 0.28, 0.16, -0.4], [0.05, -0.5, 0.22, 0.12, 0.2]].forEach(function (c) {
+                ctx.beginPath(); ctx.ellipse(x + c[0] * r, y + c[1] * r, c[2] * r, c[3] * r, c[4], 0, TAU); ctx.fill();
+            });
+        } else if (P.kind === 'mars') {
+            ctx.fillStyle = 'rgba(255,255,255,0.7)';
+            ctx.beginPath(); ctx.ellipse(x, y - r * 0.95, r * 0.4, r * 0.18, 0, 0, TAU); ctx.fill();
+        } else if (P.kind === 'neptune') {
+            ctx.fillStyle = 'rgba(30,27,75,0.35)';
+            ctx.beginPath(); ctx.ellipse(x - r * 0.2, y + r * 0.2, r * 0.3, r * 0.14, 0.2, 0, TAU); ctx.fill();
+        }
+        var sh = ctx.createRadialGradient(x - r * 0.4, y - r * 0.4, r * 0.5, x, y, r * 1.05);
+        sh.addColorStop(0, 'rgba(0,0,0,0)'); sh.addColorStop(1, 'rgba(2,6,23,0.55)');
+        ctx.fillStyle = sh; ctx.fillRect(x - r, y - r, 2 * r, 2 * r);
+        ctx.restore();
+        if (P.kind === 'saturn') ring(x, y, r, 0, Math.PI);
+        if (P.kind === 'earth') {
+            var an = ts * 0.0004;
+            ctx.fillStyle = '#e2e8f0';
+            ctx.beginPath(); ctx.arc(x + Math.cos(an) * r * 1.55, y + Math.sin(an) * r * 0.5, r * 0.16, 0, TAU); ctx.fill();
+        }
+        ctx.restore();
+    }
+
+    function planetState(i, d, small) {
+        var side = i % 2 === 0 ? 1 : -1;
+        var base = Math.min(W, H) * (small ? 0.2 : 0.24);
+        var homeX = W / 2 + side * W * 0.36, homeY = H * 0.5;
+        if (d >= 0) {
+            if (d > 1.15) return null;
+            var t = clamp(1 - d, 0, 1), e = t * t * (3 - 2 * t);
+            return { x: lerp(W / 2 + side * W * 0.08, homeX, e), y: lerp(H * 0.34, homeY, e), r: base * lerp(0.12, 1, e), a: e };
+        }
+        var u = clamp(-d, 0, 1.2);
+        return { x: homeX + side * u * W * 0.35, y: homeY + u * H * 0.1, r: base * (1 + u * 1.6), a: 1 - u / 1.1 };
+    }
+
+    function draw(ts, sy) {
+        var dark = isDark(), small = W < 640;
+        ctx.clearRect(0, 0, W, H);
+        var warp = reduced ? 0 : vel, dir = warp >= 0 ? 1 : -1;
+        for (var i = 0; i < stars.length; i++) {
+            var s = stars[i];
+            var y = (((s.y - sy * s.z * 0.25) % H) + H) % H;
+            var tw = reduced ? 1 : 0.7 + 0.3 * Math.sin(ts * 0.002 + s.ph);
+            var a = (dark ? 0.35 + s.z * 0.55 : 0.18 + s.z * 0.3) * tw;
+            ctx.strokeStyle = dark ? 'rgba(226,240,255,' + a + ')' : 'rgba(71,85,105,' + a + ')';
+            ctx.lineWidth = s.s * (0.6 + s.z * 0.6);
+            var L = clamp(Math.abs(warp) * 0.012 * s.z, 0, 60);
+            ctx.beginPath(); ctx.moveTo(s.x, y); ctx.lineTo(s.x, y + dir * (L + 0.6)); ctx.stroke();
+        }
+        var A = (small ? 0.55 : 0.9) * (dark ? 1 : 0.6);
+        var list = [];
+        for (var p = 0; p < N; p++) {
+            var st = planetState(p, p - fs, small);
+            if (st) { st.i = p; st.d = p - fs; list.push(st); }
+        }
+        list.sort(function (m, n) { return n.d - m.d; });
+        list.forEach(function (st) { drawPlanet(PLANETS[st.i], st.x, st.y, st.r, st.a * A, ts, dark); });
+    }
+
+    /* ---------- Vòng lặp ---------- */
+    function step(ts, dt) {
+        var sy = window.pageYOffset;
+        if (ts - lastMeasure > 800) { measure(); lastMeasure = ts; }
+        var v = (sy - lastY) / Math.max(dt, 0.001); lastY = sy;
+        vel += (v - vel) * Math.min(1, dt * 10);
+        var target = computeF(sy + H * 0.5);
+        var moving = Math.abs(vel) > 2 || Math.abs(target - fs) > 0.002;
+        fs += (target - fs) * Math.min(1, dt * 6);
+        updateHud(clamp(Math.round(fs), 0, N - 1));
+        return { sy: sy, moving: moving };
+    }
+    function frame(ts) {
+        raf = requestAnimationFrame(frame);
+        if (document.body.classList.contains('focus-mode')) return;
+        var dt = Math.min((ts - last) / 1000 || 0.016, 0.05); last = ts;
+        var r = step(ts, dt);
+        if (!r.moving && ts - lastDraw < 50) return;
+        lastDraw = ts;
+        draw(ts, r.sy);
+    }
+    function drawStatic() {
+        measure(); fs = computeF(window.pageYOffset + H * 0.5); vel = 0;
+        updateHud(clamp(Math.round(fs), 0, N - 1));
+        draw(0, window.pageYOffset);
+    }
+    var staticQueued = false;
+    function queueStatic() { if (staticQueued) return; staticQueued = true; requestAnimationFrame(function () { staticQueued = false; if (enabled) drawStatic(); }); }
+
+    function start() {
+        if (reduced) { drawStatic(); return; }
+        if (raf) return;
+        last = performance.now();
+        raf = requestAnimationFrame(frame);
+    }
+    function stop() { if (raf) { cancelAnimationFrame(raf); raf = 0; } }
+    function setEnabled(on) {
+        enabled = on;
+        document.documentElement.classList.toggle('space-off', !on);
+        if (toggle) toggle.setAttribute('aria-pressed', on ? 'true' : 'false');
+        try { localStorage.setItem('khoa-space', on ? 'on' : 'off'); } catch (e) {}
+        if (on) { resize(); start(); } else { stop(); }
+    }
+
+    if (toggle) toggle.addEventListener('click', function () { setEnabled(!enabled); });
+    var rt = 0;
+    window.addEventListener('resize', function () {
+        clearTimeout(rt);
+        rt = setTimeout(function () { if (enabled) { resize(); if (reduced) drawStatic(); } }, 150);
+    });
+    if (reduced) window.addEventListener('scroll', function () { if (enabled) queueStatic(); }, { passive: true });
+    window.addEventListener('load', function () { if (enabled) { measure(); if (reduced) drawStatic(); } });
+
+    resize();
+    updateHud(0);
+    setEnabled(enabled);
+})();
+</script>
+
+<script>
+/* ============================================================
+   PWA: cài web thành ứng dụng "Khoa Physics" + chạy được khi mất mạng
+   (cần các file manifest.webmanifest, sw.js và 4 ảnh khoa-*.png nằm cùng thư mục với index.html)
+   ============================================================ */
+(function () {
+    'use strict';
+    var btn = document.getElementById('pwa-install');
+    var toastEl = document.getElementById('pwa-toast');
+    var tt = 0;
+    function toast(msg, ms) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.remove('hidden');
+        clearTimeout(tt);
+        tt = setTimeout(function () { toastEl.classList.add('hidden'); }, ms || 3500);
+    }
+    function showBtn() { if (btn) { btn.classList.remove('hidden'); btn.classList.add('inline-flex'); } }
+    function hideBtn() { if (btn) { btn.classList.add('hidden'); btn.classList.remove('inline-flex'); } }
+
+    var standalone = (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) || window.navigator.standalone === true;
+    var secure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    if ('serviceWorker' in navigator && secure) {
+        window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+    }
+    if (standalone) return;
+
+    var deferred = null;
+    var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); deferred = e; showBtn(); });
+    window.addEventListener('appinstalled', function () { deferred = null; hideBtn(); toast('Đã cài ứng dụng Khoa Physics!'); });
+    if (isIOS) showBtn();
+
+    if (btn) btn.addEventListener('click', function () {
+        if (deferred) {
+            deferred.prompt();
+            deferred.userChoice.then(function () { deferred = null; hideBtn(); });
+        } else if (isIOS) {
+            toast('Bấm nút Chia sẻ (hình vuông có mũi tên) rồi chọn “Thêm vào Màn hình chính”.', 7000);
+        }
+    });
+
+    window.addEventListener('offline', function () { toast('Bạn đang offline, web vẫn mở được từ bộ nhớ máy.'); });
+    window.addEventListener('online', function () { toast('Đã có mạng trở lại.', 2500); });
+})();
+</script>
 </body>
 </html>
