@@ -2802,6 +2802,7 @@
                (viết thêm trên con bot hiện có; câu trả lời cũ vẫn giữ làm dự phòng)
                ------------------------------------------------------------ */
             // (Hướng 2 - sau này) địa chỉ máy chủ AI thật để đọc ảnh. Để trống = chỉ dùng bộ não tại chỗ.
+            // >>> BƯỚC 4: dán link Worker của bạn vào giữa 2 dấu nháy bên dưới, ví dụ 'https://khoa-ai.tenban.workers.dev'
             window.AI_BACKEND_URL = window.AI_BACKEND_URL || '';
 
             // DANH SÁCH ĐỀ LÝ: upload file vào thư mục files/de-ly/ trên GitHub rồi thêm 1 khối vào đây.
@@ -3238,11 +3239,39 @@
                 });
             }
 
+            /* --- Gọi AI thật (Gemini qua Cloudflare Worker) --- */
+            var aiBusy = false;
+            function askAI(question) {
+                if (aiBusy) { appendChatBubble('bot', '<p>Mình đang trả lời câu trước, bạn đợi chút nhé.</p>'); return; }
+                aiBusy = true;
+                appendChatBubble('bot', '<p>Đang suy nghĩ...</p>');
+                fetch(window.AI_BACKEND_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: question })
+                }).then(function (r) { return r.json(); }).then(function (d) {
+                    var ans = esc(d.answer || 'Chưa có câu trả lời.').replace(/\n/g, '<br>');
+                    appendChatBubble('bot', '<p>' + ans + '</p><p class="text-[11px] opacity-70">AI có thể sai, hãy kiểm tra lại. Đừng gửi thông tin cá nhân.</p>');
+                }).catch(function () {
+                    appendChatBubble('bot', buildBotReply(question));
+                }).then(function () {
+                    setTimeout(function () { aiBusy = false; }, 2000);
+                });
+            }
+
             function handleUserMessage(text) {
                 var clean = text.trim();
                 if (!clean) return;
                 appendChatBubble('user', clean.replace(/</g, '&lt;'));
                 setTimeout(function () {
+                    // Có link AI và (câu hỏi dài như đề bài, hoặc bot cũ không hiểu) -> hỏi AI thật
+                    if (window.AI_BACKEND_URL) {
+                        var reply = buildBotReply(clean);
+                        var notUnderstood = reply.indexOf('Mình chưa hiểu rõ câu này') !== -1;
+                        if (clean.length > 80 || notUnderstood) { askAI(clean); return; }
+                        appendChatBubble('bot', reply);
+                        return;
+                    }
                     appendChatBubble('bot', buildBotReply(clean));
                 }, 260);
             }
