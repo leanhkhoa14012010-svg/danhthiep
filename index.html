@@ -1129,6 +1129,41 @@
             </div>
         </section>
 
+        <!-- ============ THƯ VIỆN ĐỀ LÝ (đề do Khoa đăng, có Khoa AI hỗ trợ) ============ -->
+        <section id="de-ly" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div class="text-center space-y-3 mb-10">
+                <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Thư Viện Đề Lý</h2>
+                <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Đề Vật Lý Có Khoa AI Hỗ Trợ</h3>
+                <p class="reveal text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto" data-delay="2">Xem đề, tải về, và bấm “Hỏi AI” để nhận gợi ý hoặc lời giải từng câu.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 sm:items-center justify-between mb-6">
+                <div class="flex flex-wrap gap-1.5">
+                    <button type="button" data-de-filter="Tất cả" class="de-filter px-3 py-1.5 rounded-full border text-xs font-semibold transition-all">Tất cả</button>
+                    <button type="button" data-de-filter="Kiểm tra" class="de-filter px-3 py-1.5 rounded-full border text-xs font-semibold transition-all">Kiểm tra</button>
+                    <button type="button" data-de-filter="Đề cương" class="de-filter px-3 py-1.5 rounded-full border text-xs font-semibold transition-all">Đề cương</button>
+                    <button type="button" data-de-filter="Chuyên đề" class="de-filter px-3 py-1.5 rounded-full border text-xs font-semibold transition-all">Chuyên đề</button>
+                </div>
+                <input id="de-ly-search" type="search" placeholder="Tìm đề..." autocomplete="off"
+                    class="w-full sm:w-56 px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+            </div>
+
+            <div id="de-ly-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"></div>
+
+            <div id="de-ly-preview" class="hidden mt-6 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden shadow-sm">
+                <div class="flex items-center justify-between gap-2 px-4 py-2.5 bg-slate-100 dark:bg-slate-800">
+                    <span id="de-ly-preview-title" class="text-sm font-semibold truncate"></span>
+                    <div class="flex items-center gap-3 shrink-0 text-xs font-semibold">
+                        <a id="de-ly-preview-open" href="#" target="_blank" rel="noopener noreferrer" class="text-sky-500 hover:underline">Mở tab mới</a>
+                        <button id="de-ly-preview-close" type="button" class="text-slate-500 hover:text-red-500">Đóng</button>
+                    </div>
+                </div>
+                <div id="de-ly-preview-body" class="bg-white dark:bg-slate-900"></div>
+            </div>
+
+            <p class="mt-6 text-center text-[11px] text-slate-400">AI chỉ hỗ trợ tham khảo — hãy kiểm tra lại với thầy cô.</p>
+        </section>
+
         <!-- ============ CONTACT + DONATE ============ -->
         <section id="contact" class="py-20">
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1273,9 +1308,13 @@
 
             <!-- Input Form -->
             <form id="ai-chat-form" class="p-3 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2 bg-white dark:bg-slate-900">
-                <input id="ai-chat-input" type="text" placeholder="Hỏi gì đó hoặc nhập tên file..." autocomplete="off"
+                <input id="ai-chat-input" type="text" placeholder="Hỏi bài Lý, tính toán, tên file..." autocomplete="off"
                     class="flex-1 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
-                <button type="submit" aria-label="Gửi tin nhắn" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 text-white flex items-center justify-center shadow hover:opacity-95 active:scale-95 transition-all shrink-0">
+                <input id="ai-chat-file" type="file" accept="image/*" class="hidden">
+                <button type="button" id="ai-chat-attach" aria-label="Gửi hình câu hỏi" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-sky-500 flex items-center justify-center transition-colors shrink-0">
+                    <i class="fas fa-image text-xs"></i>
+                </button>
+<button type="submit" aria-label="Gửi tin nhắn" class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 text-white flex items-center justify-center shadow hover:opacity-95 active:scale-95 transition-all shrink-0">
                     <i class="fas fa-paper-plane text-xs"></i>
                 </button>
             </form>
@@ -2662,7 +2701,7 @@
                 }
             };
 
-            function buildBotReply(rawQuery) {
+            function buildBotReplyLegacy(rawQuery) {
                 var q = rawQuery.toLowerCase().trim();
 
                 if (/(kiểm tra|kiem tra|3 câu|3 cau|câu hỏi|cau hoi|loại từ|loai tu|dấu nhấn|dau nhan|từ khó|tu kho)/i.test(q)) {
@@ -2726,6 +2765,447 @@
 
                 return '<p>Mình đã ghi nhận câu hỏi: <em>"' + rawQuery.replace(/</g, '&lt;') + '"</em>.</p>' +
                     '<p>Bạn có thể hỏi mình chi tiết hơn về <strong>Lê Anh Khoa</strong>, <strong>cách dùng Flashcard</strong>, <strong>liên hệ/donate</strong>, hoặc gõ từ khóa như <strong>"tìm file pdf"</strong> để tra cứu tài liệu nhé!</p>';
+            }
+
+            /* ------------------------------------------------------------
+               THƯ VIỆN ĐỀ LÝ + NÂNG CẤP BỘ NÃO KHOA AI
+               (viết thêm trên con bot hiện có; câu trả lời cũ vẫn giữ làm dự phòng)
+               ------------------------------------------------------------ */
+            // (Hướng 2 - sau này) địa chỉ máy chủ AI thật để đọc ảnh. Để trống = chỉ dùng bộ não tại chỗ.
+            window.AI_BACKEND_URL = window.AI_BACKEND_URL || '';
+
+            // DANH SÁCH ĐỀ LÝ: upload file vào thư mục files/de-ly/ trên GitHub rồi thêm 1 khối vào đây.
+            // Khối mẫu (bỏ dấu // ở đầu mỗi dòng rồi sửa lại):
+            // {
+            //     title: 'Kiểm tra Dao động cơ',
+            //     type: 'Kiểm tra',                       // Kiểm tra | Đề cương | Chuyên đề
+            //     date: '20/11/2026',
+            //     desc: 'Đề 45 phút, 10 câu',
+            //     file: 'files/de-ly/kiem-tra-dao-dong-co.pdf',   // .pdf hoặc ảnh .png/.jpg
+            //     cau: {                                  // lời giải từng câu (không bắt buộc)
+            //         '1': { de: 'Nội dung câu 1...', goiy: 'Dùng T = 2π√(m/k)', giai: 'Bước 1...\nBước 2...', dapan: 'B' }
+            //     }
+            // }
+            var deLyList = [
+            ];
+
+            function fold(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/\s+/g, ' ').trim(); }
+            function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+            function num(s) { return parseFloat(String(s).replace(',', '.')); }
+            function grab(q, re) { var m = q.match(re); return m ? num(m[1]) : null; }
+            function f2(x) { return String(parseFloat(x.toFixed(2))); }
+
+            /* ---------- Thư viện đề: hiển thị / xem / tải ---------- */
+            var deGrid = document.getElementById('de-ly-grid');
+            var deSearch = document.getElementById('de-ly-search');
+            var dePreview = document.getElementById('de-ly-preview');
+            var deFilter = 'Tất cả';
+
+            function extOf(d) { return String(d.file || '').split('?')[0].split('.').pop().toLowerCase(); }
+
+            function renderDeLy() {
+                if (!deGrid) return;
+                var kw = fold(deSearch ? deSearch.value : '');
+                var items = [];
+                deLyList.forEach(function (d, i) {
+                    if (deFilter !== 'Tất cả' && d.type !== deFilter) return;
+                    if (kw && fold(d.title + ' ' + (d.desc || '')).indexOf(kw) === -1) return;
+                    items.push({ d: d, i: i });
+                });
+                document.querySelectorAll('.de-filter').forEach(function (b) {
+                    var on = b.getAttribute('data-de-filter') === deFilter;
+                    b.className = 'de-filter px-3 py-1.5 rounded-full border text-xs font-semibold transition-all ' + (on
+                        ? 'bg-sky-500 text-white border-sky-500'
+                        : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-sky-500 hover:text-sky-500');
+                });
+                if (!items.length) {
+                    deGrid.innerHTML = '<div class="col-span-full text-center py-12 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 text-sm text-slate-500 dark:text-slate-400">' +
+                        (deLyList.length ? 'Không tìm thấy đề phù hợp.' : 'Chưa có đề nào được đăng. Khoa sẽ sớm cập nhật!') + '</div>';
+                    return;
+                }
+                deGrid.innerHTML = items.map(function (o) {
+                    var d = o.d, e = extOf(d), nCau = Object.keys(d.cau || {}).length;
+                    var icon = e === 'pdf' ? 'fa-file-pdf' : (/(png|jpe?g|webp|gif)/.test(e) ? 'fa-image' : 'fa-file-lines');
+                    return '<div class="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all flex flex-col gap-3">' +
+                        '<div class="flex items-start justify-between gap-2"><div class="w-11 h-11 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center text-lg shrink-0"><i class="fas ' + icon + '"></i></div>' +
+                        '<span class="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 text-[10px] font-bold uppercase">' + esc(d.type || 'Đề') + '</span></div>' +
+                        '<div><h4 class="font-bold leading-snug">' + esc(d.title) + '</h4><p class="text-xs text-slate-500 dark:text-slate-400 mt-1">' + esc(d.desc || '') + '</p></div>' +
+                        '<div class="text-[11px] text-slate-400 mt-auto">' + (d.date ? esc(d.date) + ' · ' : '') + esc(e.toUpperCase()) + (nCau ? ' · ' + nCau + ' câu có lời giải' : '') + '</div>' +
+                        '<div class="flex flex-wrap gap-2 pt-1 text-xs font-semibold">' +
+                        '<button type="button" data-de-view="' + o.i + '" class="px-3 py-1.5 rounded-lg bg-sky-500 text-white hover:opacity-90"><i class="fas fa-eye mr-1"></i>Xem</button>' +
+                        '<a href="' + esc(d.file) + '" download class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 hover:border-sky-500 hover:text-sky-500"><i class="fas fa-download mr-1"></i>Tải về</a>' +
+                        '<button type="button" data-de-ask="' + o.i + '" class="px-3 py-1.5 rounded-lg bg-gradient-to-r from-sky-500 to-indigo-600 text-white hover:opacity-90"><i class="fas fa-robot mr-1"></i>Hỏi AI</button>' +
+                        '</div></div>';
+                }).join('');
+            }
+
+            function openPreview(i, scroll) {
+                var d = deLyList[i];
+                if (!d || !dePreview) return;
+                var e = extOf(d), body = document.getElementById('de-ly-preview-body');
+                document.getElementById('de-ly-preview-title').textContent = d.title;
+                document.getElementById('de-ly-preview-open').setAttribute('href', d.file);
+                if (e === 'pdf') body.innerHTML = '<iframe src="' + esc(d.file) + '" title="' + esc(d.title) + '" class="w-full h-[520px] block"></iframe>';
+                else if (/(png|jpe?g|webp|gif)/.test(e)) body.innerHTML = '<img src="' + esc(d.file) + '" alt="' + esc(d.title) + '" class="mx-auto max-h-[640px] w-auto">';
+                else body.innerHTML = '<p class="p-6 text-sm text-slate-500">Định dạng này không xem trước được, hãy bấm Tải về nhé.</p>';
+                dePreview.classList.remove('hidden');
+                botCtx.exam = i;
+                if (scroll !== false) dePreview.scrollIntoView({ behavior: prefersReduced ? 'auto' : 'smooth', block: 'center' });
+            }
+
+            window.askAiAboutExam = function (i) {
+                var d = deLyList[i];
+                if (!d) return;
+                botCtx.exam = i;
+                toggleChat(true);
+                var keys = Object.keys(d.cau || {});
+                var html = '<p>Bạn đang hỏi về <strong>' + esc(d.title) + '</strong>. Gõ ví dụ <em>"giải câu 3"</em>, <em>"gợi ý câu 2"</em>, hoặc dán nội dung câu hỏi vào đây.</p>';
+                if (keys.length) html += '<p class="text-xs">Câu đã có lời giải: ' + keys.join(', ') + '</p>' + askBtns(keys.slice(0, 5).map(function (k) { return ['Câu ' + k, 'giải câu ' + k]; }));
+                appendChatBubble('bot', html);
+            };
+
+            if (deGrid) {
+                deGrid.addEventListener('click', function (e) {
+                    var v = e.target.closest('[data-de-view]'); if (v) { openPreview(+v.getAttribute('data-de-view')); return; }
+                    var a = e.target.closest('[data-de-ask]'); if (a) { window.askAiAboutExam(+a.getAttribute('data-de-ask')); }
+                });
+                document.querySelectorAll('.de-filter').forEach(function (b) {
+                    b.addEventListener('click', function () { deFilter = b.getAttribute('data-de-filter'); renderDeLy(); });
+                });
+                if (deSearch) deSearch.addEventListener('input', renderDeLy);
+                var deClose = document.getElementById('de-ly-preview-close');
+                if (deClose) deClose.addEventListener('click', function () {
+                    dePreview.classList.add('hidden');
+                    document.getElementById('de-ly-preview-body').innerHTML = '';
+                });
+                renderDeLy();
+            }
+
+            /* ---------- Bộ não Khoa AI ---------- */
+            var botCtx = { name: null, exam: -1, cau: 0, solve: null };
+            var PLANETS = [[/mat trang/, 1.62, 'Mặt Trăng'], [/sao hoa/, 3.71, 'Sao Hỏa'], [/sao moc/, 24.79, 'Sao Mộc'], [/trai dat/, 9.8, 'Trái Đất']];
+            function planetOf(q) { for (var i = 0; i < PLANETS.length; i++) if (PLANETS[i][0].test(q)) return PLANETS[i]; return null; }
+            function gOf(q) { var p = planetOf(q); if (p) return p[1]; return grab(q, /\bg\s*=\s*([\d.,]+)/) || 9.8; }
+
+            function askBtns(arr) {
+                return '<div class="flex flex-wrap gap-1.5 pt-1">' + arr.map(function (a) {
+                    return '<button type="button" data-bot-ask="' + esc(a[1]) + '" class="px-2.5 py-1 rounded-full bg-sky-500/10 hover:bg-sky-500 hover:text-white text-sky-600 dark:text-sky-400 text-[11px] font-medium transition-colors">' + esc(a[0]) + '</button>';
+                }).join('') + '</div>';
+            }
+            function labBtn(mode, g, p1, p2) {
+                return '<button type="button" data-bot-lab="' + mode + '|' + (g == null ? '' : g) + '|' + (p1 == null ? '' : p1) + '|' + (p2 == null ? '' : p2) +
+                    '" class="mt-1 inline-flex items-center gap-1 text-[11px] font-semibold text-indigo-500 hover:underline"><i class="fas fa-flask"></i> Chạy thử trong Phòng Thí Nghiệm</button>';
+            }
+            function goTo(sel) {
+                var t = document.querySelector(sel);
+                if (t) window.scrollTo({ top: t.getBoundingClientRect().top + window.pageYOffset - 80, behavior: prefersReduced ? 'auto' : 'smooth' });
+            }
+
+            // Điều khiển Phòng Thí Nghiệm Vật Lý có sẵn trên web
+            function labDo(mode, g, p1, p2) {
+                function setIn(id, v) { var el = document.getElementById(id); if (el && v != null && !isNaN(v)) { el.value = v; el.dispatchEvent(new Event('input')); } }
+                if (mode) { var b = document.querySelector('[data-lab-mode="' + mode + '"]'); if (b) b.click(); }
+                if (g != null && !isNaN(g)) {
+                    var chip = null;
+                    document.querySelectorAll('.lab-g-chip').forEach(function (c) { if (Math.abs(Number(c.getAttribute('data-lab-g')) - g) < 0.005) chip = c; });
+                    if (chip) chip.click(); else setIn('lab-g-input', g);
+                }
+                setIn('lab-p1-input', p1); setIn('lab-p2-input', p2);
+                var run = document.getElementById('lab-run-btn'); if (run) run.click();
+                goTo('#physics-lab');
+            }
+
+            /* --- Các bài giải có công thức --- */
+            function need(name, ex) { return '<p>Để giải bài <strong>' + name + '</strong>, mình cần đủ số liệu và đơn vị. Ví dụ:</p>' + askBtns([[ex, ex]]); }
+            function projHtml(v, ang, g) {
+                var a = ang * Math.PI / 180, vx = v * Math.cos(a), vy = v * Math.sin(a);
+                var T = 2 * vy / g, H = vy * vy / (2 * g), R = v * v * Math.sin(2 * a) / g;
+                var btn = (ang >= 10 && ang <= 80 && v >= 5 && v <= 40) ? labBtn('projectile', g, Math.round(ang), Math.round(v)) : '';
+                return '<p><strong>Ném xiên</strong> (v₀ = ' + f2(v) + ' m/s, α = ' + f2(ang) + '°, g = ' + f2(g) + ' m/s²; ném từ mặt đất, bỏ qua sức cản)</p>' +
+                    '<ol class="list-decimal pl-4 space-y-1 text-xs"><li>Phân tích: v₀ₓ = v₀cosα = ' + f2(vx) + ' m/s; v₀ᵧ = v₀sinα = ' + f2(vy) + ' m/s</li>' +
+                    '<li>Thời gian bay: T = 2v₀sinα/g = <strong>' + f2(T) + ' s</strong></li>' +
+                    '<li>Độ cao cực đại: H = (v₀sinα)²/(2g) = <strong>' + f2(H) + ' m</strong></li>' +
+                    '<li>Tầm xa: R = v₀²sin2α/g = <strong>' + f2(R) + ' m</strong></li></ol>' + btn +
+                    askBtns([['Còn trên Mặt Trăng?', 'còn trên mặt trăng thì sao'], ['Còn trên Sao Hỏa?', 'còn trên sao hỏa thì sao']]);
+            }
+            function pendHtml(L, g) {
+                var T = 2 * Math.PI * Math.sqrt(L / g), w = Math.sqrt(g / L);
+                var btn = (L >= 0.5 && L <= 3) ? labBtn('pendulum', g, Math.round(L * 10) / 10, null) : '';
+                return '<p><strong>Con lắc đơn</strong> (l = ' + f2(L) + ' m, g = ' + f2(g) + ' m/s², góc nhỏ)</p>' +
+                    '<ol class="list-decimal pl-4 space-y-1 text-xs"><li>Tần số góc: ω = √(g/l) = <strong>' + f2(w) + ' rad/s</strong></li>' +
+                    '<li>Chu kỳ: T = 2π√(l/g) = <strong>' + f2(T) + ' s</strong></li><li>Tần số: f = 1/T = <strong>' + f2(1 / T) + ' Hz</strong></li></ol>' + btn;
+            }
+            function springHtml(k, m) {
+                var T = 2 * Math.PI * Math.sqrt(m / k), w = Math.sqrt(k / m);
+                var btn = (k >= 5 && k <= 100 && m >= 0.2 && m <= 5) ? labBtn('spring', null, Math.round(k), Math.round(m * 10) / 10) : '';
+                return '<p><strong>Con lắc lò xo</strong> (k = ' + f2(k) + ' N/m, m = ' + f2(m) + ' kg)</p>' +
+                    '<ol class="list-decimal pl-4 space-y-1 text-xs"><li>Tần số góc: ω = √(k/m) = <strong>' + f2(w) + ' rad/s</strong></li>' +
+                    '<li>Chu kỳ: T = 2π√(m/k) = <strong>' + f2(T) + ' s</strong></li><li>Tần số: f = 1/T = <strong>' + f2(1 / T) + ' Hz</strong></li></ol>' + btn;
+            }
+            function fallHtml(h, g) {
+                var t = Math.sqrt(2 * h / g);
+                return '<p><strong>Rơi tự do</strong> (h = ' + f2(h) + ' m, g = ' + f2(g) + ' m/s², v₀ = 0)</p>' +
+                    '<ol class="list-decimal pl-4 space-y-1 text-xs"><li>Thời gian rơi: t = √(2h/g) = <strong>' + f2(t) + ' s</strong></li>' +
+                    '<li>Vận tốc chạm đất: v = gt = <strong>' + f2(g * t) + ' m/s</strong></li></ol>';
+            }
+
+            function trySolve(q) {
+                if (!/\d/.test(q)) return null;
+                var g = gOf(q), m;
+                if (/lo xo/.test(q)) {
+                    var k = grab(q, /\bk\s*=?\s*([\d.,]+)/) || grab(q, /([\d.,]+)\s*n\s*\/\s*m/);
+                    var mm = q.match(/\bm\s*=\s*([\d.,]+)\s*(kg|g)?/) || q.match(/([\d.,]+)\s*(kg|g)\b/);
+                    if (k && mm) { var ms = num(mm[1]); if (mm[2] === 'g') ms /= 1000; botCtx.solve = null; return springHtml(k, ms); }
+                    return need('con lắc lò xo', 'lò xo k = 40 N/m, m = 0,5 kg');
+                }
+                if (/con lac don/.test(q)) {
+                    m = q.match(/(?:\bl\b|chieu dai)\s*=?\s*([\d.,]+)\s*(cm|m)\b/) || q.match(/([\d.,]+)\s*(cm|m)(?![\/a-z])/);
+                    if (m) { var L = num(m[1]); if (m[2] === 'cm') L /= 100; botCtx.solve = function (gg) { return pendHtml(L, gg); }; return pendHtml(L, g); }
+                    return need('con lắc đơn', 'con lắc đơn l = 1 m');
+                }
+                if (/roi tu do/.test(q)) {
+                    var h = grab(q, /([\d.,]+)\s*m(?![\/a-z])/);
+                    if (h) { botCtx.solve = function (gg) { return fallHtml(h, gg); }; return fallHtml(h, g); }
+                    return need('rơi tự do', 'rơi tự do từ độ cao 20 m');
+                }
+                var ang = grab(q, /([\d.,]+)\s*(?:do\b|°|deg\b)/), v = grab(q, /([\d.,]+)\s*m\s*\/\s*s/);
+                if (/nem xien|goc nem|goc ban|tam xa|cuc dai|vien dan|nem vat/.test(q) || (ang != null && v != null && /nem|ban|bay/.test(q))) {
+                    if (v && ang != null && ang > 0 && ang < 90) { botCtx.solve = function (gg) { return projHtml(v, ang, gg); }; return projHtml(v, ang, g); }
+                    return need('ném xiên', 'ném xiên v = 20 m/s góc 30 độ');
+                }
+                return null;
+            }
+
+            /* --- Tính toán & đổi đơn vị --- */
+            function tryCalc(raw) {
+                var q = fold(raw).replace(/\b(tinh|bang bao nhieu|ket qua|la bao nhieu)\b/g, ' ').replace(/[=?]/g, ' ');
+                if (q.length > 80 || !/\d/.test(q)) return null;
+                if (!/[+*\/^:]|\bx\b|\d\s*-\s*\d|sqrt|sin|cos|tan/.test(q)) return null;
+                var e = q.replace(/(\d)\s*x\s*(\d)/g, '$1*$2').replace(/:/g, '/').replace(/(\d),(\d)/g, '$1.$2').replace(/\^/g, '**')
+                    .replace(/\bsqrt\s*\(/g, 'Math.sqrt(').replace(/\b(sin|cos|tan)\s*\(([^()]*)\)/g, 'Math.$1(($2)*Math.PI/180)').replace(/\bpi\b/g, 'Math.PI');
+                if (!/^[0-9+\-*\/().\s]*$/.test(e.replace(/Math\.(sqrt|sin|cos|tan|PI)/g, ''))) return null;
+                try {
+                    var r = Function('"use strict";return (' + e + ')')();
+                    if (typeof r !== 'number' || !isFinite(r)) return null;
+                    return '<p>Kết quả: <strong>' + parseFloat(r.toPrecision(10)) + '</strong></p><p class="text-[11px] text-slate-500">(sin, cos, tan tính theo độ)</p>';
+                } catch (err) { return null; }
+            }
+            var UNITS = [
+                { mm: 0.001, cm: 0.01, dm: 0.1, m: 1, km: 1000 },
+                { mg: 1e-6, g: 0.001, kg: 1, tan: 1000 },
+                { ms: 0.001, s: 1, giay: 1, phut: 60, gio: 3600, h: 3600 },
+                { 'm/s': 1, 'km/h': 1 / 3.6 },
+                { 'do': Math.PI / 180, rad: 1 }
+            ];
+            var UDISP = { 'do': 'độ', giay: 'giây', phut: 'phút', gio: 'giờ', tan: 'tấn' };
+            function tryUnits(q) {
+                var m = q.match(/([\d.,]+)\s*([a-z]+(?:\/[a-z]+)?)\s*(?:sang|ra|->|thanh|to)\s*([a-z]+(?:\/[a-z]+)?)/);
+                if (!m) return null;
+                var x = num(m[1]), a = m[2], b = m[3];
+                for (var i = 0; i < UNITS.length; i++) {
+                    if (UNITS[i].hasOwnProperty(a) && UNITS[i].hasOwnProperty(b)) {
+                        var y = x * UNITS[i][a] / UNITS[i][b];
+                        return '<p><strong>' + x + ' ' + (UDISP[a] || a) + ' = ' + parseFloat(y.toPrecision(6)) + ' ' + (UDISP[b] || b) + '</strong></p>';
+                    }
+                }
+                return null;
+            }
+
+            /* --- Công thức & hỏi đáp --- */
+            var FORMULAS = [
+                { k: ['dao dong dieu hoa'], t: 'Dao động điều hòa', a: 'x = A·cos(ωt + φ); v = −ωA·sin(ωt + φ); a = −ω²x; T = 2π/ω; f = 1/T.' },
+                { k: ['con lac don'], t: 'Con lắc đơn', a: '(góc nhỏ) ω = √(g/l); T = 2π√(l/g).', ex: 'con lắc đơn l = 1 m' },
+                { k: ['con lac lo xo', 'lo xo'], t: 'Con lắc lò xo', a: 'ω = √(k/m); T = 2π√(m/k); cơ năng W = ½kA².', ex: 'lò xo k = 40 N/m, m = 0,5 kg' },
+                { k: ['nem xien'], t: 'Ném xiên', a: 'vₓ = v₀cosα; vᵧ = v₀sinα − gt; T = 2v₀sinα/g; H = (v₀sinα)²/(2g); R = v₀²sin2α/g (ném từ mặt đất, bỏ qua sức cản).', ex: 'ném xiên v = 20 m/s góc 30 độ' },
+                { k: ['roi tu do'], t: 'Rơi tự do', a: 'v = gt; h = ½gt²; v² = 2gh.', ex: 'rơi tự do từ độ cao 20 m' },
+                { k: ['bien doi deu', 'chuyen dong thang'], t: 'Chuyển động thẳng biến đổi đều', a: 'v = v₀ + at; s = v₀t + ½at²; v² − v₀² = 2as.' },
+                { k: ['coulomb'], t: 'Định luật Coulomb', a: 'F = k|q₁q₂|/(εr²), với k = 9·10⁹ N·m²/C².' },
+                { k: ['dien truong'], t: 'Điện trường', a: 'E = F/q; điện tích điểm: E = k|Q|/(εr²); điện trường đều: U = E·d.' },
+                { k: ['dinh luat om'], t: 'Định luật Ôm', a: 'Đoạn mạch: I = U/R; toàn mạch: I = ξ/(R + r).' },
+                { k: ['cong suat dien', 'dien nang'], t: 'Công suất & điện năng', a: 'P = UI = I²R = U²/R; A = UIt; nhiệt lượng Q = I²Rt.' },
+                { k: ['dong nang', 'the nang', 'co nang'], t: 'Động năng, thế năng, cơ năng', a: 'Wđ = ½mv²; Wt = mgh; W = Wđ + Wt (bảo toàn khi chỉ có trọng lực).' },
+                { k: ['song co', 'buoc song'], t: 'Sóng cơ', a: 'v = λf = λ/T; sóng dừng, dây hai đầu cố định: l = kλ/2.' }
+            ];
+            function tryFormula(q) {
+                for (var i = 0; i < FORMULAS.length; i++) {
+                    var F = FORMULAS[i];
+                    if (F.k.some(function (w) { return q.indexOf(w) !== -1; })) {
+                        return '<p><strong>' + F.t + '</strong></p><p class="text-[12px] font-mono">' + esc(F.a) + '</p>' +
+                            (F.ex ? '<p class="text-xs">Gõ số liệu để mình giải giúp:</p>' + askBtns([[F.ex, F.ex]]) : '');
+                    }
+                }
+                return null;
+            }
+
+            var CAPS = askBtns([['Ném xiên v=20 m/s góc 30 độ', 'ném xiên v = 20 m/s góc 30 độ'], ['Tính 3^2 + 4^2', 'tính 3^2 + 4^2'],
+                ['Đổi 36 km/h sang m/s', 'đổi 36 km/h sang m/s'], ['Bật dark mode', 'bật dark mode'], ['Có đề nào không?', 'có đề lý nào không']]);
+            var FAQ = [
+                { k: ['khoa la ai', 'gioi thieu ve khoa', 'nguoi lam web', 'chu web', 'ban than khoa', 've khoa', 'lop 11', '11 ly', 'chuyen ly', 'chuyen ben tre'],
+                  a: '<p><strong>Lê Anh Khoa</strong> là học sinh lớp <strong>11 Lý, THPT Chuyên Bến Tre</strong>, quê Bến Tre. Khoa thích thể thao (cầu lông, bóng chuyền), chơi game (Liên Quân, Roblox) và luôn tò mò khám phá tri thức mới.</p>' },
+                { k: ['so thich', 'dam me', 'the thao', 'cau long', 'bong chuyen', 'lien quan', 'roblox'],
+                  a: '<p>Khoa thích <strong>cầu lông, bóng chuyền</strong>, chơi <strong>Liên Quân, Roblox</strong> và say mê khám phá kiến thức mới. Bấm nút <em>Gamer &amp; Thể Thao</em> trên thẻ hồ sơ để xem thêm.</p>' },
+                { k: ['web co gi', 'trang web co gi', 'tong quan', 'web nay', 'trang nay'],
+                  a: '<p>Web của Khoa gồm:</p><ul class="list-disc pl-4 space-y-1 text-xs"><li><strong>Hero &amp; thẻ hồ sơ</strong> (chuyển chế độ Chuyên Lý / Gamer &amp; Thể Thao)</li><li><strong>Phòng Thí Nghiệm Vật Lý</strong>: kéo thả mô phỏng ném xiên, con lắc, lò xo</li><li><strong>Sở thích &amp; đam mê</strong></li><li><strong>Flashcard</strong> từ vựng tiếng Anh</li><li><strong>Thư Viện Đề Lý</strong>: xem, tải đề và hỏi mình</li><li><strong>Liên hệ &amp; Donate</strong></li></ul>' },
+                { k: ['phong thi nghiem', 'mo phong la gi'],
+                  a: '<p><strong>Phòng Thí Nghiệm Vật Lý</strong> ở mục Về Bản Thân: kéo thả vật bằng chuột hoặc ngón tay, chỉnh g, góc, vận tốc, chiều dài, độ cứng... và chọn hành tinh (Trái Đất, Mặt Trăng, Sao Hỏa, Sao Mộc). Mình có thể điều khiển giúp, ví dụ <em>"cho xem ném xiên trên Mặt Trăng"</em>.</p>' + labBtn('projectile', null, null, null) },
+                { k: ['thu vien de', 'de ly la gi', 'cach tai de', 'cach xem de'],
+                  a: '<p><strong>Thư Viện Đề Lý</strong>: bấm <em>Xem</em> để mở đề ngay trên trang, <em>Tải về</em> để lưu, <em>Hỏi AI</em> để mình gợi ý hoặc xem lời giải từng câu (ví dụ "giải câu 3").</p><button type="button" data-chat-scroll="#de-ly" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Tới Thư Viện Đề Lý</button>' },
+                { k: ['ban lam duoc gi', 'giup duoc gi', 'huong dan', 'co the lam gi', 'tinh nang'],
+                  a: '<p>Mình làm được:</p><ul class="list-disc pl-4 space-y-1 text-xs"><li>Hiểu tiếng Việt có hoặc không dấu, nhớ ngữ cảnh</li><li>Giải bài Lý (ném xiên, con lắc, lò xo, rơi tự do), tính toán, đổi đơn vị, nhắc công thức</li><li>Điều khiển web: dark mode, Focus, cuộn tới mục, Phòng Thí Nghiệm</li><li>Hỗ trợ đề trong Thư Viện Đề Lý</li><li>Trả lời về Khoa và trang web</li></ul>' + CAPS }
+            ];
+            function tryFaq(q) {
+                var best = null, bs = 0;
+                FAQ.forEach(function (f) {
+                    var s = 0; f.k.forEach(function (w) { if (q.indexOf(w) !== -1) s++; });
+                    if (s > bs) { bs = s; best = f; }
+                });
+                return best ? best.a : null;
+            }
+
+            /* --- Đề trong Thư Viện --- */
+            function pickExam(q) {
+                if (!deLyList.length) return -1;
+                var m = q.match(/\bde\s*(?:so\s*)?(\d+)\b/);
+                if (m && deLyList[+m[1] - 1]) return +m[1] - 1;
+                var best = -1, bs = 0;
+                deLyList.forEach(function (d, i) {
+                    var s = 0; fold(d.title).split(' ').forEach(function (w) { if (w.length >= 3 && q.indexOf(w) !== -1) s++; });
+                    if (s > bs) { bs = s; best = i; }
+                });
+                if (best >= 0) return best;
+                if (botCtx.exam >= 0) return botCtx.exam;
+                return deLyList.length === 1 ? 0 : -1;
+            }
+            function listExams() {
+                if (!deLyList.length) return '<p>Thư Viện Đề Lý hiện <strong>chưa có đề nào</strong>. Khoa sẽ sớm đăng thêm!</p><button type="button" data-chat-scroll="#de-ly" class="inline-flex items-center gap-1 text-xs font-semibold text-sky-500 hover:underline"><i class="fas fa-arrow-right"></i> Xem Thư Viện Đề Lý</button>';
+                var h = '<p>Hiện có <strong>' + deLyList.length + '</strong> đề:</p><div class="space-y-2 pt-1">';
+                deLyList.forEach(function (d, i) {
+                    h += '<div class="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700"><div class="font-bold text-sky-600 dark:text-sky-400 text-xs">Đề ' + (i + 1) + ': ' + esc(d.title) + '</div>' +
+                        '<div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">' + esc(d.desc || '') + '</div>' +
+                        '<button type="button" data-bot-open="' + i + '" class="mt-1 mr-3 text-[11px] font-semibold text-indigo-500 hover:underline"><i class="fas fa-eye"></i> Xem</button>' +
+                        '<a href="' + esc(d.file) + '" download class="text-[11px] font-semibold text-indigo-500 hover:underline"><i class="fas fa-download"></i> Tải về</a></div>';
+                });
+                return h + '</div>';
+            }
+            function showCau(i, n, onlyHint) {
+                var d = deLyList[i], c = (d.cau || {})[String(n)];
+                botCtx.exam = i; botCtx.cau = n;
+                var head = '<p><strong>' + esc(d.title) + ' — Câu ' + n + '</strong></p>';
+                var nextBtn = askBtns([['Câu ' + (n + 1), 'giải câu ' + (n + 1)]]);
+                if (!c) return head + '<p>Khoa chưa nhập lời giải cho câu này. Bạn có thể <strong>gõ lại đề câu đó</strong> (kèm số liệu và đơn vị) để mình giải bằng công thức, hoặc mở đề xem lại.</p><button type="button" data-bot-open="' + i + '" class="text-xs font-semibold text-indigo-500 hover:underline"><i class="fas fa-eye"></i> Mở đề</button>';
+                var h = head;
+                if (c.de) h += '<p class="text-xs italic">' + esc(c.de) + '</p>';
+                if (onlyHint && c.goiy) return h + '<p><strong>Gợi ý:</strong> ' + esc(c.goiy) + '</p>' + askBtns([['Xem lời giải', 'giải câu ' + n]]);
+                if (c.goiy) h += '<p><strong>Gợi ý:</strong> ' + esc(c.goiy) + '</p>';
+                if (c.giai) h += '<p><strong>Lời giải:</strong><br>' + esc(c.giai).replace(/\n/g, '<br>') + '</p>';
+                if (c.dapan) h += '<p class="font-semibold text-sky-600 dark:text-sky-400">Đáp án: ' + esc(c.dapan) + '</p>';
+                return h + nextBtn;
+            }
+
+            /* --- Bộ điều phối chính --- */
+            function smartReply(raw) {
+                var q = fold(raw);
+                if (!q) return null;
+                var m, p = planetOf(q);
+
+                // Tên người dùng
+                m = raw.match(/(?:tên (?:mình|tôi|em|tớ) là|(?:mình|tôi|em|tớ) tên là?)\s+([\p{L} ]{2,20})/iu);
+                if (m) { botCtx.name = m[1].trim(); return '<p>Rất vui được gặp bạn, <strong>' + esc(botCtx.name) + '</strong>! Bạn cần mình giúp gì nào?</p>' + CAPS; }
+                if (/^(xin chao|chao|hello|hi|alo|hey)\b/.test(q)) return '<p>Chào' + (botCtx.name ? ' ' + esc(botCtx.name) : ' bạn') + '! Mình là <strong>Khoa AI</strong>. Bạn muốn hỏi bài Lý, tính toán, hay xem đề?</p>' + CAPS;
+                if (/\b(cam on|thanks|thank)\b/.test(q)) return '<p>Không có gì' + (botCtx.name ? ', ' + esc(botCtx.name) : '') + '! Cần gì cứ hỏi mình nhé.</p>';
+                if (/(ban la ai|may la ai|ban ten gi|ai tao ra ban)/.test(q)) return '<p>Mình là <strong>Khoa AI</strong>, trợ lý trên trang web của Lê Anh Khoa. Mình giải bài Lý, tính toán, điều khiển web và hỗ trợ đề trong Thư Viện Đề Lý.</p>';
+                if (/(tam biet|bye|hen gap lai)/.test(q)) return '<p>Tạm biệt' + (botCtx.name ? ' ' + esc(botCtx.name) : '') + '! Chúc bạn học tốt.</p>';
+
+                // Điều khiển web
+                if (/(dark|che do toi|nen toi|che do sang|nen sang|\blight\b)/.test(q) && /(bat|chuyen|doi|tat|bo|sang|toi)/.test(q)) {
+                    var wantDark = /(dark|che do toi|nen toi)/.test(q) && !/\b(tat|bo|huy)\b/.test(q);
+                    var tb = document.getElementById('theme-toggle');
+                    if (tb && document.documentElement.classList.contains('dark') !== wantDark) tb.click();
+                    return '<p>Đã chuyển sang <strong>' + (wantDark ? 'chế độ tối' : 'chế độ sáng') + '</strong>.</p>';
+                }
+                if (/(focus|tap trung|chill)/.test(q) && /(bat|tat|vao|che do|thoat|bo)/.test(q)) {
+                    var want = !/\b(tat|bo|huy|thoat)\b/.test(q), fb = document.getElementById('chill-focus-toggle');
+                    var on = document.body.classList.contains('focus-mode') || (fb && fb.getAttribute('aria-pressed') === 'true');
+                    if (fb && on !== want) fb.click();
+                    return '<p>Đã ' + (want ? 'bật' : 'tắt') + ' <strong>chế độ Focus</strong>.</p>';
+                }
+                if (/(cho xem|mo phong|thi nghiem|demo|chay thu)/.test(q) || (/\bban\b/.test(q) && p)) {
+                    var md = /nem xien|vien dan|dai bac|ban/.test(q) ? 'projectile' : (/con lac/.test(q) ? 'pendulum' : (/lo xo/.test(q) ? 'spring' : null));
+                    if (md || p) { labDo(md, p ? p[1] : null, null, null); return '<p>Đã mở <strong>Phòng Thí Nghiệm Vật Lý</strong>' + (md ? ' (' + {projectile: 'ném xiên', pendulum: 'con lắc', spring: 'lò xo'}[md] + ')' : '') + (p ? ' trên <strong>' + p[2] + '</strong> (g = ' + p[1] + ' m/s²)' : '') + '. Bạn có thể kéo thả vật để thử!</p>'; }
+                }
+                if (/(dua toi|di toi|cuon|nhay|chuyen toi|den muc|toi muc|mo muc|dan toi|dan den)/.test(q)) {
+                    var SEC = [[/lien he|donate|qr|zalo/, '#contact', 'Liên hệ'], [/so thich/, '#interests', 'Sở thích'], [/de ly|thu vien|de thi|de kiem tra/, '#de-ly', 'Thư Viện Đề Lý'],
+                        [/flashcard|hoc tap|tai lieu|tu vung/, '#documents', 'Học Tập Tương Tác'], [/phong thi nghiem|mo phong|thi nghiem/, '#physics-lab', 'Phòng Thí Nghiệm'],
+                        [/ve ban than|about|gioi thieu/, '#about', 'Về Bản Thân'], [/dau trang|trang chu|hero/, '#hero', 'đầu trang']];
+                    for (var i = 0; i < SEC.length; i++) if (SEC[i][0].test(q)) { goTo(SEC[i][1]); return '<p>Đang đưa bạn tới mục <strong>' + SEC[i][2] + '</strong>.</p>'; }
+                }
+
+                // Câu hỏi nối tiếp theo ngữ cảnh
+                if (botCtx.solve && p && /\b(con|neu|thi sao|tinh lai|doi sang)\b/.test(q) && !/\d/.test(q.replace(/(?:^|\s)\d+(?=\s|$)/g, ''))) {
+                    return '<p>Với <strong>' + p[2] + '</strong> (g = ' + p[1] + ' m/s²):</p>' + botCtx.solve(p[1]);
+                }
+                if (botCtx.exam >= 0 && /(cau tiep|cau sau|tiep theo|tiep di)/.test(q)) return showCau(botCtx.exam, botCtx.cau + 1, false);
+
+                // Đề trong Thư Viện
+                var mc = q.match(/cau\s*(?:so\s*)?(\d+)/);
+                if (mc && /(giai|goi y|dap an|huong dan|khong hieu|cach lam|lam sao|cau)/.test(q)) {
+                    var ei = pickExam(q);
+                    if (ei >= 0) return showCau(ei, +mc[1], /goi y/.test(q));
+                    if (deLyList.length) return '<p>Bạn hỏi câu ' + mc[1] + ' của đề nào? Chọn nhé:</p>' + askBtns(deLyList.map(function (d, i) { return ['Đề ' + (i + 1), 'giải câu ' + mc[1] + ' đề ' + (i + 1)]; }));
+                    return '<p>Thư Viện Đề Lý chưa có đề nào. Bạn có thể gõ trực tiếp nội dung bài, ví dụ <em>"ném xiên v = 20 m/s góc 30 độ"</em>, mình sẽ giải bằng công thức.</p>';
+                }
+                if (/(danh sach|co de nao|de ly|cac de|file de|de thi|de kiem tra|de cuong)/.test(q) && !/\d/.test(q)) return listExams();
+
+                // Giải bài, tính toán, công thức, hỏi đáp
+                var r = trySolve(q) || tryUnits(q) || tryCalc(raw) || tryFormula(q) || tryFaq(q);
+                return r;
+            }
+
+            var BOT_LEGACY_RE = /(kiem tra|loai tu|dau nhan|tu kho|file|tai lieu|pdf|csv|flashcard|hoc tu|on tap|lien he|zalo|facebook|\bfb\b|sdt|donate|ung ho|ngan hang|\bqr\b)/;
+            function buildBotReply(raw) {
+                var s = null;
+                try { s = smartReply(raw); } catch (err) { s = null; }
+                if (s) return s;
+                if (BOT_LEGACY_RE.test(fold(raw))) return buildBotReplyLegacy(raw);
+                return '<p>Mình chưa hiểu rõ câu này. Mình có thể giúp bạn:</p><ul class="list-disc pl-4 space-y-1 text-xs"><li>Giải bài Lý: ném xiên, con lắc, lò xo, rơi tự do</li><li>Tính toán, đổi đơn vị, nhắc công thức</li><li>Điều khiển web và Phòng Thí Nghiệm</li><li>Hỗ trợ đề trong Thư Viện Đề Lý</li></ul>' + CAPS;
+            }
+
+            /* --- Gửi hình + nút thao tác trong khung chat --- */
+            var chatFile = document.getElementById('ai-chat-file');
+            var chatAttach = document.getElementById('ai-chat-attach');
+            if (chatAttach && chatFile) {
+                chatAttach.addEventListener('click', function () { chatFile.click(); });
+                chatFile.addEventListener('change', function () {
+                    var f = chatFile.files && chatFile.files[0];
+                    chatFile.value = '';
+                    if (!f) return;
+                    if (!/^image\//.test(f.type) || f.size > 5 * 1024 * 1024) { appendChatBubble('bot', '<p>Mình chỉ nhận file ảnh dưới 5 MB nhé.</p>'); return; }
+                    var note = chatInput ? chatInput.value.trim() : '';
+                    if (chatInput) chatInput.value = '';
+                    appendChatBubble('user', '<img src="' + URL.createObjectURL(f) + '" alt="Ảnh câu hỏi" class="rounded-lg max-h-40">' + (note ? '<p class="mt-1">' + esc(note) + '</p>' : ''));
+                    var url = window.AI_BACKEND_URL;
+                    if (!url) {
+                        setTimeout(function () {
+                            appendChatBubble('bot', '<p>Mình nhận được ảnh rồi, nhưng hiện <strong>chưa đọc được nội dung trong ảnh</strong> (việc này cần AI thật). Bạn gõ lại đề câu đó nhé, ví dụ <em>"ném xiên v = 20 m/s góc 30 độ"</em>, mình giải ngay!</p>' + CAPS);
+                        }, 300);
+                        return;
+                    }
+                    var fd = new FormData(); fd.append('image', f); fd.append('question', note || 'Giải giúp mình bài này');
+                    appendChatBubble('bot', '<p>Đang đọc ảnh...</p>');
+                    fetch(url, { method: 'POST', body: fd }).then(function (r) { return r.json(); }).then(function (d) {
+                        appendChatBubble('bot', '<p>' + esc(d.answer || 'Chưa có câu trả lời.').replace(/\n/g, '<br>') + '</p>');
+                    }).catch(function () { appendChatBubble('bot', '<p>Không kết nối được máy chủ AI, bạn thử lại sau nhé.</p>'); });
+                });
+            }
+            if (chatMessages) {
+                chatMessages.addEventListener('click', function (e) {
+                    var a = e.target.closest('[data-bot-ask]');
+                    if (a) { handleUserMessage(a.getAttribute('data-bot-ask')); return; }
+                    var l = e.target.closest('[data-bot-lab]');
+                    if (l) { var s = l.getAttribute('data-bot-lab').split('|'); labDo(s[0], s[1] === '' ? null : +s[1], s[2] === '' ? null : +s[2], s[3] === '' ? null : +s[3]); return; }
+                    var o = e.target.closest('[data-bot-open]');
+                    if (o) { goTo('#de-ly'); openPreview(+o.getAttribute('data-bot-open'), false); }
+                });
             }
 
             function handleUserMessage(text) {
