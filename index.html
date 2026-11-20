@@ -87,7 +87,7 @@
         };
     </script>
 
-    <!-- Google Fonts Inter & JetBrains Mono (hỗ trợ tiếng Việt đầy đủ) -->
+    <!-- Google Fonts Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -702,19 +702,15 @@
                                     </p>
                                 </div>
 
-                                <!-- Dynamic RPG Stats content -->
-                                <div id="card-stats" class="space-y-2.5 pt-2 text-sm border-t border-slate-100 dark:border-slate-800 text-left">
-                                    <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                                <!-- Dynamic Card Info Content -->
+                                <div id="card-stats" class="space-y-2.5 pt-2 text-sm border-t border-slate-100 dark:border-slate-800 text-left font-sans">
+                                    <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70">
+                                        <span class="text-slate-500 dark:text-slate-400">Lớp:</span>
+                                        <span class="font-semibold text-sky-500">11 Lý</span>
+                                    </div>
+                                    <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70">
                                         <span class="text-slate-500 dark:text-slate-400">Trường:</span>
-                                        <span class="font-medium text-right">THPT Chuyên Bến Tre</span>
-                                    </div>
-                                    <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                                        <span class="text-slate-500 dark:text-slate-400">Chuyên ngành:</span>
-                                        <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
-                                    </div>
-                                    <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                                        <span class="text-slate-500 dark:text-slate-400">Sở trường:</span>
-                                        <span class="font-semibold text-indigo-500">Tư duy logic & Giải bài tập</span>
+                                        <span class="font-semibold text-slate-800 dark:text-slate-100 text-right">THPT Chuyên Bến Tre</span>
                                     </div>
                                 </div>
 
@@ -1378,7 +1374,7 @@
             }
 
             /* ------------------------------------------------------------
-               2. THEME TOGGLE + HUD/TELEMETRY SYNC (SỬA FONT CHỮ RÕ NÉT)
+               2. THEME TOGGLE + PROFILE CARD STATS
                ------------------------------------------------------------ */
             var themeToggleBtn = document.getElementById('theme-toggle');
             var darkIcon = document.getElementById('theme-toggle-dark-icon');
@@ -1388,85 +1384,29 @@
             function renderCardStats() {
                 var cardStats = document.getElementById('card-stats');
                 if (!cardStats) return;
-                var isDark = document.documentElement.classList.contains('dark');
-                var useHud = isDark || currentCardMode === 'gaming';
 
                 if (currentCardMode === 'physics') {
-                    if (useHud) {
-                        cardStats.innerHTML = `
-                            <div class="p-3.5 rounded-xl bg-slate-950/90 text-sky-400 border border-sky-500/30 telemetry-font text-xs space-y-2">
-                                <div class="flex justify-between text-[10px] uppercase tracking-widest text-slate-400">
-                                    <span>[TELEMETRY // PHYS-11]</span>
-                                    <span class="text-emerald-400">ONLINE</span>
-                                </div>
-                                <div class="flex justify-between items-center gap-2">
-                                    <span class="text-sky-400">UNIT:</span>
-                                    <span class="text-white font-bold text-right">CHUYÊN LÝ — CBT</span>
-                                </div>
-                                <div class="flex justify-between items-center gap-2">
-                                    <span class="text-sky-400">GRAVITY_REF:</span>
-                                    <span class="text-sky-300 font-semibold text-right">g = 9.80 m/s²</span>
-                                </div>
-                                <div class="flex justify-between items-center gap-2">
-                                    <span class="text-sky-400">CORE_SKILL:</span>
-                                    <span class="text-indigo-300 font-semibold text-right">LOGIC &amp; PROBLEM SOLVING</span>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        cardStats.innerHTML = `
-                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                                <span class="text-slate-500 dark:text-slate-400">Trường:</span>
-                                <span class="font-medium text-right">THPT Chuyên Bến Tre</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                                <span class="text-slate-500 dark:text-slate-400">Chuyên ngành:</span>
-                                <span class="font-semibold text-sky-500">Lớp 11 Lý</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                                <span class="text-slate-500 dark:text-slate-400">Sở trường:</span>
-                                <span class="font-semibold text-indigo-500">Tư duy logic &amp; Giải bài tập</span>
-                            </div>
-                        `;
-                    }
+                    cardStats.innerHTML = `
+                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70">
+                            <span class="text-slate-500 dark:text-slate-400">Lớp:</span>
+                            <span class="font-semibold text-sky-500">11 Lý</span>
+                        </div>
+                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70">
+                            <span class="text-slate-500 dark:text-slate-400">Trường:</span>
+                            <span class="font-semibold text-slate-800 dark:text-slate-100 text-right">THPT Chuyên Bến Tre</span>
+                        </div>
+                    `;
                 } else {
-                    if (useHud) {
-                        cardStats.innerHTML = `
-                            <div class="p-3.5 rounded-xl bg-slate-950/95 text-purple-300 border border-purple-500/40 telemetry-font text-xs space-y-2">
-                                <div class="flex justify-between text-[10px] uppercase tracking-widest text-purple-400">
-                                    <span>[HUD // GAMER-TELEMETRY]</span>
-                                    <span class="text-amber-400">ACTIVE</span>
-                                </div>
-                                <div class="flex justify-between items-center gap-2">
-                                    <span>AOV_RANK:</span>
-                                    <span class="text-purple-300 font-bold text-right">ĐẠI CAO THỦ (TOP BUTTERFLY)</span>
-                                </div>
-                                <div class="flex justify-between items-center gap-2">
-                                    <span>ROBLOX_MOD:</span>
-                                    <span class="text-indigo-300 font-bold text-right">PRO BUILDER / BLOX FRUITS</span>
-                                </div>
-                                <div class="flex justify-between items-center gap-2">
-                                    <span>STAMINA_LKP:</span>
-                                    <span class="text-amber-300 font-bold text-right">CẦU LÔNG // PEAK</span>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        cardStats.innerHTML = `
-                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
-                                <span class="text-slate-500 dark:text-slate-400">Liên Quân:</span>
-                                <span class="font-bold text-purple-500">Đại Cao Thủ (Top Butterfly)</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
-                                <span class="text-slate-500 dark:text-slate-400">Roblox:</span>
-                                <span class="font-bold text-indigo-500">Pro Builder / Blox Fruits</span>
-                            </div>
-                            <div class="flex items-center justify-between py-1.5 px-3 rounded-lg bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
-                                <span class="text-slate-500 dark:text-slate-400">Thể thao:</span>
-                                <span class="font-bold text-amber-500">Cầu lông (Năng suất đỉnh)</span>
-                            </div>
-                        `;
-                    }
+                    cardStats.innerHTML = `
+                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
+                            <span class="text-slate-500 dark:text-slate-400">Game:</span>
+                            <span class="font-semibold text-purple-500 text-right">Liên Quân, Roblox,...</span>
+                        </div>
+                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
+                            <span class="text-slate-500 dark:text-slate-400">Thể thao:</span>
+                            <span class="font-semibold text-amber-500 text-right">Cầu lông, bóng chuyền,...</span>
+                        </div>
+                    `;
                 }
             }
 
@@ -2337,7 +2277,7 @@
 
                 if (/(khoa|ai|trường|truong|lớp|lop|chuyên|liên quân|lien quan|game|rank|butterfly|sở thích|so thich|cầu lông)/i.test(q)) {
                     return '<p><strong>Lê Anh Khoa</strong> hiện là học sinh lớp <strong>11 Lý, Trường THPT Chuyên Bến Tre</strong>.</p>' +
-                        '<p>Ngoài tư duy Vật lý và giải bài tập, Khoa còn chơi <strong>Cầu lông</strong>, đạt rank <strong>Đại Cao Thủ (Top Butterfly)</strong> trong Liên Quân và chơi Roblox. Bạn có thể bấm nút <em>Gamer &amp; Thể Thao</em> trên thẻ hồ sơ ở đầu trang để xem chi tiết!</p>';
+                        '<p>Ngoài học tập, Khoa còn chơi <strong>Liên Quân, Roblox,...</strong> và các môn thể thao như <strong>Cầu lông, bóng chuyền,...</strong> Bạn có thể bấm nút <em>Gamer &amp; Thể Thao</em> trên thẻ hồ sơ ở đầu trang để xem chi tiết!</p>';
                 }
 
                 if (/(flashcard|học từ|hoc tu|ôn tập|on tap|cách chơi|cach choi)/i.test(q)) {
