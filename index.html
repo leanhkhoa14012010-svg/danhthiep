@@ -509,6 +509,71 @@
             visibility: visible;
             transform: translateY(0) scale(1);
         }
+
+        /* ============================================================
+           PROFILE CARD V2 (thẻ hồ sơ nổi bật)
+           ============================================================ */
+        @keyframes khoaSpin { to { transform: rotate(360deg); } }
+        .khoa-card {
+            position: relative;
+            border-radius: 1.75rem;
+            padding: 2px;
+            overflow: hidden;
+            isolation: isolate;
+        }
+        .khoa-card::before {
+            content: '';
+            position: absolute;
+            inset: -60%;
+            z-index: -1;
+            background: conic-gradient(from 0deg, #38bdf8, #6366f1, #a855f7, #f59e0b, #38bdf8);
+            animation: khoaSpin 6s linear infinite;
+        }
+        .khoa-card-inner {
+            position: relative;
+            border-radius: calc(1.75rem - 2px);
+            overflow: hidden;
+        }
+        .khoa-banner {
+            position: relative;
+            height: 108px;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 18% 25%, rgba(56, 189, 248, 0.55), transparent 55%),
+                radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.5), transparent 55%),
+                linear-gradient(135deg, #0c4a6e, #312e81 60%, #4c1d95);
+        }
+        .khoa-banner::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.09) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.09) 1px, transparent 1px);
+            background-size: 22px 22px;
+            -webkit-mask-image: linear-gradient(to bottom, #000, transparent);
+            mask-image: linear-gradient(to bottom, #000, transparent);
+        }
+        .khoa-avatar-wrap {
+            position: relative;
+            z-index: 2;
+            width: 124px;
+            height: 124px;
+            margin: -62px auto 0;
+        }
+        .khoa-avatar-wrap::before {
+            content: '';
+            position: absolute;
+            inset: -5px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #38bdf8, #6366f1, #a855f7, #38bdf8);
+            animation: khoaSpin 5s linear infinite;
+            box-shadow: 0 0 28px rgba(56, 189, 248, 0.55);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .khoa-card::before,
+            .khoa-avatar-wrap::before { animation: none; }
+        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col selection:bg-sky-500 selection:text-white relative overflow-x-hidden">
@@ -675,45 +740,69 @@
                     <!-- Card & RPG Stat Switcher -->
                     <div class="md:col-span-5 flex justify-center reveal" data-delay="2">
                         <div class="relative w-full max-w-sm">
-                            <div class="absolute -inset-1 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 rounded-3xl blur-xl opacity-30 dark:opacity-40 animate-pulse"></div>
+                            <div class="absolute -inset-2 bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 rounded-[2rem] blur-2xl opacity-40 dark:opacity-50 animate-pulse"></div>
 
-                            <div class="relative bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-5 text-center">
-                                
-                                <!-- Mode Switcher Buttons -->
-                                <div class="flex items-center justify-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-semibold gap-1">
-                                    <button id="mode-physics" type="button" class="flex-1 py-2 px-3 rounded-lg bg-sky-500 text-white shadow transition-all">
-                                        <i class="fas fa-atom mr-1"></i> Chuyên Lý
-                                    </button>
-                                    <button id="mode-gaming" type="button" class="flex-1 py-2 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-all">
-                                        <i class="fas fa-gamepad mr-1"></i> Gamer & Thể Thao
-                                    </button>
-                                </div>
+                            <div class="khoa-card shadow-2xl">
+                                <div class="khoa-card-inner bg-white dark:bg-slate-900 text-center">
 
-                                <!-- Avatar -->
-                                <div class="avatar-ring relative mx-auto w-32 h-32 rounded-full overflow-hidden border-2 border-sky-500/40 shadow-inner bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                                    <!-- Banner -->
+                                    <div class="khoa-banner">
+                                        <i class="fas fa-atom absolute -left-3 top-9 text-7xl text-white/15 animate-float-slow"></i>
+                                        <i class="fas fa-gamepad absolute right-5 top-12 text-4xl text-white/15 animate-float"></i>
+                                        <i class="fas fa-table-tennis-paddle-ball absolute right-20 top-16 text-2xl text-white/10 animate-float-slow"></i>
+                                        <span class="absolute top-3 left-3 px-2.5 py-1 rounded-full bg-white/15 backdrop-blur text-[10px] font-bold tracking-wider text-white uppercase border border-white/20">
+                                            <i class="fas fa-school mr-1"></i> THPT Chuyên Bến Tre
+                                        </span>
+                                        <span class="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-sky-400/90 text-[10px] font-extrabold tracking-wider text-slate-900 uppercase">
+                                            11 Lý
+                                        </span>
+                                    </div>
+
+                                    <!-- Avatar -->
+                                    <div class="khoa-avatar-wrap">
+                                        <div class="relative w-full h-full rounded-full overflow-hidden border-4 border-white dark:border-slate-900 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                                     <img src="avt.jfif" alt="Ảnh đại diện Lê Anh Khoa" class="w-full h-full object-cover"
                                         onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><defs><linearGradient id=%22g%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22><stop offset=%220%22 stop-color=%22%230ea5e9%22/><stop offset=%221%22 stop-color=%22%236366f1%22/></linearGradient></defs><rect width=%22100%22 height=%22100%22 fill=%22url(%23g)%22/><text x=%2250%22 y=%2263%22 font-size=%2244%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial,sans-serif%22 font-weight=%22bold%22>K</text></svg>';">
-                                </div>
-
-                                <div>
-                                    <h3 class="text-lg font-bold">Lê Anh Khoa</h3>
-                                    <p id="card-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                                        <i class="fas fa-location-dot text-red-500 mr-1"></i> Bến Tre, Việt Nam
-                                    </p>
-                                </div>
-
-                                <!-- Dynamic Card Info Content -->
-                                <div id="card-stats" class="space-y-2.5 pt-2 text-sm border-t border-slate-100 dark:border-slate-800 text-left font-sans">
-                                    <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70">
-                                        <span class="text-slate-500 dark:text-slate-400">Lớp:</span>
-                                        <span class="font-semibold text-sky-500">11 Lý</span>
+                                        </div>
                                     </div>
-                                    <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70">
-                                        <span class="text-slate-500 dark:text-slate-400">Trường:</span>
-                                        <span class="font-semibold text-slate-800 dark:text-slate-100 text-right">THPT Chuyên Bến Tre</span>
-                                    </div>
-                                </div>
 
+                                    <div class="px-6 pb-6 pt-4 space-y-4">
+                                        <div>
+                                            <h3 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-500 bg-clip-text text-transparent">Lê Anh Khoa</h3>
+                                            <p id="card-subtitle" class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                                                <i class="fas fa-location-dot text-red-500 mr-1"></i> Bến Tre, Việt Nam
+                                            </p>
+                                        </div>
+
+                                        <!-- Tags -->
+                                        <div class="flex flex-wrap justify-center gap-1.5 text-[11px] font-semibold">
+                                            <span class="px-2.5 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20"><i class="fas fa-atom mr-1"></i>Chuyên Lý</span>
+                                            <span class="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20"><i class="fas fa-medal mr-1"></i>Thể thao</span>
+                                            <span class="px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-600 dark:text-purple-400 border border-purple-500/20"><i class="fas fa-lightbulb mr-1"></i>Khám phá tri thức</span>
+                                            <span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20"><i class="fas fa-code mr-1"></i>Học lập trình</span>
+                                        </div>
+
+                                        <!-- Mode Switcher Buttons -->
+                                        <div class="flex items-center justify-center p-1 bg-slate-100 dark:bg-slate-800 rounded-xl text-xs font-semibold gap-1">
+                                            <button id="mode-physics" type="button" class="flex-1 py-2 px-3 rounded-lg bg-sky-500 text-white shadow transition-all">
+                                                <i class="fas fa-atom mr-1"></i> Chuyên Lý
+                                            </button>
+                                            <button id="mode-gaming" type="button" class="flex-1 py-2 px-3 rounded-lg text-slate-600 dark:text-slate-400 hover:text-sky-500 transition-all">
+                                                <i class="fas fa-gamepad mr-1"></i> Gamer & Thể Thao
+                                            </button>
+                                        </div>
+
+                                        <!-- Dynamic Card Info Content -->
+                                        <div id="card-stats" class="space-y-2 text-left font-sans">
+                                            <div class="flex items-center gap-3 py-2.5 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60 hover:border-sky-500/50 hover:-translate-y-0.5 transition-all"><span class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-sm bg-sky-500/15 text-sky-500"><i class="fas fa-graduation-cap"></i></span><div class="min-w-0 flex-1"><div class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">Lớp</div><div class="text-sm font-semibold leading-tight text-sky-500">11 Lý</div></div></div>
+                                            <div class="flex items-center gap-3 py-2.5 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60 hover:border-sky-500/50 hover:-translate-y-0.5 transition-all"><span class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-sm bg-indigo-500/15 text-indigo-500"><i class="fas fa-school"></i></span><div class="min-w-0 flex-1"><div class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">Trường</div><div class="text-sm font-semibold leading-tight text-slate-800 dark:text-slate-100">THPT Chuyên Bến Tre</div></div></div>
+                                            <div class="flex items-center gap-3 py-2.5 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60 hover:border-sky-500/50 hover:-translate-y-0.5 transition-all"><span class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-sm bg-red-500/15 text-red-500"><i class="fas fa-location-dot"></i></span><div class="min-w-0 flex-1"><div class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">Quê hương</div><div class="text-sm font-semibold leading-tight text-slate-800 dark:text-slate-100">Bến Tre, Việt Nam</div></div></div>
+                                            <div class="flex items-center gap-3 py-2.5 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60 hover:border-sky-500/50 hover:-translate-y-0.5 transition-all"><span class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-sm bg-amber-500/15 text-amber-500"><i class="fas fa-lightbulb"></i></span><div class="min-w-0 flex-1"><div class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">Đam mê</div><div class="text-sm font-semibold leading-tight text-slate-800 dark:text-slate-100">Khám phá tri thức mới</div></div></div>
+                                            <div class="flex items-center gap-3 py-2.5 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60 hover:border-sky-500/50 hover:-translate-y-0.5 transition-all"><span class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-sm bg-emerald-500/15 text-emerald-500"><i class="fas fa-code"></i></span><div class="min-w-0 flex-1"><div class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">Đang học</div><div class="text-sm font-semibold leading-tight text-emerald-500">Lập trình web</div></div></div>
+                                        </div>
+                                    </div>
+
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -762,49 +851,62 @@
                             tinh thần kiên trì và mong muốn vượt qua giới hạn của bản thân luôn là mục tiêu hàng đầu.
                         </p>
 
-                        <!-- Physics Playground Mini-Widget -->
-                        <div id="physics-playground" class="mt-4 p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
+                        <!-- Phòng Thí Nghiệm Vật Lý (kéo thả bằng chuột: Ném xiên / Con lắc / Lò xo) -->
+                        <div id="physics-lab" class="mt-4 p-4 sm:p-5 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3.5">
                             <div class="flex flex-wrap items-center justify-between gap-2">
                                 <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-sky-500">
-                                    <i class="fas fa-atom"></i>
-                                    <span>Physics Playground (11 Lý)</span>
+                                    <i class="fas fa-flask"></i>
+                                    <span>Phòng Thí Nghiệm Vật Lý</span>
                                 </div>
                                 <div class="flex items-center gap-1 p-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-semibold">
-                                    <button type="button" data-phys-mode="projectile" class="phys-mode-btn px-2.5 py-1 rounded-md bg-sky-500 text-white transition-all">Ném xiên</button>
-                                    <button type="button" data-phys-mode="pendulum" class="phys-mode-btn px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all">Con lắc đơn</button>
-                                    <button type="button" data-phys-mode="wave" class="phys-mode-btn px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all">Sóng cơ</button>
+                                    <button type="button" data-lab-mode="projectile" class="lab-mode-btn px-2.5 py-1 rounded-md bg-sky-500 text-white transition-all">Ném xiên</button>
+                                    <button type="button" data-lab-mode="pendulum" class="lab-mode-btn px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all">Con lắc</button>
+                                    <button type="button" data-lab-mode="spring" class="lab-mode-btn px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all">Lò xo</button>
                                 </div>
                             </div>
 
-                            <canvas id="physics-sim-canvas" class="w-full h-36 rounded-xl bg-slate-950/90 border border-slate-800 block"></canvas>
+                            <canvas id="lab-canvas" role="img" aria-label="Mô phỏng vật lý tương tác: kéo thả vật bằng chuột hoặc ngón tay" class="w-full h-[300px] rounded-xl bg-slate-950/90 border border-slate-800 block cursor-grab touch-none"></canvas>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-center text-xs">
-                                <label class="space-y-1">
-                                    <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                                        <span id="phys-p1-label">Góc bắn</span>
-                                        <strong id="phys-p1-val" class="telemetry-font text-sky-500">45°</strong>
-                                    </div>
-                                    <input id="phys-p1-input" type="range" min="10" max="80" value="45" class="w-full accent-sky-500">
-                                </label>
-
-                                <label class="space-y-1">
-                                    <div class="flex justify-between text-slate-500 dark:text-slate-400">
-                                        <span id="phys-p2-label">Vận tốc v₀</span>
-                                        <strong id="phys-p2-val" class="telemetry-font text-indigo-500">28 m/s</strong>
-                                    </div>
-                                    <input id="phys-p2-input" type="range" min="10" max="45" value="28" class="w-full accent-indigo-500">
-                                </label>
-
-                                <div class="flex items-center justify-end gap-2 pt-1 sm:pt-0">
-                                    <button id="phys-run-btn" type="button" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs shadow hover:opacity-95 active:scale-95 transition-all">
-                                        <i class="fas fa-play mr-1"></i> Bắn / Chạy
-                                    </button>
-                                </div>
+                            <div class="flex flex-wrap items-center gap-1.5 text-[11px]">
+                                <span class="text-slate-500 dark:text-slate-400 font-semibold mr-1">Hành tinh:</span>
+                                <button type="button" data-lab-g="9.8" class="lab-g-chip px-2.5 py-1 rounded-full border transition-all">🌍 Trái Đất</button>
+                                <button type="button" data-lab-g="1.62" class="lab-g-chip px-2.5 py-1 rounded-full border transition-all">🌙 Mặt Trăng</button>
+                                <button type="button" data-lab-g="3.71" class="lab-g-chip px-2.5 py-1 rounded-full border transition-all">🔴 Sao Hỏa</button>
+                                <button type="button" data-lab-g="24.79" class="lab-g-chip px-2.5 py-1 rounded-full border transition-all">🪐 Sao Mộc</button>
                             </div>
 
-                            <div id="phys-formula-readout" class="text-[11px] telemetry-font text-slate-500 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100 dark:border-slate-800">
-                                <span id="phys-eq-text">y(x) = x·tan(α) - g·x² / (2·v₀²·cos²α)</span>
-                                <span id="phys-telemetry-text" class="text-sky-500 font-semibold">g = 9.8 m/s²</span>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                                <label id="lab-g-wrap" class="space-y-1 transition-opacity">
+                                    <div class="flex justify-between text-slate-500 dark:text-slate-400">
+                                        <span>Trọng lực g</span>
+                                        <strong id="lab-g-val" class="telemetry-font text-emerald-500">9.8 m/s²</strong>
+                                    </div>
+                                    <input id="lab-g-input" type="range" min="1" max="26" step="0.1" value="9.8" class="w-full accent-emerald-500">
+                                </label>
+                                <label class="space-y-1">
+                                    <div class="flex justify-between text-slate-500 dark:text-slate-400">
+                                        <span id="lab-p1-label">Góc bắn</span>
+                                        <strong id="lab-p1-val" class="telemetry-font text-sky-500">45°</strong>
+                                    </div>
+                                    <input id="lab-p1-input" type="range" min="10" max="80" step="1" value="45" class="w-full accent-sky-500">
+                                </label>
+                                <label class="space-y-1">
+                                    <div class="flex justify-between text-slate-500 dark:text-slate-400">
+                                        <span id="lab-p2-label">Vận tốc v₀</span>
+                                        <strong id="lab-p2-val" class="telemetry-font text-indigo-500">25 m/s</strong>
+                                    </div>
+                                    <input id="lab-p2-input" type="range" min="5" max="40" step="1" value="25" class="w-full accent-indigo-500">
+                                </label>
+                            </div>
+
+                            <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                                <div class="text-[11px] telemetry-font space-y-0.5 min-w-0">
+                                    <div id="lab-eq-text" class="text-slate-500 dark:text-slate-400">y = x·tanα − g·x² / (2·v₀²·cos²α)</div>
+                                    <div id="lab-telemetry-text" class="text-sky-500 font-semibold">g = 9.8 m/s²</div>
+                                </div>
+                                <button id="lab-run-btn" type="button" class="px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-semibold text-xs shadow hover:opacity-95 active:scale-95 transition-all">
+                                    <i class="fas fa-rocket mr-1"></i> Bắn!
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -1385,28 +1487,26 @@
                 var cardStats = document.getElementById('card-stats');
                 if (!cardStats) return;
 
+                function row(icon, iconCls, label, value, valueCls) {
+                    return '<div class="flex items-center gap-3 py-2.5 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60 hover:border-sky-500/50 hover:-translate-y-0.5 transition-all">' +
+                        '<span class="w-8 h-8 shrink-0 rounded-lg flex items-center justify-center text-sm ' + iconCls + '"><i class="fas ' + icon + '"></i></span>' +
+                        '<div class="min-w-0 flex-1"><div class="text-[10px] uppercase tracking-wider text-slate-400 dark:text-slate-500">' + label + '</div>' +
+                        '<div class="text-sm font-semibold leading-tight ' + valueCls + '">' + value + '</div></div></div>';
+                }
+
                 if (currentCardMode === 'physics') {
-                    cardStats.innerHTML = `
-                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70">
-                            <span class="text-slate-500 dark:text-slate-400">Lớp:</span>
-                            <span class="font-semibold text-sky-500">11 Lý</span>
-                        </div>
-                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70">
-                            <span class="text-slate-500 dark:text-slate-400">Trường:</span>
-                            <span class="font-semibold text-slate-800 dark:text-slate-100 text-right">THPT Chuyên Bến Tre</span>
-                        </div>
-                    `;
+                    cardStats.innerHTML =
+                        row('fa-graduation-cap', 'bg-sky-500/15 text-sky-500', 'Lớp', '11 Lý', 'text-sky-500') +
+                        row('fa-school', 'bg-indigo-500/15 text-indigo-500', 'Trường', 'THPT Chuyên Bến Tre', 'text-slate-800 dark:text-slate-100') +
+                        row('fa-location-dot', 'bg-red-500/15 text-red-500', 'Quê hương', 'Bến Tre, Việt Nam', 'text-slate-800 dark:text-slate-100') +
+                        row('fa-lightbulb', 'bg-amber-500/15 text-amber-500', 'Đam mê', 'Khám phá tri thức mới', 'text-slate-800 dark:text-slate-100') +
+                        row('fa-code', 'bg-emerald-500/15 text-emerald-500', 'Đang học', 'Lập trình web', 'text-emerald-500');
                 } else {
-                    cardStats.innerHTML = `
-                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
-                            <span class="text-slate-500 dark:text-slate-400">Game:</span>
-                            <span class="font-semibold text-purple-500 text-right">Liên Quân, Roblox,...</span>
-                        </div>
-                        <div class="flex items-center justify-between py-2 px-3.5 rounded-xl bg-purple-50 dark:bg-purple-950/30 border border-purple-500/20">
-                            <span class="text-slate-500 dark:text-slate-400">Thể thao:</span>
-                            <span class="font-semibold text-amber-500 text-right">Cầu lông, bóng chuyền,...</span>
-                        </div>
-                    `;
+                    cardStats.innerHTML =
+                        row('fa-gamepad', 'bg-purple-500/15 text-purple-500', 'Game', 'Liên Quân, Roblox,...', 'text-purple-500') +
+                        row('fa-table-tennis-paddle-ball', 'bg-amber-500/15 text-amber-500', 'Thể thao', 'Cầu lông, bóng chuyền,...', 'text-amber-500') +
+                        row('fa-bolt', 'bg-sky-500/15 text-sky-500', 'Góc nhìn', 'Chủ động, giàu năng lượng', 'text-slate-800 dark:text-slate-100') +
+                        row('fa-fire', 'bg-red-500/15 text-red-500', 'Tinh thần', 'Kiên trì, vượt giới hạn bản thân', 'text-slate-800 dark:text-slate-100');
                 }
             }
 
@@ -1616,178 +1716,506 @@
             }
 
             /* ------------------------------------------------------------
-               7B. PHYSICS PLAYGROUND MINI-WIDGET (Ném xiên / Con lắc / Sóng cơ)
+               7B. PHÒNG THÍ NGHIỆM VẬT LÝ (kéo thả: Ném xiên / Con lắc / Lò xo)
                ------------------------------------------------------------ */
             (function () {
-                var simCanvas = document.getElementById('physics-sim-canvas');
-                if (!simCanvas) return;
-                var sctx = simCanvas.getContext('2d');
-                var physMode = 'projectile';
-                var p1Input = document.getElementById('phys-p1-input');
-                var p2Input = document.getElementById('phys-p2-input');
-                var p1Label = document.getElementById('phys-p1-label');
-                var p2Label = document.getElementById('phys-p2-label');
-                var p1Val = document.getElementById('phys-p1-val');
-                var p2Val = document.getElementById('phys-p2-val');
-                var eqText = document.getElementById('phys-eq-text');
-                var telemText = document.getElementById('phys-telemetry-text');
-                var runBtn = document.getElementById('phys-run-btn');
+                var canvas = document.getElementById('lab-canvas');
+                if (!canvas || !canvas.getContext) return;
+                var ctx = canvas.getContext('2d');
 
-                var simTime = 0;
-                var animHandle = null;
-                var trailPoints = [];
+                var gIn = document.getElementById('lab-g-input');
+                var gVal = document.getElementById('lab-g-val');
+                var gWrap = document.getElementById('lab-g-wrap');
+                var p1In = document.getElementById('lab-p1-input');
+                var p1Label = document.getElementById('lab-p1-label');
+                var p1Val = document.getElementById('lab-p1-val');
+                var p2In = document.getElementById('lab-p2-input');
+                var p2Label = document.getElementById('lab-p2-label');
+                var p2Val = document.getElementById('lab-p2-val');
+                var eqText = document.getElementById('lab-eq-text');
+                var telText = document.getElementById('lab-telemetry-text');
+                var runBtn = document.getElementById('lab-run-btn');
+                var modeBtns = document.querySelectorAll('.lab-mode-btn');
+                var gChips = document.querySelectorAll('.lab-g-chip');
 
-                function syncSimSize() {
-                    var rect = simCanvas.getBoundingClientRect();
-                    if (rect.width > 0) {
-                        simCanvas.width = Math.floor(rect.width);
-                        simCanvas.height = Math.floor(rect.height);
+                var W = 320, H = 300;
+                var STRIP = 50;            // chiều cao dải đồ thị x(t)
+                var mode = 'projectile';
+                var g = 9.8;
+                var held = false;          // vật đang được giữ (chưa chạy vật lý)
+                var dragging = false;
+                var hinted = false;
+                var ptr = { x: 0, y: 0 };
+                var simT = 0;
+
+                var cur = null, ghosts = [];          // ném xiên
+                var th = 0.7, om = 0;                  // con lắc (rad, rad/s)
+                var sx = 0.4, sv = 0;                  // lò xo (m, m/s)
+                var samples = [];
+
+                var MODES = {
+                    projectile: {
+                        p1: { label: 'Góc bắn', min: 10, max: 80, step: 1, fmt: function (v) { return v + '°'; } },
+                        p2: { label: 'Vận tốc v₀', min: 5, max: 40, step: 1, fmt: function (v) { return v + ' m/s'; } },
+                        eq: 'y = x·tanα − g·x² / (2·v₀²·cos²α)',
+                        run: '<i class="fas fa-rocket mr-1"></i> Bắn!'
+                    },
+                    pendulum: {
+                        p1: { label: 'Chiều dài L', min: 0.5, max: 3, step: 0.1, fmt: function (v) { return v.toFixed(1) + ' m'; } },
+                        p2: { label: 'Lực cản γ', min: 0, max: 1, step: 0.05, fmt: function (v) { return v.toFixed(2); } },
+                        eq: 'α″ = −(g/L)·sinα − γ·α′',
+                        run: '<i class="fas fa-play mr-1"></i> Thả vật'
+                    },
+                    spring: {
+                        p1: { label: 'Độ cứng k', min: 5, max: 100, step: 1, fmt: function (v) { return v + ' N/m'; } },
+                        p2: { label: 'Khối lượng m', min: 0.2, max: 5, step: 0.1, fmt: function (v) { return v.toFixed(1) + ' kg'; } },
+                        eq: 'x″ = −(k/m)·x  ⇒  T = 2π√(m/k)',
+                        run: '<i class="fas fa-play mr-1"></i> Thả vật'
                     }
+                };
+                var vals = {
+                    projectile: { p1: 45, p2: 25 },
+                    pendulum: { p1: 1.5, p2: 0.05 },
+                    spring: { p1: 40, p2: 1 }
+                };
+
+                function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+                function resize() {
+                    var r = canvas.getBoundingClientRect();
+                    if (r.width < 10) return;
+                    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+                    W = r.width; H = r.height;
+                    canvas.width = Math.floor(W * dpr);
+                    canvas.height = Math.floor(H * dpr);
+                    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
                 }
 
-                function updateLabels() {
-                    var v1 = Number(p1Input.value);
-                    var v2 = Number(p2Input.value);
-                    if (physMode === 'projectile') {
-                        p1Label.textContent = 'Góc bắn';
-                        p1Val.textContent = v1 + '°';
-                        p2Label.textContent = 'Vận tốc v₀';
-                        p2Val.textContent = v2 + ' m/s';
-                        eqText.textContent = 'y(x) = x·tan(α) - g·x² / (2·v₀²·cos²α)';
-                        var rad = v1 * Math.PI / 180;
-                        var range = ((v2 * v2 * Math.sin(2 * rad)) / 9.8).toFixed(1);
-                        telemText.textContent = 'Tầm xa ước tính: ' + range + ' m';
-                    } else if (physMode === 'pendulum') {
-                        p1Label.textContent = 'Biên độ α₀';
-                        p1Val.textContent = v1 + '°';
-                        p2Label.textContent = 'Cản / Tần số';
-                        p2Val.textContent = (v2 / 25).toFixed(2);
-                        eqText.textContent = 'α(t) = α₀·e^(-γt)·cos(ωt + φ)';
-                        var period = (2 * Math.PI * Math.sqrt(1.0 / 9.8)).toFixed(2);
-                        telemText.textContent = 'Chu kỳ chuẩn T ≈ ' + period + ' s';
+                /* ---------- Giao diện thanh trượt ---------- */
+                function refreshLabels() {
+                    var c = MODES[mode], v = vals[mode];
+                    gVal.textContent = (Math.round(g * 100) / 100) + ' m/s²';
+                    p1Val.textContent = c.p1.fmt(v.p1);
+                    p2Val.textContent = c.p2.fmt(v.p2);
+                    gChips.forEach(function (chip) {
+                        var on = Math.abs(Number(chip.getAttribute('data-lab-g')) - g) < 0.005;
+                        chip.className = 'lab-g-chip px-2.5 py-1 rounded-full border transition-all ' + (on
+                            ? 'bg-emerald-500 text-white border-emerald-500'
+                            : 'border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:border-emerald-500 hover:text-emerald-500');
+                    });
+                }
+
+                function applyMode() {
+                    var c = MODES[mode], v = vals[mode];
+                    p1Label.textContent = c.p1.label;
+                    p1In.min = c.p1.min; p1In.max = c.p1.max; p1In.step = c.p1.step; p1In.value = v.p1;
+                    p2Label.textContent = c.p2.label;
+                    p2In.min = c.p2.min; p2In.max = c.p2.max; p2In.step = c.p2.step; p2In.value = v.p2;
+                    eqText.textContent = c.eq;
+                    runBtn.innerHTML = c.run;
+                    var noG = (mode === 'spring');
+                    gIn.disabled = noG;
+                    gWrap.classList.toggle('opacity-40', noG);
+                    gWrap.title = noG ? 'Lò xo nằm ngang: g không ảnh hưởng' : '';
+                    modeBtns.forEach(function (b) {
+                        var on = b.getAttribute('data-lab-mode') === mode;
+                        b.className = 'lab-mode-btn px-2.5 py-1 rounded-md transition-all ' + (on
+                            ? 'bg-sky-500 text-white'
+                            : 'text-slate-600 dark:text-slate-300 hover:text-sky-500');
+                    });
+                    refreshLabels();
+                }
+
+                /* ---------- Vật lý ném xiên ---------- */
+                function projGeom(a, v, gv) {
+                    var s = v * Math.sin(a);
+                    return { T: 2 * s / gv, R: v * v * Math.sin(2 * a) / gv, Hm: s * s / (2 * gv) };
+                }
+
+                function fire() {
+                    var a = vals.projectile.p1 * Math.PI / 180, v = vals.projectile.p2;
+                    var geo = projGeom(a, v, g);
+                    var dur = clamp(geo.T, 1.4, 4);
+                    cur = { a: a, v: v, g: g, geo: geo, t: 0, ts: geo.T / dur, done: false };
+                }
+
+                function resetMode() {
+                    simT = 0; samples = []; cur = null; ghosts = [];
+                    th = 0.7; om = 0; sx = 0.4; sv = 0;
+                    held = prefersReduced && mode !== 'projectile';
+                    if (mode === 'projectile' && !prefersReduced) fire();
+                }
+
+                function pushSample(v) {
+                    samples.push({ t: simT, v: v });
+                    while (samples.length && samples[0].t < simT - 6) samples.shift();
+                }
+
+                function update(dt) {
+                    simT += dt;
+                    if (mode === 'projectile') {
+                        if (cur && !cur.done) {
+                            cur.t += dt * cur.ts;
+                            if (cur.t >= cur.geo.T) {
+                                cur.t = cur.geo.T; cur.done = true;
+                                ghosts.push(cur);
+                                if (ghosts.length > 3) ghosts.shift();
+                            }
+                        }
+                        return;
+                    }
+                    var n = Math.max(1, Math.ceil(dt / 0.004)), h = dt / n, i;
+                    if (mode === 'pendulum') {
+                        if (!held && !dragging) {
+                            var L = vals.pendulum.p1, gam = vals.pendulum.p2;
+                            for (i = 0; i < n; i++) {
+                                om += (-(g / L) * Math.sin(th) - gam * om) * h;
+                                th += om * h;
+                            }
+                        }
+                        pushSample(th);
                     } else {
-                        p1Label.textContent = 'Tần số f';
-                        p1Val.textContent = (v1 / 15).toFixed(1) + ' Hz';
-                        p2Label.textContent = 'Biên độ A';
-                        p2Val.textContent = v2 + ' px';
-                        eqText.textContent = 'u(x,t) = A·cos(2πft - 2πx/λ)';
-                        var vWave = (v2 * 4).toFixed(0);
-                        telemText.textContent = 'v_truyền ≈ ' + vWave + ' px/s';
+                        if (!held && !dragging) {
+                            var w2 = vals.spring.p1 / vals.spring.p2;
+                            for (i = 0; i < n; i++) {
+                                sv += -w2 * sx * h;
+                                sx += sv * h;
+                            }
+                        }
+                        pushSample(sx);
                     }
                 }
 
-                function startSim() {
-                    syncSimSize();
-                    updateLabels();
-                    simTime = 0;
-                    trailPoints = [];
-                    if (animHandle) cancelAnimationFrame(animHandle);
+                /* ---------- Vẽ ---------- */
+                function label(s, x, y, color, align, size) {
+                    ctx.font = (size || 11) + 'px "JetBrains Mono", ui-monospace, monospace';
+                    ctx.fillStyle = color || '#94a3b8';
+                    ctx.textAlign = align || 'left';
+                    ctx.textBaseline = 'alphabetic';
+                    ctx.fillText(s, x, y);
+                }
 
-                    function step() {
-                        simTime += 0.04;
-                        var w = simCanvas.width;
-                        var h = simCanvas.height;
-                        sctx.clearRect(0, 0, w, h);
+                function rr(x, y, w, h, r) {
+                    ctx.beginPath();
+                    if (ctx.roundRect) { ctx.roundRect(x, y, w, h, r); }
+                    else { ctx.rect(x, y, w, h); }
+                }
 
-                        sctx.strokeStyle = 'rgba(56, 189, 248, 0.08)';
-                        sctx.lineWidth = 1;
-                        for (var gx = 0; gx < w; gx += 28) {
-                            sctx.beginPath(); sctx.moveTo(gx, 0); sctx.lineTo(gx, h); sctx.stroke();
+                function drawGrid() {
+                    ctx.clearRect(0, 0, W, H);
+                    ctx.strokeStyle = 'rgba(56, 189, 248, 0.07)';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    for (var x = 0; x <= W; x += 28) { ctx.moveTo(x + 0.5, 0); ctx.lineTo(x + 0.5, H); }
+                    for (var y = 0; y <= H; y += 28) { ctx.moveTo(0, y + 0.5); ctx.lineTo(W, y + 0.5); }
+                    ctx.stroke();
+                }
+
+                function drawProjectile() {
+                    var ox = 30, gy = H - 24;
+                    var a = vals.projectile.p1 * Math.PI / 180, v0 = vals.projectile.p2;
+                    var geoS = projGeom(a, v0, g);
+                    var R = geoS.R, Hm = geoS.Hm;
+                    if (cur) { R = Math.max(R, cur.geo.R); Hm = Math.max(Hm, cur.geo.Hm); }
+                    var sc = Math.min((W - 60) / Math.max(R, 2), (gy - 30) / Math.max(Hm, 1.5), 60);
+
+                    function path(pa, pv, pg, upto) {
+                        ctx.beginPath();
+                        for (var i = 0; i <= 48; i++) {
+                            var t = upto * i / 48;
+                            var x = ox + pv * Math.cos(pa) * t * sc;
+                            var y = gy - (pv * Math.sin(pa) * t - 0.5 * pg * t * t) * sc;
+                            if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
                         }
+                    }
 
-                        var v1 = Number(p1Input.value);
-                        var v2 = Number(p2Input.value);
+                    // mặt đất + vạch chia mét
+                    ctx.strokeStyle = '#334155'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.moveTo(0, gy + 0.5); ctx.lineTo(W, gy + 0.5); ctx.stroke();
+                    var steps = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000], st = 2000;
+                    for (var i = 0; i < steps.length; i++) { if (steps[i] * sc >= 56) { st = steps[i]; break; } }
+                    for (var m = 0; ox + m * sc <= W; m += st) {
+                        var tx = ox + m * sc;
+                        ctx.fillStyle = '#475569'; ctx.fillRect(tx - 0.5, gy, 1, 6);
+                        label(m + ' m', tx, gy + 17, '#64748b', 'center', 10);
+                    }
 
-                        if (physMode === 'projectile') {
-                            var alpha = v1 * Math.PI / 180;
-                            var speed = v2 * 3.2;
-                            var g = 9.8 * 14;
-                            var groundY = h - 18;
-                            var startX = 24;
+                    // quỹ đạo cũ (để so sánh Trái Đất / Mặt Trăng...)
+                    ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(148, 163, 184, 0.28)';
+                    ghosts.forEach(function (gh) {
+                        if (gh === cur) return;
+                        path(gh.a, gh.v, gh.g, gh.geo.T); ctx.stroke();
+                    });
 
-                            var px = startX + speed * Math.cos(alpha) * simTime;
-                            var py = groundY - (speed * Math.sin(alpha) * simTime - 0.5 * g * simTime * simTime);
+                    // quỹ đạo dự đoán theo thanh trượt
+                    ctx.setLineDash([5, 5]); ctx.lineWidth = 1.5; ctx.strokeStyle = 'rgba(251, 191, 36, 0.45)';
+                    path(a, v0, g, geoS.T); ctx.stroke();
+                    ctx.setLineDash([]);
 
-                            if (py <= groundY && px <= w - 12) {
-                                trailPoints.push({ x: px, y: py });
-                            } else {
-                                simTime = 0;
-                                trailPoints = [];
-                            }
+                    // nòng pháo
+                    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+                    ctx.beginPath(); ctx.moveTo(ox, gy); ctx.lineTo(ox + Math.cos(a) * 20, gy - Math.sin(a) * 20); ctx.stroke();
+                    ctx.lineCap = 'butt';
+                    ctx.beginPath(); ctx.arc(ox, gy, 8, 0, Math.PI * 2); ctx.fillStyle = '#475569'; ctx.fill();
 
-                            if (trailPoints.length > 1) {
-                                sctx.beginPath();
-                                sctx.moveTo(trailPoints[0].x, trailPoints[0].y);
-                                for (var k = 1; k < trailPoints.length; k++) sctx.lineTo(trailPoints[k].x, trailPoints[k].y);
-                                sctx.strokeStyle = '#38bdf8';
-                                sctx.lineWidth = 2;
-                                sctx.stroke();
-                            }
-
-                            sctx.beginPath();
-                            sctx.arc(px, Math.min(py, groundY), 5, 0, Math.PI * 2);
-                            sctx.fillStyle = '#f59e0b';
-                            sctx.fill();
-                        } else if (physMode === 'pendulum') {
-                            var pivotX = w / 2;
-                            var pivotY = 16;
-                            var len = Math.min(h - 34, 92);
-                            var maxAngle = (v1 * Math.PI / 180);
-                            var damping = Math.exp(-0.08 * (v2 / 25) * simTime);
-                            var theta = maxAngle * damping * Math.cos(3.1 * simTime);
-                            var bx = pivotX + len * Math.sin(theta);
-                            var by = pivotY + len * Math.cos(theta);
-
-                            sctx.beginPath();
-                            sctx.moveTo(pivotX, pivotY);
-                            sctx.lineTo(bx, by);
-                            sctx.strokeStyle = '#94a3b8';
-                            sctx.lineWidth = 2;
-                            sctx.stroke();
-
-                            sctx.beginPath();
-                            sctx.arc(bx, by, 8, 0, Math.PI * 2);
-                            sctx.fillStyle = '#6366f1';
-                            sctx.fill();
+                    // quả bóng đang bay
+                    if (cur) {
+                        ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2.5;
+                        path(cur.a, cur.v, cur.g, cur.t); ctx.stroke();
+                        var bx = ox + cur.v * Math.cos(cur.a) * cur.t * sc;
+                        var by = gy - (cur.v * Math.sin(cur.a) * cur.t - 0.5 * cur.g * cur.t * cur.t) * sc;
+                        by = Math.min(by, gy - 6);
+                        if (!cur.done) {
+                            var vx = cur.v * Math.cos(cur.a), vy = cur.v * Math.sin(cur.a) - cur.g * cur.t;
+                            var ex = bx + vx * 2, ey = by - vy * 2;
+                            ctx.strokeStyle = '#a5b4fc'; ctx.lineWidth = 2;
+                            ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(ex, ey); ctx.stroke();
+                            var ang = Math.atan2(ey - by, ex - bx);
+                            ctx.beginPath();
+                            ctx.moveTo(ex, ey);
+                            ctx.lineTo(ex - 7 * Math.cos(ang - 0.45), ey - 7 * Math.sin(ang - 0.45));
+                            ctx.lineTo(ex - 7 * Math.cos(ang + 0.45), ey - 7 * Math.sin(ang + 0.45));
+                            ctx.closePath(); ctx.fillStyle = '#a5b4fc'; ctx.fill();
                         } else {
-                            var freq = v1 / 15;
-                            var amp = (v2 / 45) * (h * 0.34);
-                            var midY = h / 2;
-                            sctx.beginPath();
-                            for (var x = 0; x <= w; x += 4) {
-                                var y = midY + amp * Math.sin(x * 0.045 - simTime * freq * 5);
-                                if (x === 0) sctx.moveTo(x, y);
-                                else sctx.lineTo(x, y);
-                            }
-                            sctx.strokeStyle = '#0ea5e9';
-                            sctx.lineWidth = 2.5;
-                            sctx.stroke();
+                            label('R = ' + cur.geo.R.toFixed(1) + ' m', bx, gy - 12, '#fbbf24', 'center');
+                            var apx = ox + cur.v * Math.cos(cur.a) * (cur.geo.T / 2) * sc;
+                            var apy = gy - cur.geo.Hm * sc;
+                            ctx.beginPath(); ctx.arc(apx, apy, 3, 0, Math.PI * 2); ctx.fillStyle = '#a5b4fc'; ctx.fill();
+                            label('H = ' + cur.geo.Hm.toFixed(1) + ' m', apx, apy - 8, '#a5b4fc', 'center', 10);
                         }
-
-                        animHandle = requestAnimationFrame(step);
+                        ctx.shadowColor = '#f59e0b'; ctx.shadowBlur = 14;
+                        ctx.beginPath(); ctx.arc(bx, by, 6, 0, Math.PI * 2); ctx.fillStyle = '#f59e0b'; ctx.fill();
+                        ctx.shadowBlur = 0;
                     }
-                    step();
+
+                    // đường ngắm khi đang kéo chuột
+                    if (dragging) {
+                        ctx.setLineDash([4, 4]); ctx.strokeStyle = 'rgba(255,255,255,0.4)'; ctx.lineWidth = 1.5;
+                        ctx.beginPath(); ctx.moveTo(ox, gy); ctx.lineTo(ptr.x, ptr.y); ctx.stroke();
+                        ctx.setLineDash([]);
+                        ctx.beginPath(); ctx.arc(ptr.x, ptr.y, 6, 0, Math.PI * 2); ctx.strokeStyle = '#fbbf24'; ctx.lineWidth = 2; ctx.stroke();
+                        label(vals.projectile.p1 + '° · ' + vals.projectile.p2 + ' m/s', clamp(ptr.x + 12, 10, W - 110), clamp(ptr.y - 10, 30, H - 30), '#fbbf24');
+                    }
                 }
 
-                document.querySelectorAll('.phys-mode-btn').forEach(function (btn) {
-                    btn.addEventListener('click', function () {
-                        physMode = btn.getAttribute('data-phys-mode') || 'projectile';
-                        document.querySelectorAll('.phys-mode-btn').forEach(function (b) {
-                            b.className = 'phys-mode-btn px-2.5 py-1 rounded-md text-slate-600 dark:text-slate-300 hover:text-sky-500 transition-all';
-                        });
-                        btn.className = 'phys-mode-btn px-2.5 py-1 rounded-md bg-sky-500 text-white transition-all';
-                        startSim();
+                var PIVOT_Y = 24;
+                function drawPendulum() {
+                    var L = vals.pendulum.p1, pxm = (H - STRIP - PIVOT_Y - 30) / 3.1, len = L * pxm;
+                    var pxX = W / 2;
+                    var bx = pxX + len * Math.sin(th), by = PIVOT_Y + len * Math.cos(th);
+
+                    ctx.fillStyle = '#475569'; ctx.fillRect(pxX - 36, PIVOT_Y - 9, 72, 6);
+                    ctx.setLineDash([4, 5]); ctx.strokeStyle = 'rgba(148,163,184,0.35)'; ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(pxX, PIVOT_Y); ctx.lineTo(pxX, PIVOT_Y + len + 20); ctx.stroke();
+                    ctx.setLineDash([]);
+
+                    var ar = Math.min(36, len * 0.45);
+                    ctx.beginPath(); ctx.arc(pxX, PIVOT_Y, ar, Math.PI / 2, Math.PI / 2 - th, th > 0);
+                    ctx.strokeStyle = 'rgba(251,191,36,0.7)'; ctx.lineWidth = 2; ctx.stroke();
+
+                    ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 2.5;
+                    ctx.beginPath(); ctx.moveTo(pxX, PIVOT_Y); ctx.lineTo(bx, by); ctx.stroke();
+                    ctx.beginPath(); ctx.arc(pxX, PIVOT_Y, 4, 0, Math.PI * 2); ctx.fillStyle = '#cbd5e1'; ctx.fill();
+
+                    var grd = ctx.createRadialGradient(bx - 3, by - 3, 2, bx, by, 12);
+                    grd.addColorStop(0, '#c7d2fe'); grd.addColorStop(1, '#6366f1');
+                    ctx.shadowColor = '#6366f1'; ctx.shadowBlur = 16;
+                    ctx.beginPath(); ctx.arc(bx, by, 11, 0, Math.PI * 2); ctx.fillStyle = grd; ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    label('α = ' + (th * 180 / Math.PI).toFixed(0) + '°', 10, 38, '#fbbf24');
+                }
+
+                function springGeom() {
+                    return { ppm: (W / 2 - 70) / 0.6, eqX: W * 0.55, yf: (H - STRIP) * 0.72 };
+                }
+                function drawSpring() {
+                    var sg = springGeom(), bw = 46, bh = 40;
+                    var bxC = sg.eqX + sx * sg.ppm, ym = sg.yf - bh / 2;
+
+                    ctx.fillStyle = '#475569'; ctx.fillRect(8, sg.yf - 72, 8, 74);
+                    ctx.strokeStyle = '#334155'; ctx.lineWidth = 2;
+                    ctx.beginPath(); ctx.moveTo(0, sg.yf + 0.5); ctx.lineTo(W, sg.yf + 0.5); ctx.stroke();
+
+                    ctx.setLineDash([4, 5]); ctx.strokeStyle = 'rgba(148,163,184,0.4)'; ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(sg.eqX, sg.yf - 72); ctx.lineTo(sg.eqX, sg.yf + 6); ctx.stroke();
+                    ctx.setLineDash([]);
+                    label('VTCB', sg.eqX, sg.yf + 19, '#64748b', 'center', 10);
+
+                    var x0 = 16, x1 = bxC - bw / 2, seg = x1 - x0, coils = 12;
+                    ctx.beginPath(); ctx.moveTo(x0, ym); ctx.lineTo(x0 + 6, ym);
+                    for (var i = 1; i < coils; i++) {
+                        ctx.lineTo(x0 + 6 + (seg - 12) * i / coils, ym + (i % 2 ? -11 : 11));
+                    }
+                    ctx.lineTo(x1, ym);
+                    ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 2; ctx.stroke();
+
+                    var grd = ctx.createLinearGradient(0, sg.yf - bh, 0, sg.yf);
+                    grd.addColorStop(0, '#818cf8'); grd.addColorStop(1, '#4f46e5');
+                    ctx.shadowColor = '#6366f1'; ctx.shadowBlur = 14;
+                    rr(bxC - bw / 2, sg.yf - bh, bw, bh, 6); ctx.fillStyle = grd; ctx.fill();
+                    ctx.shadowBlur = 0;
+
+                    label('x = ' + sx.toFixed(2) + ' m', bxC, sg.yf - bh - 8, '#fbbf24', 'center');
+                }
+
+                function drawStrip(norm, color, name) {
+                    var top = H - STRIP + 4, hh = STRIP - 12, mid = top + hh / 2;
+                    ctx.strokeStyle = 'rgba(148,163,184,0.25)'; ctx.lineWidth = 1;
+                    ctx.beginPath(); ctx.moveTo(0, H - STRIP + 0.5); ctx.lineTo(W, H - STRIP + 0.5); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(12, mid); ctx.lineTo(W - 12, mid); ctx.stroke();
+                    label(name, 12, top + 9, '#64748b', 'left', 10);
+                    if (samples.length < 2) return;
+                    ctx.beginPath();
+                    for (var i = 0; i < samples.length; i++) {
+                        var x = 12 + (samples[i].t - (simT - 6)) / 6 * (W - 24);
+                        var y = mid - clamp(samples[i].v / norm, -1, 1) * (hh / 2);
+                        if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+                    }
+                    ctx.strokeStyle = color; ctx.lineWidth = 1.8; ctx.stroke();
+                }
+
+                function draw() {
+                    drawGrid();
+                    if (mode === 'projectile') {
+                        drawProjectile();
+                    } else if (mode === 'pendulum') {
+                        drawPendulum(); drawStrip(1.5, '#818cf8', 'α(t)');
+                    } else {
+                        drawSpring(); drawStrip(0.6, '#38bdf8', 'x(t)');
+                    }
+                    if (mode !== 'spring') label('g = ' + (Math.round(g * 100) / 100) + ' m/s²', W - 10, 18, '#34d399', 'right');
+                    if (!hinted) label('Kéo thả vật bằng chuột / ngón tay', 10, 18, '#64748b');
+                }
+
+                var lastTelStr = '';
+                function updateTelemetry() {
+                    var s;
+                    if (mode === 'projectile') {
+                        var geo = projGeom(vals.projectile.p1 * Math.PI / 180, vals.projectile.p2, g);
+                        s = 'Dự đoán: R = ' + geo.R.toFixed(1) + ' m · H = ' + geo.Hm.toFixed(1) + ' m · T = ' + geo.T.toFixed(2) + ' s';
+                    } else if (mode === 'pendulum') {
+                        var T0 = 2 * Math.PI * Math.sqrt(vals.pendulum.p1 / g);
+                        s = 'T₀ = ' + T0.toFixed(2) + ' s · α = ' + (th * 180 / Math.PI).toFixed(1) + '° · ω = ' + om.toFixed(2) + ' rad/s';
+                    } else {
+                        var T = 2 * Math.PI * Math.sqrt(vals.spring.p2 / vals.spring.p1);
+                        s = 'T = ' + T.toFixed(2) + ' s · f = ' + (1 / T).toFixed(2) + ' Hz · x = ' + sx.toFixed(2) + ' m';
+                    }
+                    if (s !== lastTelStr) { lastTelStr = s; telText.textContent = s; }
+                }
+
+                /* ---------- Vòng lặp ---------- */
+                var raf = 0, last = 0, lastTel = 0;
+                function frame(ts) {
+                    raf = requestAnimationFrame(frame);
+                    var dt = Math.min(Math.max((ts - last) / 1000, 0), 0.05);
+                    last = ts;
+                    update(dt);
+                    draw();
+                    if (ts - lastTel > 100) { lastTel = ts; updateTelemetry(); }
+                }
+                function start() {
+                    if (raf) return;
+                    resize();
+                    last = performance.now();
+                    raf = requestAnimationFrame(frame);
+                }
+                function stop() {
+                    if (raf) { cancelAnimationFrame(raf); raf = 0; }
+                }
+
+                /* ---------- Kéo thả bằng chuột / cảm ứng ---------- */
+                function pos(e) {
+                    var r = canvas.getBoundingClientRect();
+                    return { x: (e.clientX - r.left) * (W / r.width), y: (e.clientY - r.top) * (H / r.height) };
+                }
+
+                function handleDrag() {
+                    if (mode === 'projectile') {
+                        var ox = 30, gy = H - 24;
+                        var dx = ptr.x - ox, dy = gy - ptr.y;
+                        var a = Math.atan2(Math.max(dy, 1), Math.max(dx, 1));
+                        var deg = clamp(Math.round(a * 180 / Math.PI), 10, 80);
+                        var len = Math.sqrt(dx * dx + dy * dy);
+                        var v = clamp(Math.round(len / (W * 0.85) * 40), 5, 40);
+                        vals.projectile.p1 = deg; vals.projectile.p2 = v;
+                        p1In.value = deg; p2In.value = v;
+                        refreshLabels();
+                    } else if (mode === 'pendulum') {
+                        th = clamp(Math.atan2(ptr.x - W / 2, ptr.y - PIVOT_Y), -2.6, 2.6);
+                        om = 0;
+                    } else {
+                        var sg = springGeom();
+                        sx = clamp((ptr.x - sg.eqX) / sg.ppm, -0.6, 0.6);
+                        sv = 0;
+                    }
+                }
+
+                function endDrag() {
+                    if (!dragging) return;
+                    dragging = false;
+                    canvas.style.cursor = 'grab';
+                    if (mode === 'projectile') { fire(); } else { held = false; }
+                }
+
+                canvas.addEventListener('pointerdown', function (e) {
+                    hinted = true; dragging = true;
+                    ptr = pos(e);
+                    canvas.style.cursor = 'grabbing';
+                    try { canvas.setPointerCapture(e.pointerId); } catch (err) {}
+                    handleDrag();
+                });
+                canvas.addEventListener('pointermove', function (e) {
+                    if (!dragging) return;
+                    ptr = pos(e);
+                    handleDrag();
+                });
+                canvas.addEventListener('pointerup', endDrag);
+                canvas.addEventListener('pointercancel', endDrag);
+
+                /* ---------- Điều khiển ---------- */
+                gIn.addEventListener('input', function () { g = Number(gIn.value); refreshLabels(); });
+                p1In.addEventListener('input', function () { vals[mode].p1 = Number(p1In.value); refreshLabels(); });
+                p2In.addEventListener('input', function () { vals[mode].p2 = Number(p2In.value); refreshLabels(); });
+
+                gChips.forEach(function (chip) {
+                    chip.addEventListener('click', function () {
+                        g = Number(chip.getAttribute('data-lab-g'));
+                        gIn.value = g;
+                        refreshLabels();
+                        if (mode === 'projectile') fire();
                     });
                 });
 
-                if (p1Input) p1Input.addEventListener('input', updateLabels);
-                if (p2Input) p2Input.addEventListener('input', updateLabels);
-                if (runBtn) runBtn.addEventListener('click', startSim);
-                window.addEventListener('resize', syncSimSize);
+                modeBtns.forEach(function (btn) {
+                    btn.addEventListener('click', function () {
+                        mode = btn.getAttribute('data-lab-mode') || 'projectile';
+                        applyMode();
+                        resetMode();
+                    });
+                });
 
-                setTimeout(startSim, 200);
+                runBtn.addEventListener('click', function () {
+                    hinted = true;
+                    if (mode === 'projectile') { fire(); }
+                    else if (mode === 'pendulum') { th = 0.7; om = 0; held = false; samples = []; }
+                    else { sx = 0.4; sv = 0; held = false; samples = []; }
+                });
+
+                window.addEventListener('resize', resize);
+                applyMode();
+                resetMode();
+                resize();
+                updateTelemetry();
+
+                if ('IntersectionObserver' in window) {
+                    new IntersectionObserver(function (entries) {
+                        entries.forEach(function (en) { if (en.isIntersecting) start(); else stop(); });
+                    }, { threshold: 0.05 }).observe(canvas);
+                } else {
+                    start();
+                }
             })();
-
             /* ------------------------------------------------------------
                8. SCROLL REVEAL & ACHIEVEMENTS
                ------------------------------------------------------------ */
