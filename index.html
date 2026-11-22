@@ -50,7 +50,7 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+                        sans: ['Be Vietnam Pro', 'system-ui', '-apple-system', 'sans-serif'],
                         mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
                     },
                     animation: {
@@ -90,7 +90,7 @@
     <!-- Google Fonts Inter & JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Patrick+Hand&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -591,6 +591,72 @@
         #space-dots button { transition: transform .2s ease, background-color .2s ease, box-shadow .2s ease; }
         @media print { #space-flight, #space-hud, #pwa-toast { display: none !important; } }
     </style>
+    <style id="khoa-notebook">
+        /* ===== Giao diện vở ô ly: giấy kẻ ô, mực xanh, lề đỏ, chữ viết tay ===== */
+        :root { --paper:#f8fafd; --grid:#d3e3f2; --ink:#1b3a9c; --red:#d8443c; --rule:#9db3cf; }
+        html.dark { --paper:#0f1520; --grid:#1b2738; --ink:#9db8ff; --red:#ff7a70; --rule:#3a4a63; }
+
+        html body { font-family:'Be Vietnam Pro', system-ui, sans-serif; }
+        html body.bg-grid {
+            background-color: var(--paper);
+            background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+            background-size: 28px 28px;
+        }
+        /* lề đỏ của trang vở (chỉ hiện trên màn hình rộng) */
+        @media (min-width: 1100px) {
+            body::before { content:''; position:fixed; top:0; bottom:0; left:44px; width:2px; background:var(--red); opacity:.5; z-index:5; pointer-events:none; }
+        }
+        #about, #documents { background:transparent !important; border-color:transparent !important; }
+
+        /* bỏ hiệu ứng trang trí */
+        #ios-bubbles-container, .animate-blob, .animate-blob-slow, .hero-spotlight, .animate-pulse-ring,
+        .cursor-dot, .cursor-outline, .khoa-banner i, .shine::before,
+        .relative.w-full.max-w-sm > .animate-pulse { display:none !important; }
+        html body, html body a, html body button, html body input, html body textarea, html body label { cursor:auto !important; }
+        html body a, html body button, html body label { cursor:pointer !important; }
+        .js .reveal { opacity:1 !important; transform:none !important; transition:none !important; }
+        [data-tilt], .magnetic { transform:none !important; }
+        #hero .grid-cols-3.max-w-md { display:none; }   /* đã có trong thẻ hồ sơ */
+
+        /* một kiểu bo góc, không bóng mờ, không kính mờ */
+        html body .rounded-xl, html body .rounded-2xl, html body .rounded-3xl { border-radius:4px; }
+        html body .shadow-sm, html body .shadow-md, html body .shadow-lg, html body .shadow-xl, html body .shadow-2xl { box-shadow:none !important; }
+        html body .glass { background:var(--paper); backdrop-filter:none; -webkit-backdrop-filter:none; }
+        #site-header { border-bottom:2px solid var(--ink) !important; }
+        footer { background:transparent !important; backdrop-filter:none !important; border-top:2px solid var(--ink) !important; }
+        ::-webkit-scrollbar-thumb { background:var(--ink); }
+
+        /* màu: một màu mực xanh, màu đỏ chỉ để gạch chân */
+        html body .text-sky-400, html body .text-sky-500, html body .text-sky-600, html body .hover\:text-sky-500:hover, html body .nav-link.active { color:var(--ink); }
+        .nav-link::after { background:var(--red) !important; }
+        header a.group .bg-gradient-to-tr { background-image:none; background-color:var(--ink); border-radius:4px; }
+        header a.group .blur-md { display:none; }
+        html body a.shine { background-image:none; background-color:var(--ink); color:var(--paper); border-radius:4px; }
+
+        /* tên to viết tay, gạch chân đôi như trong vở */
+        .gradient-text, .bg-clip-text {
+            background:none !important; animation:none !important;
+            -webkit-text-fill-color:var(--ink); color:var(--ink) !important;
+        }
+        h1 .gradient-text { font-family:'Patrick Hand','Be Vietnam Pro',cursive; font-weight:400; font-synthesis:none; font-size:1.2em; display:inline-block; border-bottom:3px double var(--red); }
+
+        /* tiêu đề mục: bỏ nhãn chữ hoa nhỏ phía trên, gạch chân đỏ như tên bài */
+        section h2.uppercase { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+        section h3.reveal.text-3xl { display:inline-block; color:var(--ink); border-bottom:3px double var(--red); padding-bottom:.2em; }
+
+        /* thẻ hồ sơ = nhãn vở: nhãn in sẵn, chỗ điền viết tay */
+        .khoa-card { border-radius:4px; padding:0; border:2px solid var(--ink); }
+        .khoa-card::before { display:none; }
+        .khoa-card-inner { border-radius:0; }
+        .khoa-banner { background:var(--ink); height:96px; }
+        .khoa-avatar-wrap::before { background:var(--ink); animation:none; box-shadow:none; }
+        .khoa-card .flex-wrap > span { background:transparent !important; color:var(--ink) !important; border:1.5px solid var(--ink) !important; border-radius:2px !important; }
+        .khoa-card .flex-wrap > span i { display:none; }
+        #card-stats > div { background:none !important; border:0 !important; border-bottom:1.5px dotted var(--rule) !important; border-radius:0 !important; padding:.4rem 0 !important; transform:none !important; }
+        #card-stats > div > span:first-child { display:none; }
+        #card-stats .uppercase { text-transform:none; letter-spacing:0; font-size:12px; }
+        #card-stats .text-sm { font-family:'Patrick Hand','Be Vietnam Pro',cursive; font-weight:400; font-size:1.2rem; color:var(--ink) !important; }
+    </style>
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 bg-grid min-h-screen flex flex-col selection:bg-sky-500 selection:text-white relative overflow-x-hidden">
 
@@ -729,10 +795,10 @@
                         </h1>
 
                         <p class="reveal text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl font-normal leading-relaxed mx-auto md:mx-0" data-delay="2">
-                            Học sinh lớp 11 Vật lý sinh sống tại
+                            Mình học lớp 11 chuyên Lý ở
                             <span class="font-semibold text-slate-800 dark:text-slate-200">Bến Tre</span>.
-                            Luôn tràn đầy nhiệt huyết với tinh thần học hỏi, đam mê thể thao
-                            và tò mò khám phá những điều mới lạ xung quanh.
+                            Ngoài giờ giải đề thì mình chơi thể thao, chơi game,
+                            và đang tập code. Trang này là chỗ mình tự làm và tự sửa.
                         </p>
 
                         <div class="reveal pt-2 flex flex-wrap items-center justify-center md:justify-start gap-4" data-delay="3">
@@ -949,7 +1015,7 @@
         <section id="interests" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="text-center space-y-3 mb-14">
                 <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Sở Thích & Đam Mê</h2>
-                <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Những Điều Tạo Nên Tôi</h3>
+                <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Những điều tạo nên mình</h3>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -1163,7 +1229,7 @@
         <section id="de-ly" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
             <div class="text-center space-y-3 mb-10">
                 <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Thư Viện Đề Lý</h2>
-                <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Đề Vật Lý Có Khoa AI Hỗ Trợ</h3>
+                <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Đề Vật Lý, có Khoa AI giải cùng</h3>
                 <p class="reveal text-sm text-slate-500 dark:text-slate-400 max-w-xl mx-auto" data-delay="2">Xem đề, tải về, và bấm “Hỏi AI” để nhận gợi ý hoặc lời giải từng câu.</p>
             </div>
 
@@ -1199,7 +1265,7 @@
             <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center space-y-3 mb-12">
                     <h2 class="reveal text-xs font-bold uppercase tracking-[0.2em] text-sky-500">Liên Hệ & Ủng Hộ</h2>
-                    <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Kết Nối Với Tôi</h3>
+                    <h3 class="reveal text-3xl sm:text-4xl font-bold tracking-tight" data-delay="1">Nhắn cho mình</h3>
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -1278,9 +1344,9 @@
     <!-- ==================== FOOTER ==================== -->
     <footer class="border-t border-slate-200 dark:border-slate-800 bg-white/60 dark:bg-slate-950/60 backdrop-blur py-8 text-center text-xs text-slate-500 dark:text-slate-400 z-10 relative">
         <div class="max-w-6xl mx-auto px-4 space-y-2">
-            <p>&copy; <span id="year"></span> Lê Anh Khoa. All rights reserved.</p>
+            <p>&copy; <span id="year"></span> Lê Anh Khoa</p>
             <p class="text-[11px] text-slate-400 dark:text-slate-500">
-                Made with <i class="fas fa-heart text-red-400 mx-0.5"></i> in Bến Tre
+                Tự code ở Bến Tre, vẫn đang học
             </p>
         </div>
     </footer>
